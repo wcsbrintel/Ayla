@@ -27,6 +27,7 @@
     actor.visualVersion = '0.7';
     actor.characterType = 'rigged-textured';
     actor.isRiggedReady = ()=>ready;
+    actor.supportsSeatedAnimation = ()=>ready&&[...stages.keys()].some(k=>/^sit(?:ting|ted)?(?:[ _-]|$)/i.test(k));
     actor.setInteraction = function (id) { interaction=id||'idle'; origInteraction?.(id); };
     actor.setCinematic = function (id) { interaction=id||'idle'; };
     actor.setSeated = function (value) { seated=!!value; origSeat?.(value); };
@@ -37,6 +38,7 @@
       let next='Idle';
       if(moving) next=sprint?'Walk':'Walk';
       else if(talking) next=cfg.isWinston?'Talk':'Confident';
+      else if(seated&&actor.supportsSeatedAnimation()) next=[...stages.keys()].find(k=>/^sit(?:ting|ted)?(?:[ _-]|$)/i.test(k));
       else if(seated) next='Idle';
       else if(interaction==='terminal'||interaction==='report') next='Think';
       else if(interaction==='map'||interaction==='board') next='Think';
