@@ -50,7 +50,7 @@
        let fx=camera.target.x-camera.position.x,fz=camera.target.z-camera.position.z;
        let len=Math.hypot(fx,fz);if(len<.001){fx=0;fz=1;len=1;}
        fx/=len;fz/=len;
-       const rx=-fz,rz=fx; // right = up cross forward
+       const rx=fz,rz=-fx; // right = up cross forward
        dx=fx*hz+rx*hx;dz=fz*hz+rz*hx;len=Math.hypot(dx,dz);
        if(len>1){dx/=len;dz/=len;}
      }
@@ -131,7 +131,7 @@
      return false;
    }
    function seatOrientation(actor,dt,targetRot){actor.root.rotation.y+=angleDiff(targetRot,actor.root.rotation.y)*damp(8,dt);return Math.abs(angleDiff(targetRot,actor.root.rotation.y))<.045;}
-   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,seatOrientation,reset(){seatPlan=null;state.vx=state.vz=0;}};
+   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,seatOrientation,stop(){state.vx=state.vz=0;},reset(){seatPlan=null;state.vx=state.vz=0;}};
  }
  window.AYLANavigationV8={create};
 })();
