@@ -1,0 +1,13 @@
+/* AYLA 0.4 · lighter HUD chrome and more legible in-game dialogue. */
+:root { --lime:#c8f5a0; --accent-cyan:#80e1cf; }
+#renderCanvas { image-rendering:auto; }
+#topbar { border-bottom:1px solid rgba(151,226,194,.22); }
+.hud-panel { box-shadow:0 20px 70px rgba(0,0,0,.36),inset 0 1px rgba(224,255,224,.065); }
+.hud-panel .hud-title { text-shadow:0 1px 20px rgba(143,217,166,.12); }
+.hud-objective { padding:13px 12px 0; margin-top:15px; border-top:1px solid rgba(150,230,193,.19); }
+#hintBox { box-shadow:0 12px 50px #0009,0 0 27px rgba(178,240,136,.15); }
+.dialog-card { box-shadow:0 36px 130px rgba(0,0,0,.84),0 0 35px rgba(101,218,164,.07); }
+.dialog-message p { line-height:1.86; }
+.intro-copy p { max-width:720px; }
+@media(max-width:650px){.hud-panel{max-width:210px}.hud-panel .hud-title{font-size:15px}.hint-box{bottom:105px}.dialog-message p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.progress-bar>div{transition:none}}
