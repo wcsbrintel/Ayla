@@ -14,11 +14,21 @@ es:{title:"Área restringida",intro:"Comunicación exclusiva entre usuarios auto
 let locale="pt",auth=null,db=null,user=null,approved=false,visible=false,seq=0,stopLive=null,history=[],page=0,busy=false,chatBusy=false,latestSnapshots=[],canLoadMore=false;
 const tr=()=>T[locale],setText=(id,value)=>{if($(id))$(id).textContent=value},show=(id,on)=>$(id)?.classList.toggle("hidden",!on);
 function status(value){setText("restrictedStatus",value)}
+// The Firebase session is independent of the restricted panel's visibility.
+// AYLA listens to this event to switch between public missions and the
+// authenticated free-roaming experience, including on browser refresh.
+let lastDispatched=null;
+function notifyGame(){
+ const current=!!approved&&!!user;
+ if(lastDispatched===current)return;
+ lastDispatched=current;
+ window.dispatchEvent(new CustomEvent("ayla:auth-state",{detail:{approved:current}}));
+}
 function views(which){for(const v of ["Login","Waiting","Approved"])show("restricted"+v,which===v)}
 function stopListener(){if(stopLive){stopLive();stopLive=null}}
 function clearChat(){stopListener();history=[];page=0;canLoadMore=false;latestSnapshots=[];$("restrictedMessages")?.replaceChildren();show("restrictedChat",false);$("restrictedScreen")?.classList.remove("restricted-authorized")}
-function loginView(){approved=false;user=null;clearChat();views("Login");status("")}
-function waiting(reason){approved=false;clearChat();views("Waiting");setText("restrictedWaitingTitle",tr()[reason]);show("restrictedResend",reason==="verify");status("")}
+function loginView(){approved=false;user=null;clearChat();views("Login");status("");notifyGame()}
+function waiting(reason){approved=false;clearChat();views("Waiting");setText("restrictedWaitingTitle",tr()[reason]);show("restrictedResend",reason==="verify");status("");notifyGame()}
 function formatStamp(raw){const date=raw?.toDate?.();if(!date)return tr().time;try{return new Intl.DateTimeFormat(locale,{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}).format(date)}catch{return tr().time}}
 function renderRows(snapshots){
  const box=$("restrictedMessages");if(!box)return;box.replaceChildren();
@@ -87,7 +97,7 @@ function authorized(){
  views("Approved");approved=true;$("restrictedScreen")?.classList.add("restricted-authorized");
  setText("restrictedAccount",user?.email||"");
  setText("restrictedApprovedTitle",tr().connected);show("restrictedChat",true);status("");
- listenLatest();
+ notifyGame();listenLatest();
 }
 async function check(u){
  const token=++seq;user=u;approved=false;clearChat();
@@ -109,7 +119,7 @@ function localize(l){
  const input=$("restrictedMessageInput");if(input)input.placeholder=tr().write;
  setText("restrictedOlder",tr().older);setText("restrictedNewer",tr().newer);
  if(approved){setText("restrictedApprovedTitle",tr().connected);renderRows(currentSnapshots())}
- else if(user)waiting(user.emailVerified?"pending":"verify");
+ else if(user){views("Waiting");setText("restrictedWaitingTitle",tr()[user.emailVerified?"pending":"verify"])}
  else views("Login");
 }
 async function init(){
@@ -121,10 +131,18 @@ async function init(){
  }catch(e){console.warn("[AYLA] Firebase init",e?.code||e?.message);waiting("failure")}
 }
 window.AYLARestricted={
- open(l){visible=true;localize(l);if(!auth){views("Waiting");status(tr().loading);init()}else if(auth.currentUser)check(auth.currentUser);else loginView()},
- close(){visible=false;seq++;clearChat()},
+ open(l){
+  visible=true;localize(l);
+  if(!auth){views("Waiting");status(tr().loading);init()}
+  else if(auth.currentUser)check(auth.currentUser);
+  else loginView();
+ },
+ // Hiding the communications window does NOT sign out or invalidate access.
+ // Only unsubscribe its real-time feed. Returning rechecks the approval.
+ close(){visible=false;stopListener()},
  setLanguage(l){localize(l)},
- authorized:()=>!!approved&&visible
+ authorized:()=>!!approved&&!!user,
+ isOpen:()=>visible
 };
 $("restrictedAuthForm")?.addEventListener("submit",async event=>{
  event.preventDefault();if(!auth||busy)return;
@@ -151,3 +169,5 @@ $("restrictedOlder")?.addEventListener("click",older);
 $("restrictedNewer")?.addEventListener("click",latest);
 $("restrictedChatForm")?.addEventListener("submit",send);
 localize("pt");
+// Restore an existing Firebase session at page load, not only after opening the terminal.
+init();
