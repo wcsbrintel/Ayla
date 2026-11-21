@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 850" role="img" aria-labelledby="title">
+<title id="title">Ayla: intelligence map with network connections and ecological elements</title>
+<defs>
+ <radialGradient id="halo"><stop stop-color="#1e9582" stop-opacity=".46"/><stop offset=".55" stop-color="#116a76" stop-opacity=".18"/><stop offset="1" stop-color="#0c252b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#79f2bb"/><stop offset=".5" stop-color="#39bcb5"/><stop offset="1" stop-color="#d5f394"/></linearGradient>
+ <linearGradient id="pane" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1e5c5f" stop-opacity=".75"/><stop offset="1" stop-color="#08282e" stop-opacity=".17"/></linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<ellipse cx="488" cy="440" rx="365" ry="345" fill="url(#halo)"/>
+<g transform="translate(465 410)" fill="none" stroke="#75d4bd" stroke-opacity=".26">
+ <circle r="260" stroke-dasharray="3 16"/><circle r="220"/><circle r="175" stroke-dasharray="2 9"/><circle r="122"/><circle r="64"/>
+ <path d="M-327 0H327M0-312V312" stroke-dasharray="5 18"/><ellipse rx="305" ry="118" transform="rotate(-19)"/><ellipse rx="117" ry="292" transform="rotate(30)"/>
+</g>
+<g transform="translate(465 410)" fill="none" stroke="url(#blue)" stroke-width="2">
+ <path d="M-213 125C-140 60 -90 8 -10 -30S136-120 223-106" stroke-dasharray="8 10"/>
+ <path d="M-120-190C-60-82 10-10 101 88s110 100 155 148" stroke-dasharray="3 15"/>
+ <path d="M-230-37 7 32 180-75"/>
+ <path d="M-90 218 69 148 227 167" stroke-opacity=".4"/>
+</g>
+<g fill="#061b21" stroke="#b7edab" stroke-width="4">
+ <circle cx="252" cy="535" r="12"/><circle cx="455" cy="380" r="10"/><circle cx="688" cy="304" r="14"/><circle cx="345" cy="220" r="9"/><circle cx="566" cy="498" r="13"/><circle cx="717" cy="648" r="9"/>
+</g>
+<g fill="#c5efb1" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="3"><text x="704" y="284">NODE 02</text><text x="153" y="559">NODE 01</text><text x="558" y="538">CASE 047</text></g>
+<g transform="translate(260 244)"><path d="M0 40L20 0 95 0 117 40 96 81 17 81Z" fill="#102f35" stroke="#9acfa7" stroke-opacity=".38"/><path d="M24 35 48 18 74 42 99 20M24 56 48 46 74 58 99 45" fill="none" stroke="#7bd8bd" stroke-width="3" opacity=".72"/></g>
+<g transform="translate(505 297)"><path d="M0 0 95-29 168 17 150 98 58 112-9 68Z" fill="url(#pane)" stroke="#89e9cb" stroke-opacity=".55"/><path d="M31 27 78 5 137 31 111 73 63 84 31 58Z" stroke="#bae77d" stroke-opacity=".8" fill="none" stroke-dasharray="4 6"/><path d="M15 18 41 43 28 75 56 96M146 34 113 59 122 90" stroke="#8ac3bf" fill="none"/></g>
+<g transform="translate(400 565)" stroke="#a9e4d0" stroke-opacity=".5" fill="#0e343c"><path d="M0 18 55-16 138 17 82 50Z"/><path d="M0 18v58l82 33V50Z"/><path d="M82 50v59l56-34V17Z"/></g>
+<g transform="translate(115 695)" stroke="#7bd6b3" stroke-opacity=".55" font-family="monospace" font-size="11" fill="#a6edcc"><path d="M0 0H310M0 62H310" stroke-opacity=".25"/><text x="0" y="25">INTELLIGENCE GRID / 04:17:26</text><text x="0" y="45">GEOSPATIAL ANALYSIS / ACTIVE</text></g>
+<g transform="translate(680 124)" stroke="#a3eacc" opacity=".85"><path d="M0 18h103M52 0v40"/><circle cx="52" cy="18" r="36" fill="none"/><text x="0" y="76" fill="#a3eacc" font-family="monospace" font-size="11" stroke="none">OSINT / GEOINT</text></g>
+</svg>
