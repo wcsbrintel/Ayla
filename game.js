@@ -58,6 +58,9 @@
       $('resumeButton')?.classList.add('hidden');
       if(activePanel&&activePanel!=='restrictedScreen')closePanels();
     }else{
+      // When an approved user signs out while exploring the wall, restore
+      // the playable public scene, not an invisible locked input panel.
+      if(activePanel==='wallScreen')closePanels();
       updateHud();
     }
     updateAccountIndicator();
