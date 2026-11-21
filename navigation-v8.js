@@ -77,7 +77,8 @@
      let dx=target.x-actor.root.position.x,dz=target.z-actor.root.position.z;
      const len=Math.hypot(dx,dz);if(len<.14)return {arrived:true,moving:false};
      dx/=len;dz/=len;
-     const a=move(actor.root.position,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),.37,other,null);
+     const currentSeat=colliders.find(c=>c.tag.startsWith('seat-')&&circleBox(actor.root.position.x,actor.root.position.z,.37,c));
+     const a=move(actor.root.position,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),.37,other,currentSeat?.tag||null);
      let moving=a.distance>.007;
      actor.root.position.x=a.x;actor.root.position.z=a.z;
      if(moving){
