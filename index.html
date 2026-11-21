@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="cinematics-fix.css?v=0.7.0">
   <link rel="stylesheet" href="visual-v7.css?v=0.7.1">
   <link rel="stylesheet" href="vintage-v9.css?v=0.9.1">
+  <link rel="stylesheet" href="restricted-terminal.css?v=1.1.0">
 </head>
 <body>
   <div id="app">
@@ -40,7 +41,7 @@
       <div class="character-keyart" aria-hidden="true"></div>
       <img class="title-visual" alt="" aria-hidden="true" src="assets/title-visual.svg">
       <aside class="case-preview" aria-hidden="true"><div class="cv-code">AYLA / MISSION CONTROL</div><div class="cv-title">CASE FILE AY-001</div><div class="cv-row"><span>OSINT INTELLIGENCE</span><strong>ACTIVE</strong></div><div class="cv-row"><span>WORKSPACE</span><strong>OPERATIONS CENTER</strong></div><div class="cv-row"><span>OBJECTIVE</span><strong>VERIFY THE EVIDENCE</strong></div><div class="cv-footer"><b></b> INVESTIGATION IN PROGRESS</div></aside>
-      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / <span data-t="missionCount">MISSÃO DEMONSTRATIVA</span></span><span>PT • EN • ES</span><span>AYLA — ALPHA 1.0.4 / MISSION 01</span></div></div>
+      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / <span data-t="missionCount">MISSÃO DEMONSTRATIVA</span></span><span>PT • EN • ES</span><span>AYLA — ALPHA 1.1.0 / MISSION 01</span></div></div>
       <div class="start-language"><span data-t="language">IDIOMA</span><button data-language="pt">PT</button><button data-language="en">EN</button><button data-language="es">ES</button></div>
     </section>
 
@@ -53,6 +54,49 @@
     <section id="dialogScreen" class="modal-backdrop hidden" aria-labelledby="dialogName"><div class="dialog-card"><div class="dialog-portrait"><div class="portrait-shape"><div class="portrait-head"></div><div class="portrait-jacket"></div></div><span>W / 01</span></div><div class="dialog-message"><div class="eyebrow" data-t="mentor">SEU MENTOR</div><h2 id="dialogName">WINSTON</h2><p id="dialogBody"></p><div class="dialog-actions"><button class="primary-button" id="dialogNext"><span data-t="continue">CONTINUAR</span> →</button></div></div></div></section>
 
     <section id="terminalScreen" class="modal-backdrop panel-backdrop hidden" aria-labelledby="terminalTitle"><div class="workstation panel"><div class="panel-top"><div><div class="eyebrow">AYLA / OSINT DESK</div><h2 id="terminalTitle" data-t="terminal">TERMINAL DE FONTES ABERTAS</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div><div class="terminal-layout"><nav class="terminal-list" id="sourceList"></nav><article class="terminal-document" id="sourceDetail"><div class="empty-state" data-t="selectSource">SELECIONE UMA FONTE PARA ANALISAR</div></article></div><div class="panel-footer"><span data-t="terminalFoot">Análise de fontes · verifique a origem e a confiabilidade de cada registro.</span><span id="sourceCount">0/4</span></div></div></section>
+
+    <section id="restrictedScreen" class="modal-backdrop panel-backdrop hidden" aria-labelledby="restrictedHeading">
+      <div class="panel restricted-panel">
+        <div class="panel-top"><div><div class="eyebrow">AYLA / FIREBASE AUTHENTICATION</div><h2 id="restrictedHeading">Área restrita</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div>
+        <div class="restricted-content">
+          <p id="restrictedIntro">Use a mesma conta Firebase do Observatório. O acesso exige e-mail verificado e aprovação administrativa.</p>
+          <p id="restrictedStatus" class="restricted-status" role="status" aria-live="polite"></p>
+          <section id="restrictedLogin" class="restricted-auth-area">
+            <form id="restrictedAuthForm" autocomplete="on">
+              <label id="restrictedEmailLabel" for="restrictedEmail">E-mail</label>
+              <input id="restrictedEmail" type="email" autocomplete="email" required placeholder="usuario@instituicao.org">
+              <label id="restrictedPasswordLabel" for="restrictedPassword">Senha</label>
+              <input id="restrictedPassword" type="password" autocomplete="current-password" required>
+              <button class="primary-button" id="restrictedLoginButton" type="submit">Entrar</button>
+            </form>
+            <button class="restricted-link" id="restrictedResetButton" type="button">Esqueceu sua senha?</button>
+          </section>
+          <section id="restrictedWaiting" class="restricted-auth-area hidden">
+            <h3 id="restrictedWaitingTitle">Verificando acesso</h3>
+            <div class="restricted-actions"><button type="button" id="restrictedRefresh" class="primary-button">Verificar novamente</button><button id="restrictedResend" class="restricted-link" type="button">Reenviar confirmação</button></div>
+            <button id="restrictedWaitingLogout" type="button" class="restricted-link">Sair da conta</button>
+          </section>
+          <section id="restrictedApproved" class="restricted-auth-area hidden">
+            <span class="restricted-success">◆ / VERIFIED ACCESS</span>
+            <h3 id="restrictedApprovedTitle">Acesso autorizado</h3>
+            <p id="restrictedApprovedDesc"></p>
+            <div class="restricted-account" id="restrictedAccount"></div>
+            <button class="primary-button" id="restrictedStartExercise" type="button">Começar</button>
+          </section>
+          <section id="restrictedTraining" class="restricted-auth-area hidden">
+            <h3 id="restrictedExerciseHeading">Treinamento avançado</h3>
+            <p id="restrictedExerciseIntro"></p>
+            <div id="restrictedStep" class="eyebrow"></div>
+            <h3 id="restrictedQuestion"></h3>
+            <div id="restrictedExerciseOptions" class="restricted-options"></div>
+            <p id="restrictedAnswerFeedback" class="restricted-status" role="status" aria-live="polite"></p>
+            <button class="primary-button" id="restrictedExerciseSubmit" type="button">Confirmar</button>
+          </section>
+          <p id="restrictedFinePrint" class="restricted-fine-print">A autorização é verificada no Firestore. O progresso do treinamento é salvo somente neste navegador.</p>
+          <button class="restricted-link" id="restrictedLogout" type="button">Sair</button>
+        </div>
+      </div>
+    </section>
 
     <section id="mapScreen" class="modal-backdrop panel-backdrop hidden"><div class="panel map-panel"><div class="panel-top"><div><div class="eyebrow">AYLA / GEOINT</div><h2 data-t="mapTitle">HIPÓTESES DE ROTA</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div><div class="map-space"><div class="map-svg-wrap"><svg viewBox="0 0 840 400" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Painel de rotas e hipóteses para análise"><defs><pattern id="mesh" patternUnits="userSpaceOnUse" width="38" height="38"><path d="M38 0H0V38" fill="none" stroke="#28534b" stroke-width=".7"/></pattern><linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17392c"/><stop offset="1" stop-color="#112e33"/></linearGradient></defs><rect width="840" height="400" fill="#0b1d1d"/><rect width="840" height="400" fill="url(#mesh)"/><path d="M80 70 Q240 30 320 90 T600 70L760 130 690 280 460 360 225 310 75 230Z" fill="url(#land)" stroke="#386556" stroke-width="2"/><path d="M0 200Q200 115 310 190T620 180 840 250" stroke="#296f7e" stroke-width="16" fill="none" opacity=".32"/><path d="M195 265L458 173" stroke="#a7f761" stroke-width="3" stroke-dasharray="8 9" opacity=".7"/><path d="M458 173L655 121" stroke="#d7ae70" stroke-width="3" stroke-dasharray="4 9" opacity=".75"/><circle cx="195" cy="265" r="8" fill="#b6eb7c"/><circle cx="458" cy="173" r="11" fill="#a7f761"/><circle cx="655" cy="121" r="9" fill="#d7ae70"/><g font-family="Inter,Arial" font-weight="600" font-size="15" fill="#f0f9ee"><text x="125" y="296">VILA VERDE</text><text x="475" y="154">RIO CLARO</text><text x="672" y="110">PORTO AZUL</text></g><g font-family="monospace" font-size="10" fill="#8baba0"><text x="24" y="29">GEOGRAPHIC WORKSPACE / ROUTE ASSESSMENT</text><text x="24" y="382">AY-001 / ROUTE HYPOTHESIS</text></g></svg></div><div class="map-legend" id="mapLegend"></div></div><div class="panel-footer" data-t="routeWarning">Traços ilustram versões conflitantes. Não representam rotas criminosas comprovadas.</div></div></section>
 
@@ -80,7 +124,8 @@
   <script src="furniture-v10.js?v=1.0.4"></script>
   <script src="crowd-v9.js?v=1.0.3"></script>
   <script src="audio-v9.js?v=0.9.1"></script>
-  <script src="game.js?v=1.0.4"></script>
+  <script src="game.js?v=1.1.0"></script>
+  <script type="module" src="restricted-terminal.js?v=1.1.0"></script>
   <script>
     (function(){
       var ready=new Set(),failure=false;
