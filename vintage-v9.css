@@ -1,0 +1,7 @@
+/* AYLA 0.9 • discreet sound controls and conversations */
+.ambience-button{font-size:10px!important;letter-spacing:.04em;min-width:61px!important;color:#ead7b3!important;border-color:#b09c7450!important}
+.ambience-volume{width:68px;height:14px;accent-color:#c4aa79;vertical-align:middle;cursor:pointer}
+.npc-dialogue{position:absolute;z-index:7;left:50%;transform:translateX(-50%);bottom:16%;min-width:230px;max-width:min(520px,80vw);display:flex;align-items:flex-start;gap:12px;color:#e9e1d1;background:rgba(23,22,19,.84);backdrop-filter:blur(13px);border:1px solid rgba(207,181,133,.5);border-left:3px solid #c6aa75;padding:13px 18px;border-radius:8px;pointer-events:none;box-shadow:0 14px 50px #0008;font-size:12px;line-height:1.6}
+.npc-dialogue strong{color:#e5c48b;font-family:'Space Grotesk',sans-serif;letter-spacing:.07em}
+.npc-dialogue.hidden{display:none}
+@media(max-width:760px){.ambience-volume{display:none}.ambience-button{min-width:46px!important;padding:8px!important;font-size:9px!important}.npc-dialogue{bottom:19%;font-size:11px;gap:8px;min-width:0;width:85vw}}
