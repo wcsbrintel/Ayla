@@ -29,7 +29,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;if(ayla && navigation && Math.hypot(ayla.root.position.x-4.65,ayla.root.position.z+1.70)<.7)navigation.releaseSeat('seat-osint');navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
@@ -64,12 +64,6 @@
     cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
     if(ayla?.setInteraction)ayla.setInteraction(id);
     if(ayla?.setCinematic)ayla.setCinematic(id);
-    // Only move Ayla into the chair when the imported model has a valid
-    // seated animation. Otherwise retain the OSINT interaction from standing.
-    if(id==='terminal'&&ayla?.supportsSeatedAnimation?.()){
-      // The seat is beside the terminal desk and outside normal player collision.
-      seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
-    }
     if(id==='winston'){
       if(winston?.setDialogue)winston.setDialogue(true);
       if(winston?.setTalking)winston.setTalking(true);
@@ -102,9 +96,6 @@
     demoTimers.push(setTimeout(()=>{
       if(!demoActive)return;
       cinematicMode='terminal';
-      if(ayla?.supportsSeatedAnimation?.()){
-        seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
-      }
       if(ayla?.setInteraction)ayla.setInteraction('terminal');
       if(ayla?.setCinematic)ayla.setCinematic('terminal');
       cue.textContent={pt:'AYLA NO TERMINAL OSINT',en:'AYLA AT THE OSINT DESK',es:'AYLA EN EL TERMINAL OSINT'}[lang];
@@ -199,15 +190,7 @@
       bx('windowBottom',4.14,.08,.12,x+1.9,1.36,9.38,trim);
       bx('windowHalf',4.14,.04,.1,x+1.9,2.82,9.36,trim);
     }
-    function stool(x,z,a){
-      const root=new B.TransformNode('taskchair',scene);root.position.set(x,0,z);root.rotation.y=a||0;
-      cylinder('chairBase',.31,.08,0,.1,0,M.metal,root);
-      cylinder('chairPole',.065,.76,0,.48,0,M.frame,root);
-      bx('seat',.63,.13,.58,0,.85,0,M.jacket,root);
-      bx('backrest',.64,.76,.12,0,1.24,.27,M.jacket,root);
-      for(let i=0;i<5;i++){const theta=i*Math.PI*2/5;bx('caster',.22,.08,.09,Math.cos(theta)*.33,.045,Math.sin(theta)*.33,M.metal,root)}
-    }
-    stool(4.65,-1.7,0);stool(5.8,-1.6,0);stool(-.4,-4.65,Math.PI);stool(5.4,2.4,Math.PI);
+    // Chairs removed. Workstation interactions are standing-only.
     function terminalSlab(x,y,z,w,h,label){
       const p=bx('dataDisplay',w,h,.06,x,y,z,deep);
       const tex=new B.DynamicTexture('datastream-'+label,{width:1024,height:512},scene,true);
@@ -303,7 +286,7 @@
       proxy.metadata={interaction:p.id};p.proxy=proxy;
       interactables.push(p);});
     camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
-    // Capsule-based collision and pathfinding, covering chairs, desks, walls, props and both actors.
+    // Capsule-based collision and pathfinding for desks, walls, props and actors.
     if(!window.AYLANavigationV8||!window.AYLARoomV8)throw new Error('AYLA 0.8 environment was not loaded');
     const room=window.AYLARoomV8.install(B,scene);
     const historic=window.AYLAVintageV9.install(B,scene);
@@ -321,38 +304,8 @@
       const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);
       const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);
       const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,othersFor(ayla));
-      let approaching=false;
-      if(seatInProgress&&seatTarget){
-        if(!seatApproachStarted){
-          navigation.stop();
-          const plan=navigation.startSeat(ayla);
-          seatApproachStarted=true;
-          if(!plan.ok){
-            // Inaccessible chairs do not force a body through furniture.
-            navigation.cancelSeat();seatInProgress=false;seatTarget=null;
-            seatFinished=false;seatApproachStarted=false;
-          }
-        }
-        if(seatInProgress&&!seatFinished){
-          const result=navigation.walkToSeat(ayla,dt,othersFor(ayla));
-          if(result.failed){
-            navigation.cancelSeat();seatInProgress=false;seatTarget=null;
-            seatFinished=false;seatApproachStarted=false;
-          }else if(result.arrived){
-            seatFinished=true;
-          }else{
-            approaching=result.moving;
-          }
-        }
-        if(seatInProgress&&seatFinished){
-          if(navigation.seatOrientation(ayla,dt,seatTarget.rotY)){
-            // The path has already reached the chair. Never teleport to it.
-            if(ayla?.supportsSeatedAnimation?.()&&ayla?.setSeated)ayla.setSeated(true);
-            seatInProgress=false;seatTarget=null;seatApproachStarted=false;
-            seatFinished=false;
-          }
-        }
-      }
+      // No automatic chair approach or sit animation.
+      const approaching=false;
       if(moved.moving&&ayla?.setInteraction)ayla.setInteraction('idle');
       ayla.animate(dt,moved.moving||approaching,moved.running&&!approaching,performance.now());
       animateWinston(dt,performance.now());
