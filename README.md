@@ -2,7 +2,19 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
-## Alpha 0.7.1 — current features
+## Alpha 0.8 — current features
+
+- Movement is now controlled by acceleration/deceleration rather than instantaneous jumps. Character rotation eases into walking direction, and rigged animation clips are blended.
+- Circle-vs-AABB capsule-like collision against walls, desks, cabinets, chairs, racks, plants, the grounded backpack, and character-vs-character collision prevent movement through major solid objects.
+- Ayla approaches the OSINT workstation along a collision-aware path before sitting. The sitting pose is driven by the imported character skeleton where the required bones are available.
+- Winston uses collision-aware movement during his patrol and stops when another character blocks his path.
+- A field backpack sits beside the OSINT workstation on the floor.
+- Central floor rug uses the uploaded Observatory emblem; four wall posters contain wildlife reference artwork and anonymous investigative lead silhouettes.
+- The previously dark wall now hosts a **local rotating 3D Earth visualization** with land outlines, geographic graticules, sample markers and illustrative routes. This is a game display inspired by the Observatory, **not a live feed or a representation of confirmed criminal routes**.
+- Added walls, restrained flooring, timber accents, warm/neutral light sources, and more architectural details.
+- Original model, CSS, and narrative systems remain in the repository. All features use free code and resources.
+
+
 
 - **New primary gameplay characters:** textured, rigged, articulated full-body 3D avatars replacing visible procedural heroes, with animation clips for idle, walking, conversation and thought.
 - Ayla uses an adapted female Rocketbox character base; Winston uses an adapted male base with gray hair materials. Both need further likeness and outfit refinement against the approved character references.
@@ -91,3 +103,5 @@ Alpha 0.5: Node-based simulated Babylon.js rig tests passed for both characters 
 Alpha 0.6: JavaScript syntax checks and GitHub asset-link checks passed. Cinematic navigation and scene transitions still need full interactive browser visual QA across desktop and mobile. The mission remains a self-contained training scenario, not a case record describing a real investigation.
 
 Alpha 0.7.1: Rigged characters and restrained lighting are integrated in code, the model source is pinned to a public MIT-licensed GitHub commit, and scripts are cache-busted. JavaScript syntax and GitHub Pages deployment have been checked. In-game character rendering on desktop/mobile still requires visual verification: asset CDN availability, material appearance, glTF parser, and animation track names are not asserted as tested in a browser.
+
+Alpha 0.8 implementation note: movement/collision paths passed deterministic local Node tests. JavaScript was syntax checked. Full live-browser testing of imported skinned-asset seating, globe geometry and textures remains necessary; the headless environment could not load the required remote Babylon.js and avatar packages. Collisions cover walls, major furniture, props and characters with simplified radii/boxes rather than per-triangle physics.
