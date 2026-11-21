@@ -42,6 +42,7 @@
      return {x,z,distance:Math.hypot(x-pos.x,z-pos.z)};
    }
    const state={vx:0,vz:0};
+   let releasedSeat=null;
    function walk(actor,camera,hx,hz,enabled,running,dt,other){
      const wants=enabled&&!!(hx||hz);
      let dx=0,dz=0;
@@ -58,7 +59,11 @@
      state.vx+=(dx*speed-state.vx)*rate;
      state.vz+=(dz*speed-state.vz)*rate;
      if(!wants&&Math.hypot(state.vx,state.vz)<.035){state.vx=0;state.vz=0;}
-     const next=move(actor.root.position,state.vx*dt,state.vz*dt,.34,other,.0);
+     if(releasedSeat){
+       const seat=colliders.find(c=>c.tag===releasedSeat);
+       if(!seat||!circleBox(actor.root.position.x,actor.root.position.z,.34,seat))releasedSeat=null;
+     }
+     const next=move(actor.root.position,state.vx*dt,state.vz*dt,.34,other,releasedSeat);
      const moved=next.distance>Math.min(.006,.07*dt);
      if(!moved&&wants){state.vx*=.35;state.vz*=.35;}
      actor.root.position.x=next.x;actor.root.position.z=next.z;
@@ -131,7 +136,7 @@
      return false;
    }
    function seatOrientation(actor,dt,targetRot){actor.root.rotation.y+=angleDiff(targetRot,actor.root.rotation.y)*damp(8,dt);return Math.abs(angleDiff(targetRot,actor.root.rotation.y))<.045;}
-   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,seatOrientation,stop(){state.vx=state.vz=0;},reset(){seatPlan=null;state.vx=state.vz=0;}};
+   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,seatOrientation,releaseSeat(tag){releasedSeat=tag||'seat-osint';},stop(){state.vx=state.vz=0;},reset(){seatPlan=null;releasedSeat=null;state.vx=state.vz=0;}};
  }
  window.AYLANavigationV8={create};
 })();
