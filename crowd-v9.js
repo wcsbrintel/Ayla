@@ -14,36 +14,15 @@ function create(B,scene,nav,ayla,winston,canAct,language){
  ];
  function getOthers(actor){return [ayla,winston,...actors.map(x=>x.actor)].filter(a=>a&&a!==actor).map(a=>({x:a.root.position.x,z:a.root.position.z,r:.35}));}
  function nextPath(c,target){
-  // Never globally ignore a chair while planning a route; that formerly let
-  // the A* planner guide characters straight through desks and furniture.
-  const seat=nav.colliders.find(v=>String(v.tag||'').startsWith('seat-')
-    && Math.abs(v.x-target.x)<v.w*.5+.08
-    && Math.abs(v.z-target.z)<v.d*.5+.08);
-  let endpoint=target,finalStep=null;
-  if(seat){
-    // Plan to a point just outside the occupied chair, then approach that
-    // specific seat in the last step. Every other chair remains an obstacle.
-    const radius=Math.max(seat.w,seat.d)*.5+.57;
-    const choices=[
-      {x:seat.x,z:seat.z+radius},{x:seat.x+radius,z:seat.z},
-      {x:seat.x-radius,z:seat.z},{x:seat.x,z:seat.z-radius}
-    ].filter(p=>!nav.blocked(p.x,p.z,.39,null,null));
-    if(choices.length){
-      choices.sort((a,b)=>Math.hypot(a.x-c.actor.root.position.x,a.z-c.actor.root.position.z)
-        -Math.hypot(b.x-c.actor.root.position.x,b.z-c.actor.root.position.z));
-      endpoint=choices[0];finalStep=target;
-    }
-  }
-  const p=nav.path(c.actor.root.position,endpoint,null);
-  c.route=p?.length?p:[endpoint];
-  if(finalStep)c.route.push(finalStep);
-  c.index=0;c.stuck=0;c.prevX=c.actor.root.position.x;c.prevZ=c.actor.root.position.z;
+  // Plan around desks and cabinets. The room has no chairs.
+  const p=nav.path(c.actor.root.position,target,null);
+  c.route=p?.length?p:[target];c.index=0;c.stuck=0;
+  c.prevX=c.actor.root.position.x;c.prevZ=c.actor.root.position.z;
  }
  function start(){if(started)return;started=true;actors.push(...crowd.map(c=>{
    const actor=window.AYLACharacterFactory.create(B,scene,{name:c.id,x:c.x,z:c.z,asset:c.asset,scale:c.scale,role:c.role,isWinston:c.male});
    actor.root.rotation.y=c.male?-1.15:0;
    c.actor=actor;c.route=[];c.index=0;
-   // No pose is forced into a rig that lacks an authored sit clip.
    c.sitting=false;
    return c;
  }));
@@ -70,8 +49,8 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   if(!started){if(canAct())start();else return;}
   dt=Math.min(dt,.05);t+=dt;
   if(mode==='work'){
-    actors.forEach(c=>{c.actor.animate(dt,false,false,now);if(c.sitting)c.actor.setSeated?.(true);});
-    if(t>7.5){actors.forEach(c=>{c.actor.setSeated?.(false);c.sitting=false;});setMode('meet');}
+    actors.forEach(c=>c.actor.animate(dt,false,false,now));
+    if(t>7.5){setMode('meet');}
   }else if(mode==='meet'){
     let allArrived=true;
     for(const c of actors){const m=moveAlong(c,c.goal,dt);c.actor.animate(dt,m.moving,false,now);if(!m.arrived)allArrived=false;}
@@ -84,7 +63,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   }else if(mode==='return'){
     let all=true;
     for(const c of actors){const m=moveAlong(c,c.home,dt);c.actor.animate(dt,m.moving,false,now);if(!m.arrived)all=false;}
-    if(all||t>35){actors.forEach(c=>{c.actor.setSeated?.(false);c.sitting=false;});setMode('work');}
+    if(all||t>35){setMode('work');}
   }
  }
  return {update,actors,others:getOthers,ready:()=>started};
