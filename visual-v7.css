@@ -1,0 +1,8 @@
+/* AYLA 0.7 — visible model-loading indicator and restrained atmospheric UI */
+#avatarStatus{font:750 9px 'Space Grotesk',sans-serif;letter-spacing:.07em;white-space:nowrap;border:1px solid rgba(153,214,186,.28);padding:9px 12px;border-radius:7px;color:#b9cfbf;background:rgba(5,20,24,.65);align-self:center}
+#avatarStatus[data-status="ready"]{color:#d8f8c6;border-color:rgba(167,234,151,.43);background:rgba(51,87,67,.22)}
+#avatarStatus[data-status="failed"]{color:#f0cead;border-color:rgba(241,195,130,.5);background:rgba(99,67,37,.27)}
+#renderCanvas{filter:saturate(.87) contrast(1.07)}
+#renderCanvas.panel-active{filter:saturate(.95) brightness(1.02)}
+@media(max-width:980px){#avatarStatus{display:none}}
+@media(prefers-reduced-motion:reduce){#avatarStatus{transition:none}}
