@@ -96,7 +96,7 @@
   postItems.forEach(([n,type,j,z])=>{
     const back=bx('poster-frame-'+n,.10,2.88,2.23,-11.60,2.69,z,walnut);
     const p=B.MeshBuilder.CreatePlane('v8-poster-'+n,{width:2.05,height:2.65},scene);
-    p.position.set(-11.52,2.69,z);p.rotation.y=-Math.PI/2;
+    p.position.set(-11.52,2.69,z);p.rotation.y=Math.PI/2;
     const m=new B.StandardMaterial('poster-'+n,scene);m.diffuseTexture=posterTexture(n,type,j);m.emissiveColor=new B.Color3(.12,.16,.13);m.backFaceCulling=false;
     p.material=m;
   });
