@@ -12,10 +12,6 @@
      {x:-.4,z:-6.4,w:3.85,d:1.95,tag:'desk-report'},
      {x:5.4,z:4.0,w:3.45,d:1.85,tag:'desk-files'},
      {x:-6.0,z:5.6,w:3.55,d:1.75,tag:'desk-board'},
-     {x:4.65,z:-1.70,w:.68,d:.61,tag:'seat-osint'},
-     {x:5.80,z:-1.60,w:.68,d:.61,tag:'seat-osint-2'},
-     {x:-.4,z:-4.65,w:.68,d:.61,tag:'seat-report'},
-     {x:5.4,z:2.4,w:.68,d:.61,tag:'seat-files'},
      {x:-9.55,z:2.0,w:2.3,d:.88,tag:'cabinet'},
      {x:10.7,z:-6.7,w:1.15,d:1.02,tag:'rack-1'},
      {x:10.7,z:-5.3,w:1.15,d:1.02,tag:'rack-2'},
@@ -42,7 +38,6 @@
      return {x,z,distance:Math.hypot(x-pos.x,z-pos.z)};
    }
    const state={vx:0,vz:0};
-   let releasedSeat=null;
    function walk(actor,camera,hx,hz,enabled,running,dt,other){
      const wants=enabled&&!!(hx||hz);
      let dx=0,dz=0;
@@ -59,11 +54,7 @@
      state.vx+=(dx*speed-state.vx)*rate;
      state.vz+=(dz*speed-state.vz)*rate;
      if(!wants&&Math.hypot(state.vx,state.vz)<.035){state.vx=0;state.vz=0;}
-     if(releasedSeat){
-       const seat=colliders.find(c=>c.tag===releasedSeat);
-       if(!seat||!circleBox(actor.root.position.x,actor.root.position.z,.34,seat))releasedSeat=null;
-     }
-     const next=move(actor.root.position,state.vx*dt,state.vz*dt,.34,other,releasedSeat);
+     const next=move(actor.root.position,state.vx*dt,state.vz*dt,.34,other,null);
      const moved=next.distance>Math.min(.006,.07*dt);
      if(!moved&&wants){state.vx*=.35;state.vz*=.35;}
      actor.root.position.x=next.x;actor.root.position.z=next.z;
@@ -73,37 +64,13 @@
      }
      return {moving:moved&&Math.hypot(state.vx,state.vz)>.06,running:running&&moved,speed:Math.hypot(state.vx,state.vz)};
    }
-   // Each NPC can leave the chair it originally occupies. Once it is clear,
-   // that exception expires; passing beside a chair can never grant permission
-   // to walk through it. Return-to-seat access is limited to the final step.
-   const npcDepartureSeat=new WeakMap();
    function moveNPC(actor,target,dt,other){
      const at=actor.root.position;
      let dx=target.x-at.x,dz=target.z-at.z;
      const len=Math.hypot(dx,dz);
      if(len<.14)return {arrived:true,moving:false};
      dx/=len;dz/=len;
-     if(!npcDepartureSeat.has(actor)){
-       const starting=colliders.find(c=>String(c.tag||'').startsWith('seat-')
-         && circleBox(at.x,at.z,.37,c));
-       npcDepartureSeat.set(actor,starting?.tag||null);
-     }
-     let exempt=npcDepartureSeat.get(actor);
-     if(exempt){
-       const seat=colliders.find(c=>c.tag===exempt);
-       if(!seat||!circleBox(at.x,at.z,.37,seat)){
-         exempt=null;npcDepartureSeat.set(actor,null);
-       }
-     }
-     // A sitting character may approach its *own seat* only within the last
-     // 0.9 m. Other desks, shelves, cabinets and all other chairs stay solid.
-     if(!exempt&&len<.9){
-       const destination=colliders.find(c=>String(c.tag||'').startsWith('seat-')
-         && circleBox(target.x,target.z,.06,c));
-       if(destination)exempt=destination.tag;
-     }
-     const a=move(at,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),
-       .39,other,exempt);
+     const a=move(at,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),.39,other,null);
      const moving=a.distance>.006;
      at.x=a.x;at.z=a.z;
      if(moving){
@@ -146,72 +113,7 @@
      }smooth.push(arr[j]);cursor=arr[j];k=j+1;}
      return smooth;
    }
-   // Safe, deliberate chair approach. The regular navigation mesh treats every
-   // chair as solid. Only the final 0.9m into the selected chair may ignore
-   // that one chair's collider; desks and all other furniture stay solid.
-   let seatPlan=null;
-   function startSeat(actor){
-     const center={x:4.65,z:-1.70},seatTag='seat-osint';
-     const approaches=[
-       {x:4.65,z:-.78},   // rear of chair (away from workstation)
-       {x:3.76,z:-1.70}, // side access if rear approach is blocked
-       {x:3.77,z:-1.05}
-     ];
-     let best=null;
-     for(const a of approaches){
-       if(blocked(a.x,a.z,.34,null,null))continue;
-       const steps=path(actor.root.position,a,null);
-       if(!steps.length)continue;
-       // The last short motion toward the chair cannot intersect a desk.
-       const distance=Math.hypot(center.x-a.x,center.z-a.z);
-       if(distance>1.03)continue;
-       let clear=true;
-       for(let i=1;i<=Math.ceil(distance/.08);i++){
-         const f=i/Math.ceil(distance/.08),x=a.x+(center.x-a.x)*f,z=a.z+(center.z-a.z)*f;
-         if(blocked(x,z,.30,null,seatTag)){clear=false;break;}
-       }
-       if(!clear)continue;
-       const cost=steps.reduce((v,p,i)=>v+Math.hypot(p.x-(i?steps[i-1].x:actor.root.position.x),p.z-(i?steps[i-1].z:actor.root.position.z)),0);
-       if(!best||cost<best.cost)best={steps,approach:a,cost};
-     }
-     seatPlan=best?{points:best.steps,index:0,phase:'approach',elapsed:0,stuck:0,seat:center,seatTag}:null;
-     return {ok:!!seatPlan,reason:seatPlan?'':'no-clear-route'};
-   }
-   function walkToSeat(actor,dt,other){
-     if(!seatPlan)return {arrived:false,failed:true,reason:'no-plan',moving:false};
-     const p=seatPlan;dt=Math.min(.07,Math.max(0,dt));p.elapsed+=dt;
-     if(p.elapsed>15){seatPlan=null;return {arrived:false,failed:true,reason:'timeout',moving:false};}
-     let target=p.phase==='approach'?p.points[p.index]:p.seat;
-     if(!target){
-       seatPlan=null;return {arrived:false,failed:true,reason:'missing-target',moving:false};
-     }
-     const x=target.x-actor.root.position.x,z=target.z-actor.root.position.z;
-     const dist=Math.hypot(x,z);
-     if(dist<.075){
-       if(p.phase==='approach'){
-         p.index++;
-         if(p.index>=p.points.length)p.phase='settle';
-         return {arrived:false,failed:false,moving:false};
-       }
-       seatPlan=null;return {arrived:true,failed:false,moving:false};
-     }
-     const step=Math.min(dist,dt*(p.phase==='settle'?.95:1.75));
-     const ignore=p.phase==='settle'?p.seatTag:null;
-     // No arbitrary position assignment: all movement is checked against
-     // desk footprints, other furniture, and current NPC positions.
-     const v=move(actor.root.position,x/dist*step,z/dist*step,.30,other,ignore);
-     actor.root.position.x=v.x;actor.root.position.z=v.z;
-     if(v.distance<.002){p.stuck+=dt;}else p.stuck=0;
-     if(p.stuck>2.0){seatPlan=null;return {arrived:false,failed:true,reason:'blocked',moving:false};}
-     if(v.distance>.002){
-       const yaw=Math.atan2(-x,-z),old=actor.root.rotation.y;
-       actor.root.rotation.y=old+angleDiff(yaw,old)*damp(8,dt);
-     }
-     return {arrived:false,failed:false,moving:v.distance>.002};
-   }
-   function cancelSeat(){seatPlan=null;state.vx=state.vz=0;}
-   function seatOrientation(actor,dt,targetRot){actor.root.rotation.y+=angleDiff(targetRot,actor.root.rotation.y)*damp(8,dt);return Math.abs(angleDiff(targetRot,actor.root.rotation.y))<.045;}
-   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,cancelSeat,seatOrientation,releaseSeat(tag){releasedSeat=tag||'seat-osint';},stop(){state.vx=state.vz=0;},reset(){seatPlan=null;releasedSeat=null;state.vx=state.vz=0;}};
+   return {colliders,blocked,move,walk,moveNPC,path,stop(){state.vx=state.vz=0;},reset(){state.vx=state.vz=0;}};
  }
  window.AYLANavigationV8={create};
 })();
