@@ -1,7 +1,9 @@
 /* AYLA 0.9 — opt-in procedural office ambience. No recordings, no paid APIs. */
 (function(){'use strict';
 let ctx,master,noiseBuf,interval=null,playing=false,volume=.26,murmurs=[],timer=0;
-const label={pt:'Som ambiente',en:'Ambient sound',es:'Sonido ambiental'};
+const label={pt:['Som ambiente','LIG.','DESL.','Volume'],en:['Ambient sound','ON','OFF','Volume'],es:['Sonido ambiental','ACT.','DES.','Volumen']};
+function local(){const code=(document.documentElement.lang||'en').slice(0,2);return label[code]||label.en;}
+function updateButton(){let text=local();button.textContent='♫ '+(playing?text[1]:text[2]);button.title=text[0];button.setAttribute('aria-label',text[0]);slider.setAttribute('aria-label',text[3]);}
 const button=document.createElement('button');button.id='ambienceButton';button.className='icon-button ambience-button';button.setAttribute('aria-label','Toggle ambient sound');button.title='Ambient sound';button.textContent='♫ OFF';
 const slider=document.createElement('input');slider.id='ambienceVolume';slider.type='range';slider.min='0';slider.max='100';slider.value='26';slider.setAttribute('aria-label','Volume');slider.title='Sound volume';slider.className='ambience-volume';
 const row=document.querySelector('#topbar .header-actions');if(row){row.prepend(slider);row.prepend(button);}
@@ -12,8 +14,9 @@ function init(){if(ctx)return;const Audio=window.AudioContext||window.webkitAudi
 }
 function click(){if(!playing||!ctx)return;let t=ctx.currentTime;const src=ctx.createBufferSource();src.buffer=noiseBuf;const filter=ctx.createBiquadFilter();filter.type='highpass';filter.frequency.value=950;const amp=ctx.createGain();amp.gain.setValueAtTime(0,t);amp.gain.linearRampToValueAtTime(.021+Math.random()*.016,t+.001);amp.gain.exponentialRampToValueAtTime(.00015,t+.035+Math.random()*.025);src.connect(filter);filter.connect(amp);amp.connect(master);src.start(t,Math.random()*.95,.075);src.stop(t+.08);}
 function tick(){if(!playing)return;const count=Math.random()<.38?2:1;for(let i=0;i<count;i++)click();}
-function start(){init();if(!ctx){button.textContent='♫ N/A';return;}ctx.resume();playing=true;button.textContent='♫ ON';button.setAttribute('aria-pressed','true');if(interval)clearInterval(interval);interval=setInterval(tick,185);}
-function stop(){playing=false;button.textContent='♫ OFF';button.setAttribute('aria-pressed','false');if(interval)clearInterval(interval);interval=null;if(ctx)ctx.suspend();}
+function start(){init();if(!ctx){button.textContent='♫ N/A';return;}ctx.resume();playing=true;updateButton();button.setAttribute('aria-pressed','true');if(interval)clearInterval(interval);interval=setInterval(tick,185);}
+function stop(){playing=false;updateButton();button.setAttribute('aria-pressed','false');if(interval)clearInterval(interval);interval=null;if(ctx)ctx.suspend();}
 button.onclick=()=>playing?stop():start();button.setAttribute('aria-pressed','false');slider.oninput=()=>{volume=Number(slider.value)/100;if(master)master.gain.setTargetAtTime(volume,ctx.currentTime,.05);};
+new MutationObserver(updateButton).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});updateButton();
 window.AYLAAudioV9={start,stop,enabled:()=>playing};
 })();
