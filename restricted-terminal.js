@@ -19,10 +19,17 @@ function status(value){setText("restrictedStatus",value)}
 // authenticated free-roaming experience, including on browser refresh.
 let lastDispatched=null;
 function notifyGame(){
+ // Reflect account identity separately from approval, including accounts
+ // whose email is unverified or whose administrator approval is pending.
  const current=!!approved&&!!user;
- if(lastDispatched===current)return;
- lastDispatched=current;
- window.dispatchEvent(new CustomEvent("ayla:auth-state",{detail:{approved:current}}));
+ const state=!user?"guest":current?"approved":"pending";
+ const identity=user?.email||"";
+ const signature=state+"|"+identity;
+ if(lastDispatched===signature)return;
+ lastDispatched=signature;
+ window.dispatchEvent(new CustomEvent("ayla:auth-state",{
+  detail:{approved:current,signedIn:!!user,state,email:identity}
+ }));
 }
 function views(which){for(const v of ["Login","Waiting","Approved"])show("restricted"+v,which===v)}
 function stopListener(){if(stopLive){stopLive();stopLive=null}}
@@ -102,6 +109,7 @@ function authorized(){
 async function check(u){
  const token=++seq;user=u;approved=false;clearChat();
  if(!u){loginView();return}
+ notifyGame();
  views("Waiting");status(tr().loading);
  try{
   await reload(u);await u.getIdToken(true);
@@ -142,7 +150,8 @@ window.AYLARestricted={
  close(){visible=false;stopListener()},
  setLanguage(l){localize(l)},
  authorized:()=>!!approved&&!!user,
- isOpen:()=>visible
+ isOpen:()=>visible,
+ signOut:()=>logout()
 };
 $("restrictedAuthForm")?.addEventListener("submit",async event=>{
  event.preventDefault();if(!auth||busy)return;
@@ -157,7 +166,21 @@ $("restrictedResetButton")?.addEventListener("click",async()=>{
  try{await sendPasswordResetEmail(auth,input.value.trim())}catch(e){console.warn("[AYLA] Reset",e?.code)}
  status(tr().resetSent);
 });
-async function logout(){seq++;clearChat();if(auth)await signOut(auth).catch(()=>{});loginView()}
+async function logout(){
+ if(!auth){loginView();return false}
+ const current=auth.currentUser;
+ if(!current){loginView();return true}
+ try{
+  // Never report success or unlock the public mission until Firebase
+  // acknowledges the sign-out, not merely when its button is clicked.
+  await signOut(auth);
+  seq++;loginView();return true;
+ }catch(err){
+  console.warn("[AYLA] Sign-out failed",err?.code||err?.message);
+  status(tr().failure);
+  return false;
+ }
+}
 $("restrictedLogout")?.addEventListener("click",logout);
 $("restrictedWaitingLogout")?.addEventListener("click",logout);
 $("restrictedRefresh")?.addEventListener("click",()=>auth?.currentUser&&check(auth.currentUser));
