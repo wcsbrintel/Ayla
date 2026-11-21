@@ -113,7 +113,8 @@
             const kind=(m.name+' '+(m.parent?.name||'')).toLowerCase();
             if(name==='Winston' && /hair|brow/.test(kind) && m.material.albedoColor){
               m.material.albedoColor=B.Color3.FromHexString('#a1a3a0');
-              // Muted expedition attire: retain fabric albedo/normal textures and
+            }
+            // Muted expedition attire: retain fabric albedo/normal textures and
             // tint *clothing only*, never skin or eyes.
             if(m.material.albedoColor && /outfit|top_shirt|top_tee|trouser|jacket|shirt/i.test(kind) && !/skin/i.test(kind)){
               const tint = name==='Ayla' ? '#a0a990' : name==='Winston' ? '#a8a99a' : /female/i.test(cfg.role||'') ? '#bdafa0' : '#a2a9ac';
