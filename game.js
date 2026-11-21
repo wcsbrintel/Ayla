@@ -19,7 +19,7 @@
   try { const saved=localStorage.getItem('ayla-language'); if(ui[saved])lang=saved; } catch(e){}
   let introIndex=0,dialogIndex=0,playerActive=false,mentorMet=false,mapSeen=false,boardSeen=false,done=false;
   let sourcesReviewed=new Set(),selectedSource=-1,activePanel=null,nearby=null,toastTimeout=null;
-  let cinematicPending=false,cinematicTimer=null,cinematicMode='idle',patrolPaused=false,seatTarget=null;
+  let cinematicPending=false,cinematicTimer=null,cinematicMode='idle',patrolPaused=false,seatTarget=null,demoActive=false,demoTimers=[];
   const sceneCue={pt:{winston:'CONVERSA COM WINSTON',terminal:'ACESSANDO TERMINAL OSINT',map:'ANALISANDO ROTAS',board:'EXAMINANDO EVIDÊNCIAS',report:'PREPARANDO DOSSIÊ'},en:{winston:'BRIEFING WITH WINSTON',terminal:'ACCESSING OSINT TERMINAL',map:'ROUTE INTELLIGENCE',board:'REVIEWING THE EVIDENCE',report:'PREPARING CASE DOSSIER'},es:{winston:'REUNIÓN CON WINSTON',terminal:'ACCEDIENDO A TERMINAL OSINT',map:'ANÁLISIS DE RUTAS',board:'EXAMINANDO EVIDENCIAS',report:'PREPARANDO EXPEDIENTE'}};
   const stateKey='ayla-alpha-v01';
   const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen'];
@@ -27,14 +27,14 @@
   function safe(str){return String(str).replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
-  function enterPanel(id){activePanel=id;$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){clearTimeout(cinematicTimer);cinematicPending=false;cinematicMode='idle';seatTarget=null;$('cinematicCue').classList.add('hidden');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
+  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
   function restore(){try{const data=JSON.parse(localStorage.getItem(stateKey)||'null');if(data){mentorMet=!!data.mentorMet;mapSeen=!!data.mapSeen;boardSeen=!!data.boardSeen;done=!!data.done;sourcesReviewed=new Set((data.sources||[]).filter(n=>n>=0&&n<4));}}catch(e){}}
   function resetMission(){mentorMet=mapSeen=boardSeen=done=false;sourcesReviewed.clear();selectedSource=-1;save();updateHud();}
-  function localize(){document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=introIndex>=3?t('enter'):t('next');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=introIndex>=3?t('enter'):t('next');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');}
   function renderIntro(){const frame=t('storyFrames')[introIndex];$('introHeading').textContent=frame[0];$('introBody').textContent=frame[1];$('artLabel').textContent=frame[2];$('introCounter').textContent=String(introIndex+1).padStart(2,'0')+' / 04';$('introDots').innerHTML=[0,1,2,3].map(i=>'<i class="'+(i===introIndex?'active':'')+'"></i>').join('');$('introArt').style.backgroundImage='linear-gradient(to bottom, transparent, rgba(2,15,12,.26)), url("assets/intro-'+(introIndex+1)+'.svg")';$('nextIntroLabel').textContent=introIndex===3?t('enter'):t('next');}
   function intro(){show('introScreen');introIndex=0;renderIntro();}
@@ -72,8 +72,8 @@
       if(winston?.setTalking)winston.setTalking(true);
     }
     $('hintBox').classList.add('hidden');
-    const open=()=>{cinematicPending=false;cue.classList.add('hidden');if(id==='terminal'&&ayla?.setSeated)ayla.setSeated(true);if(!playerActive)return;switch(id){case 'winston':showDialog();break;case 'terminal':showSources();break;case 'map':showMap();break;case 'board':showBoard();break;case 'report':showReport();break;}};
-    cinematicTimer=setTimeout(open,900);
+    const open=()=>{cinematicPending=false;cue.classList.add('hidden');if(!playerActive)return;switch(id){case 'winston':showDialog();break;case 'terminal':showSources();break;case 'map':showMap();break;case 'board':showBoard();break;case 'report':showReport();break;}};
+    cinematicTimer=setTimeout(open,3000);
   }
 
   $('langButton').onclick=()=> $('langDrop').classList.toggle('hidden');
@@ -89,6 +89,27 @@
   $('restartButton').onclick=()=>{resetMission();if(ayla)ayla.root.position.set(0,0,1.2);launch();};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closePanels);
   $('mobileInteract').onclick=()=>{if(nearby)interact(nearby.id);};
+  // A visible in-game demonstration for verifying the character actions and camera.
+  function runCinematicDemo(){
+    if(!playerActive||activePanel||cinematicPending||demoActive)return;
+    demoActive=true;cinematicPending=true;cinematicMode='winston';patrolPaused=false;
+    const cue=$('cinematicCue');
+    cue.textContent={pt:'WINSTON EM PATRULHA',en:'WINSTON ON PATROL',es:'WINSTON EN PATRULLA'}[lang];
+    cue.classList.remove('hidden');$('hintBox').classList.add('hidden');
+    demoTimers.push(setTimeout(()=>{
+      if(!demoActive)return;
+      cinematicMode='terminal';seatTarget={x:4.65,z:-1.70};
+      if(ayla?.setInteraction)ayla.setInteraction('terminal');
+      if(ayla?.setCinematic)ayla.setCinematic('terminal');
+      cue.textContent={pt:'AYLA NO TERMINAL OSINT',en:'AYLA AT THE OSINT DESK',es:'AYLA EN EL TERMINAL OSINT'}[lang];
+    },3200));
+    demoTimers.push(setTimeout(()=>{
+      if(!demoActive)return;
+      demoActive=false;cinematicPending=false;cue.classList.add('hidden');
+      cinematicMode='terminal';showSources();
+    },7100));
+  }
+  $('demoButton').onclick=runCinematicDemo;
   // Player-controlled inspection camera: optional close view, unchanged collision logic.
   let closeCamera=false;
   function toggleCamera(){
@@ -226,8 +247,8 @@
     }
     // Glowing interactive pylons above existing interaction rings, without new collision zones.
     function labelBeacon(x,z,txt){
-      cylinder('interactionPillar',.08,.77,x,.62,z,cyan);
-      ball('interactionLight',.14,x,1.1,z,M.green);
+      const pillar=cylinder('interactionPillar',.08,.77,x,.62,z,cyan);
+      const bulb=ball('interactionLight',.14,x,1.1,z,M.green);
       const plane=B.MeshBuilder.CreatePlane('interactionLabel',{width:2.1,height:.48},scene);
       plane.position.set(x,1.78,z);
       plane.billboardMode=B.Mesh.BILLBOARDMODE_ALL;
@@ -236,8 +257,9 @@
       c.strokeStyle='#9acc8c';c.lineWidth=6;c.strokeRect(5,5,502,118);
       c.fillStyle='#deffbd';c.font='bold 37px Arial';c.textAlign='center';c.fillText(txt,256,78);tex.update();
       const labelMat=new B.StandardMaterial('labelMaterial '+txt,scene);labelMat.diffuseTexture=tex;labelMat.emissiveColor=new B.Color3(.55,.62,.56);labelMat.backFaceCulling=false;plane.material=labelMat;
+      return {pillar,bulb,plane};
     }
-    labelBeacon(-5.7,-2.3,'WINSTON');
+    const winstonBeacon=labelBeacon(-5.7,-2.3,'WINSTON');
     labelBeacon(4.7,-3.3,'OSINT');
     labelBeacon(2.2,7.3,'GEOINT');
     labelBeacon(-6,7.3,'EVIDENCE');
@@ -256,12 +278,12 @@
     const patrol=[[-5.7,-2.3],[-7.6,-2.3],[-8.6,-.6],[-7.4,1.0],[-5.8,.7]];
     let patrolIndex=1,patrolRest=0;
     function animateWinston(dt,now){
-      const pause=patrolPaused||activePanel==='dialogScreen'||cinematicMode==='winston'||!playerActive;
+      const pause=patrolPaused||activePanel==='dialogScreen'||(cinematicMode==='winston'&&!demoActive)||!playerActive;
       if(pause){winston.animate(dt,false,false,now);return;}
       if(patrolRest>0){patrolRest-=dt;winston.animate(dt,false,false,now);return;}
       const [tx,tz]=patrol[patrolIndex],dx=tx-winston.root.position.x,dz=tz-winston.root.position.z,d=Math.hypot(dx,dz);
       if(d<.13){patrolIndex=(patrolIndex+1)%patrol.length;patrolRest=1.2;winston.animate(dt,false,false,now);return;}
-      const step=Math.min(d,dt*.78),vx=dx/d,vz=dz/d;
+      const step=Math.min(d,dt*1.08),vx=dx/d,vz=dz/d;
       winston.root.position.x+=vx*step;winston.root.position.z+=vz*step;
       const yaw=Math.atan2(-vx,-vz);
       let diff=((yaw-winston.root.rotation.y+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
@@ -274,8 +296,8 @@
     function collision(x,z){if(x<-10.6||x>10.6||z<-8.2||z>8.25)return true;return obstacles.some(o=>Math.abs(x-o.x)<o.w*.5+.26&&Math.abs(z-o.z)<o.d*.5+.26);}
     scene.onPointerObservable.add((info)=>{if(info.type!==B.PointerEventTypes.POINTERPICK||!playerActive||activePanel)return;const mesh=info.pickInfo&&info.pickInfo.pickedMesh;const id=mesh?.metadata?.interaction;if(id)interact(id);});
     engine.runRenderLoop(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.06);const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen');const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);const moving=allow&&(hx!==0||hz!==0);if(moving){let fwd=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);if(fwd.lengthSquared()<.01)fwd=new B.Vector3(0,0,1);fwd.normalize();const right=B.Vector3.Cross(B.Vector3.Up(),fwd).normalize();const v=fwd.scale(hz).add(right.scale(hx)).normalize();const speed=(held['shift']?5:3.1)*dt;let tx=ayla.root.position.x+v.x*speed,tz=ayla.root.position.z+v.z*speed;if(!collision(tx,ayla.root.position.z))ayla.root.position.x=tx;if(!collision(ayla.root.position.x,tz))ayla.root.position.z=tz;ayla.root.rotation.y=Math.atan2(-v.x,-v.z);}const tick=performance.now()*.009;
-      if(seatTarget && ayla){const kSeat=Math.min(1,dt*5.5);ayla.root.position.x+=(seatTarget.x-ayla.root.position.x)*kSeat;ayla.root.position.z+=(seatTarget.z-ayla.root.position.z)*kSeat;ayla.root.rotation.y*=1-kSeat;if(Math.hypot(seatTarget.x-ayla.root.position.x,seatTarget.z-ayla.root.position.z)<.065){seatTarget=null;}}
-      if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving,!!held['shift'],performance.now());animateWinston(dt,performance.now());
+      if(seatTarget && ayla){const kSeat=Math.min(1,dt*5.5);ayla.root.position.x+=(seatTarget.x-ayla.root.position.x)*kSeat;ayla.root.position.z+=(seatTarget.z-ayla.root.position.z)*kSeat;ayla.root.rotation.y*=1-kSeat;if(Math.hypot(seatTarget.x-ayla.root.position.x,seatTarget.z-ayla.root.position.z)<.065){seatTarget=null;if(cinematicMode==='terminal'&&ayla?.setSeated)ayla.setSeated(true);}}
+      if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving||!!seatTarget,!!held['shift']&&moving,performance.now());animateWinston(dt,performance.now());
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
       const shot=(cinematicPending||activePanel)&&shots[cinematicMode];
@@ -285,7 +307,7 @@
       if(shot){camera.radius+=(shot.radius-camera.radius)*k;camera.beta+=(shot.beta-camera.beta)*k;let da=((shot.alpha-camera.alpha+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;camera.alpha+=da*k;}
       if(!shot&&cinematicMode==='idle'){camera.radius+=((closeCamera?5.3:9.8)-camera.radius)*Math.min(1,dt*2.4);camera.beta+=(1.15-camera.beta)*Math.min(1,dt*1.8);}
       const winstonMarker=interactables.find(p=>p.id==='winston');
-      if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;}
+      if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
       winston.root.position.y=.015*Math.sin(performance.now()*.002);interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
   }
