@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="cinematics-fix.css?v=0.7.0">
   <link rel="stylesheet" href="visual-v7.css?v=0.7.1">
   <link rel="stylesheet" href="vintage-v9.css?v=0.9.1">
-  <link rel="stylesheet" href="restricted-terminal.css?v=1.1.0">
+  <link rel="stylesheet" href="restricted-terminal.css?v=1.2.0">
 </head>
 <body>
   <div id="app">
@@ -26,10 +26,10 @@
     <header id="topbar" class="hidden">
       <div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span><small>3D // INTELLIGENCE EXPERIENCE</small></div>
       <div class="header-status"><i class="live-dot"></i><span data-t="hudLocation">CENTRAL DE INTELIGÊNCIA</span><span class="sep">/</span><span id="missionCode">AY-001</span></div>
-      <div class="header-actions"><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
+      <div class="header-actions"><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button hidden" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
     </header>
 
-    <aside id="missionHud" class="hud-panel hidden"><div class="eyebrow" data-t="hudMission">MISSÃO EM ANDAMENTO</div><div class="hud-title" data-t="missionTitle">O Manifesto Inconsistente</div><div class="hud-caption" data-t="missionSubtitle">Identifique o que as evidências realmente demonstram.</div><div class="progress-bar"><div id="progressFill"></div></div><div id="progressText">0 / 4</div><div class="hud-objective" id="objectiveText">Converse com Winston.</div></aside>
+    <aside id="missionHud" class="hud-panel hidden"><div class="eyebrow" data-t="hudMission">CENTRAL DE INTELIGÊNCIA</div><div class="hud-title" data-t="missionTitle">O Manifesto Inconsistente</div><div class="hud-caption" data-t="missionSubtitle">Identifique o que as evidências realmente demonstram.</div><div class="progress-bar"><div id="progressFill"></div></div><div id="progressText">0 / 4</div><div class="hud-objective" id="objectiveText">Converse com Winston.</div></aside>
     <aside id="hintBox" class="hint-box hidden"><div class="key">E</div><div><span id="hintTitle">INTERAGIR</span><small id="hintSub">Pressione E ou clique</small></div></aside>
     <div id="compass" class="compass hidden"><span>W</span><i>◉</i><span>T</span></div>
     <div id="toast" class="toast hidden" role="status"></div>
@@ -40,8 +40,8 @@
       <div class="start-backdrop"><div class="start-orb"></div><div class="grid-horizon"></div></div>
       <div class="character-keyart" aria-hidden="true"></div>
       <img class="title-visual" alt="" aria-hidden="true" src="assets/title-visual.svg">
-      <aside class="case-preview" aria-hidden="true"><div class="cv-code">AYLA / MISSION CONTROL</div><div class="cv-title">CASE FILE AY-001</div><div class="cv-row"><span>OSINT INTELLIGENCE</span><strong>ACTIVE</strong></div><div class="cv-row"><span>WORKSPACE</span><strong>OPERATIONS CENTER</strong></div><div class="cv-row"><span>OBJECTIVE</span><strong>VERIFY THE EVIDENCE</strong></div><div class="cv-footer"><b></b> INVESTIGATION IN PROGRESS</div></aside>
-      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / <span data-t="missionCount">MISSÃO DEMONSTRATIVA</span></span><span>PT • EN • ES</span><span>AYLA — ALPHA 1.1.0 / MISSION 01</span></div></div>
+      <aside class="case-preview" aria-hidden="true"><div class="cv-code">AYLA / COMMUNICATIONS HUB</div><div class="cv-title">INTELLIGENCE HEADQUARTERS</div><div class="cv-row"><span>ACCESS</span><strong>FIREBASE</strong></div><div class="cv-row"><span>CHANNEL</span><strong>MEMBERS ONLY</strong></div><div class="cv-row"><span>DISPLAY</span><strong>GEOGRAPHIC GLOBE</strong></div><div class="cv-footer"><b></b> AUTHORIZED COMMUNICATIONS</div></aside>
+      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button hidden" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>ACCESS / MEMBERS ONLY</span><span>PT • EN • ES</span><span>AYLA — PRIVATE COMMS / 1.2</span></div></div>
       <div class="start-language"><span data-t="language">IDIOMA</span><button data-language="pt">PT</button><button data-language="en">EN</button><button data-language="es">ES</button></div>
     </section>
 
@@ -56,15 +56,19 @@
     <section id="terminalScreen" class="modal-backdrop panel-backdrop hidden" aria-labelledby="terminalTitle"><div class="workstation panel"><div class="panel-top"><div><div class="eyebrow">AYLA / OSINT DESK</div><h2 id="terminalTitle" data-t="terminal">TERMINAL DE FONTES ABERTAS</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div><div class="terminal-layout"><nav class="terminal-list" id="sourceList"></nav><article class="terminal-document" id="sourceDetail"><div class="empty-state" data-t="selectSource">SELECIONE UMA FONTE PARA ANALISAR</div></article></div><div class="panel-footer"><span data-t="terminalFoot">Análise de fontes · verifique a origem e a confiabilidade de cada registro.</span><span id="sourceCount">0/4</span></div></div></section>
 
     <section id="restrictedScreen" class="modal-backdrop panel-backdrop hidden" aria-labelledby="restrictedHeading">
+      <div class="restricted-map-caption" aria-hidden="true"><span id="restrictedMapTitle">Mapa da central</span><small id="restrictedMapSubtitle">Globo geográfico em tempo real</small></div>
       <div class="panel restricted-panel">
-        <div class="panel-top"><div><div class="eyebrow">AYLA / FIREBASE AUTHENTICATION</div><h2 id="restrictedHeading">Área restrita</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div>
+        <div class="panel-top">
+          <div><div class="eyebrow">AYLA / PRIVATE COMMUNICATIONS</div><h2 id="restrictedHeading">Área restrita</h2></div>
+          <button class="close-panel" data-close aria-label="Fechar">✕</button>
+        </div>
         <div class="restricted-content">
-          <p id="restrictedIntro">Use a mesma conta Firebase do Observatório. O acesso exige e-mail verificado e aprovação administrativa.</p>
+          <p id="restrictedIntro">Comunicação exclusiva entre usuários autorizados do Observatório.</p>
           <p id="restrictedStatus" class="restricted-status" role="status" aria-live="polite"></p>
           <section id="restrictedLogin" class="restricted-auth-area">
             <form id="restrictedAuthForm" autocomplete="on">
               <label id="restrictedEmailLabel" for="restrictedEmail">E-mail</label>
-              <input id="restrictedEmail" type="email" autocomplete="email" required placeholder="usuario@instituicao.org">
+              <input id="restrictedEmail" type="email" autocomplete="email" required>
               <label id="restrictedPasswordLabel" for="restrictedPassword">Senha</label>
               <input id="restrictedPassword" type="password" autocomplete="current-password" required>
               <button class="primary-button" id="restrictedLoginButton" type="submit">Entrar</button>
@@ -73,27 +77,33 @@
           </section>
           <section id="restrictedWaiting" class="restricted-auth-area hidden">
             <h3 id="restrictedWaitingTitle">Verificando acesso</h3>
-            <div class="restricted-actions"><button type="button" id="restrictedRefresh" class="primary-button">Verificar novamente</button><button id="restrictedResend" class="restricted-link" type="button">Reenviar confirmação</button></div>
-            <button id="restrictedWaitingLogout" type="button" class="restricted-link">Sair da conta</button>
+            <div class="restricted-actions">
+              <button type="button" id="restrictedRefresh" class="primary-button">Verificar novamente</button>
+              <button id="restrictedResend" type="button" class="restricted-link">Reenviar verificação</button>
+            </div>
+            <button id="restrictedWaitingLogout" class="restricted-link" type="button">Sair da conta</button>
           </section>
           <section id="restrictedApproved" class="restricted-auth-area hidden">
-            <span class="restricted-success">◆ / VERIFIED ACCESS</span>
-            <h3 id="restrictedApprovedTitle">Acesso autorizado</h3>
-            <p id="restrictedApprovedDesc"></p>
-            <div class="restricted-account" id="restrictedAccount"></div>
-            <button class="primary-button" id="restrictedStartExercise" type="button">Começar</button>
+            <h3 id="restrictedApprovedTitle">Conexão autenticada</h3>
+            <span id="restrictedAccount" class="restricted-account"></span>
           </section>
-          <section id="restrictedTraining" class="restricted-auth-area hidden">
-            <h3 id="restrictedExerciseHeading">Treinamento avançado</h3>
-            <p id="restrictedExerciseIntro"></p>
-            <div id="restrictedStep" class="eyebrow"></div>
-            <h3 id="restrictedQuestion"></h3>
-            <div id="restrictedExerciseOptions" class="restricted-options"></div>
-            <p id="restrictedAnswerFeedback" class="restricted-status" role="status" aria-live="polite"></p>
-            <button class="primary-button" id="restrictedExerciseSubmit" type="button">Confirmar</button>
+          <section id="restrictedChat" class="restricted-chat hidden" aria-label="Mensagens privadas">
+            <div class="restricted-channel-bar"><div><span class="restricted-success">● SECURE CHANNEL / FIRESTORE</span><h3 id="restrictedChannelHeading">Mensagens da central</h3><p id="restrictedChannelSubtitle">Canal de usuários autorizados</p></div><span class="restricted-count">05</span></div>
+            <div id="restrictedMessages" class="restricted-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+            <div class="restricted-pager">
+              <button id="restrictedOlder" type="button" class="restricted-link">Mensagens anteriores</button>
+              <span class="restricted-page"><span id="restrictedPage">1</span></span>
+              <button id="restrictedNewer" type="button" class="restricted-link hidden">Voltar às recentes</button>
+            </div>
+            <div id="restrictedChatError" class="restricted-status hidden" role="alert"></div>
+            <form id="restrictedChatForm" class="restricted-chat-form">
+              <label for="restrictedMessageInput" class="sr-only">Mensagem</label>
+              <textarea id="restrictedMessageInput" rows="2" maxlength="700" required placeholder="Escreva uma mensagem para o grupo..."></textarea>
+              <button type="submit" class="primary-button" id="restrictedSend">Enviar</button>
+            </form>
+            <p class="restricted-fine-print" id="restrictedHistoryNote">Cinco mensagens por vez. As anteriores ficam no histórico.</p>
           </section>
-          <p id="restrictedFinePrint" class="restricted-fine-print">A autorização é verificada no Firestore. O progresso do treinamento é salvo somente neste navegador.</p>
-          <button class="restricted-link" id="restrictedLogout" type="button">Sair</button>
+          <div class="restricted-bottom"><button class="restricted-link" id="restrictedLogout" type="button">Sair</button></div>
         </div>
       </div>
     </section>
@@ -124,8 +134,8 @@
   <script src="furniture-v10.js?v=1.0.4"></script>
   <script src="crowd-v9.js?v=1.0.3"></script>
   <script src="audio-v9.js?v=0.9.1"></script>
-  <script src="game.js?v=1.1.1"></script>
-  <script type="module" src="restricted-terminal.js?v=1.1.1"></script>
+  <script src="game.js?v=1.2.0"></script>
+  <script type="module" src="restricted-terminal.js?v=1.2.0"></script>
   <script>
     (function(){
       var ready=new Set(),failure=false;
