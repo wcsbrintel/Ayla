@@ -164,7 +164,7 @@
     rc.fillStyle='#a9d5a6';rc.font='bold 42px monospace';rc.fillText('AYLA // SECURE ACCESS',65,110);
     rc.strokeStyle='#88ba9d';rc.lineWidth=17;rc.strokeRect(447,257,130,125);
     rc.beginPath();rc.arc(512,257,49,Math.PI,0);rc.stroke();
-    rc.fillStyle='#cae99f';rc.font='bold 61px Arial';rc.textAlign='center';rc.fillText('AREA RESTRITA',512,469);
+    rc.fillStyle='#cae99f';rc.font='bold 61px Arial';rc.textAlign='center';rc.fillText('ÁREA RESTRITA',512,469);
     rc.fillStyle='#7fa99e';rc.font='29px monospace';rc.fillText('FIREBASE / LOGIN',512,536);
     restrictedTex.update();
     const restrictedDisplay=B.MeshBuilder.CreatePlane('ayla-restricted-monitor-face',{width:1.19,height:.72},scene);
