@@ -134,7 +134,8 @@
          visited.set(k,g);open.push({i:ni,j:nj,g,f:g+Math.hypot(ei-ni,ej-nj),p:n});
        }
      }
-     if(!endNode)return [end];
+     // An unreachable goal is a failure, never permission to walk through a wall.
+     if(!endNode)return [];
      const arr=[];let n=endNode;while(n&&!(n.i===si&&n.j===sj)){arr.push(xy(n.i,n.j));n=n.p;}arr.reverse();arr.push(end);
      // Remove intermediate grid points when an unobstructed straight line is possible.
      const smooth=[];let cursor=start,k=0;
@@ -145,24 +146,72 @@
      }smooth.push(arr[j]);cursor=arr[j];k=j+1;}
      return smooth;
    }
+   // Safe, deliberate chair approach. The regular navigation mesh treats every
+   // chair as solid. Only the final 0.9m into the selected chair may ignore
+   // that one chair's collider; desks and all other furniture stay solid.
    let seatPlan=null;
-   function startSeat(actor){seatPlan={points:path(actor.root.position,{x:4.65,z:-1.70},'seat-osint'),index:0,elapsed:0,done:false};return seatPlan;}
-   function walkToSeat(actor,dt,other){
-     if(!seatPlan)return true;
-     seatPlan.elapsed+=dt;
-     if(seatPlan.elapsed>22)return false;
-     const p=seatPlan.points[seatPlan.index];if(!p)return true;
-     let dx=p.x-actor.root.position.x,dz=p.z-actor.root.position.z,len=Math.hypot(dx,dz);
-     if(len<.10){seatPlan.index++;return seatPlan.index>=seatPlan.points.length;}
-     const speed=1.75,step=Math.min(len,dt*speed),next=move(actor.root.position,dx/len*step,dz/len*step,.30,other,'seat-osint');
-     actor.root.position.x=next.x;actor.root.position.z=next.z;
-     const yaw=Math.atan2(-dx,-dz),old=actor.root.rotation.y;
-     actor.root.rotation.y=old+angleDiff(yaw,old)*damp(8,dt);
-     if(seatPlan.index===seatPlan.points.length-1 && len<.12){seatPlan.index++;return true;}
-     return false;
+   function startSeat(actor){
+     const center={x:4.65,z:-1.70},seatTag='seat-osint';
+     const approaches=[
+       {x:4.65,z:-.78},   // rear of chair (away from workstation)
+       {x:3.76,z:-1.70}, // side access if rear approach is blocked
+       {x:3.77,z:-1.05}
+     ];
+     let best=null;
+     for(const a of approaches){
+       if(blocked(a.x,a.z,.34,null,null))continue;
+       const steps=path(actor.root.position,a,null);
+       if(!steps.length)continue;
+       // The last short motion toward the chair cannot intersect a desk.
+       const distance=Math.hypot(center.x-a.x,center.z-a.z);
+       if(distance>1.03)continue;
+       let clear=true;
+       for(let i=1;i<=Math.ceil(distance/.08);i++){
+         const f=i/Math.ceil(distance/.08),x=a.x+(center.x-a.x)*f,z=a.z+(center.z-a.z)*f;
+         if(blocked(x,z,.30,null,seatTag)){clear=false;break;}
+       }
+       if(!clear)continue;
+       const cost=steps.reduce((v,p,i)=>v+Math.hypot(p.x-(i?steps[i-1].x:actor.root.position.x),p.z-(i?steps[i-1].z:actor.root.position.z)),0);
+       if(!best||cost<best.cost)best={steps,approach:a,cost};
+     }
+     seatPlan=best?{points:best.steps,index:0,phase:'approach',elapsed:0,stuck:0,seat:center,seatTag}:null;
+     return {ok:!!seatPlan,reason:seatPlan?'':'no-clear-route'};
    }
+   function walkToSeat(actor,dt,other){
+     if(!seatPlan)return {arrived:false,failed:true,reason:'no-plan',moving:false};
+     const p=seatPlan;dt=Math.min(.07,Math.max(0,dt));p.elapsed+=dt;
+     if(p.elapsed>15){seatPlan=null;return {arrived:false,failed:true,reason:'timeout',moving:false};}
+     let target=p.phase==='approach'?p.points[p.index]:p.seat;
+     if(!target){
+       seatPlan=null;return {arrived:false,failed:true,reason:'missing-target',moving:false};
+     }
+     const x=target.x-actor.root.position.x,z=target.z-actor.root.position.z;
+     const dist=Math.hypot(x,z);
+     if(dist<.075){
+       if(p.phase==='approach'){
+         p.index++;
+         if(p.index>=p.points.length)p.phase='settle';
+         return {arrived:false,failed:false,moving:false};
+       }
+       seatPlan=null;return {arrived:true,failed:false,moving:false};
+     }
+     const step=Math.min(dist,dt*(p.phase==='settle'?.95:1.75));
+     const ignore=p.phase==='settle'?p.seatTag:null;
+     // No arbitrary position assignment: all movement is checked against
+     // desk footprints, other furniture, and current NPC positions.
+     const v=move(actor.root.position,x/dist*step,z/dist*step,.30,other,ignore);
+     actor.root.position.x=v.x;actor.root.position.z=v.z;
+     if(v.distance<.002){p.stuck+=dt;}else p.stuck=0;
+     if(p.stuck>2.0){seatPlan=null;return {arrived:false,failed:true,reason:'blocked',moving:false};}
+     if(v.distance>.002){
+       const yaw=Math.atan2(-x,-z),old=actor.root.rotation.y;
+       actor.root.rotation.y=old+angleDiff(yaw,old)*damp(8,dt);
+     }
+     return {arrived:false,failed:false,moving:v.distance>.002};
+   }
+   function cancelSeat(){seatPlan=null;state.vx=state.vz=0;}
    function seatOrientation(actor,dt,targetRot){actor.root.rotation.y+=angleDiff(targetRot,actor.root.rotation.y)*damp(8,dt);return Math.abs(angleDiff(targetRot,actor.root.rotation.y))<.045;}
-   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,seatOrientation,releaseSeat(tag){releasedSeat=tag||'seat-osint';},stop(){state.vx=state.vz=0;},reset(){seatPlan=null;releasedSeat=null;state.vx=state.vz=0;}};
+   return {colliders,blocked,move,walk,moveNPC,path,startSeat,walkToSeat,cancelSeat,seatOrientation,releaseSeat(tag){releasedSeat=tag||'seat-osint';},stop(){state.vx=state.vz=0;},reset(){seatPlan=null;releasedSeat=null;state.vx=state.vz=0;}};
  }
  window.AYLANavigationV8={create};
 })();
