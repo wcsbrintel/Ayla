@@ -58,7 +58,10 @@ function listenLatest(){
  },errorChat);
 }
 async function older(){
- if(!approved||!user||chatBusy||!canLoadMore)return;chatBusy=true;
+ if(!approved||!user||chatBusy||!canLoadMore)return;
+ // Freeze the current page before browsing the archive: new live messages
+ // must not reset the five-message historical window while reading it.
+ stopListener();chatBusy=true;
  try{
   if(history[page+1]){page++;canLoadMore=currentSnapshots().length===5;renderRows(currentSnapshots());return}
   const cursor=history[page]?.cursor;if(!cursor)return;
