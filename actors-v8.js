@@ -15,7 +15,7 @@
    const supported=!!actor.supportsSeatedAnimation?.();
    // Do not claim to sit when the model has no authored seated animation.
    seatTarget=next&&supported?1:0;
-   baseSetSeat?.(false);
+   baseSetSeat?.(seatTarget>0);
    if(seatTarget)baseCinematic?.('idle');
   };
   actor.isSeated=()=>seatBlend>.92 && !!actor.supportsSeatedAnimation?.();
