@@ -290,7 +290,13 @@
       else if(!moved.moving)patrolRest=.3;
       winston.animate(dt,moved.moving,false,now);
     }
-    points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;ring.setEnabled(false);interactables.push(p);});
+    points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;ring.setEnabled(false);
+      // Invisible click targets preserve mouse/touch access after removing
+      // the animated naming plates and floor hoops.
+      const proxy=B.MeshBuilder.CreateSphere('interaction-target-'+p.id,{diameter:1.72,segments:8},scene);
+      proxy.position.set(p.x,1.36,p.z);proxy.visibility=.001;proxy.isPickable=true;
+      proxy.metadata={interaction:p.id};p.proxy=proxy;
+      interactables.push(p);});
     camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
     // Capsule-based collision and pathfinding, covering chairs, desks, walls, props and both actors.
     if(!window.AYLANavigationV8||!window.AYLARoomV8)throw new Error('AYLA 0.8 environment was not loaded');
@@ -350,7 +356,7 @@
       if(shot){camera.radius+=(shot.radius-camera.radius)*k;camera.beta+=(shot.beta-camera.beta)*k;let da=((shot.alpha-camera.alpha+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;camera.alpha+=da*k;}
       if(!shot&&cinematicMode==='idle'){camera.radius+=((closeCamera?5.3:9.8)-camera.radius)*Math.min(1,dt*2.4);camera.beta+=(1.15-camera.beta)*Math.min(1,dt*1.8);}
       const winstonMarker=interactables.find(p=>p.id==='winston');
-      if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
+      if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonMarker.proxy){winstonMarker.proxy.position.x=winstonMarker.x;winstonMarker.proxy.position.z=winstonMarker.z;}if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
       winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
   }
