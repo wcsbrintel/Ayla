@@ -73,19 +73,44 @@
      }
      return {moving:moved&&Math.hypot(state.vx,state.vz)>.06,running:running&&moved,speed:Math.hypot(state.vx,state.vz)};
    }
+   // Each NPC can leave the chair it originally occupies. Once it is clear,
+   // that exception expires; passing beside a chair can never grant permission
+   // to walk through it. Return-to-seat access is limited to the final step.
+   const npcDepartureSeat=new WeakMap();
    function moveNPC(actor,target,dt,other){
-     let dx=target.x-actor.root.position.x,dz=target.z-actor.root.position.z;
-     const len=Math.hypot(dx,dz);if(len<.14)return {arrived:true,moving:false};
+     const at=actor.root.position;
+     let dx=target.x-at.x,dz=target.z-at.z;
+     const len=Math.hypot(dx,dz);
+     if(len<.14)return {arrived:true,moving:false};
      dx/=len;dz/=len;
-     const seat=colliders.find(c=>String(c.tag||'').startsWith('seat-')&&(circleBox(actor.root.position.x,actor.root.position.z,.37,c)||circleBox(target.x,target.z,.37,c)));
-     const a=move(actor.root.position,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),.37,other,seat?.tag||null);
-     let moving=a.distance>.007;
-     actor.root.position.x=a.x;actor.root.position.z=a.z;
+     if(!npcDepartureSeat.has(actor)){
+       const starting=colliders.find(c=>String(c.tag||'').startsWith('seat-')
+         && circleBox(at.x,at.z,.37,c));
+       npcDepartureSeat.set(actor,starting?.tag||null);
+     }
+     let exempt=npcDepartureSeat.get(actor);
+     if(exempt){
+       const seat=colliders.find(c=>c.tag===exempt);
+       if(!seat||!circleBox(at.x,at.z,.37,seat)){
+         exempt=null;npcDepartureSeat.set(actor,null);
+       }
+     }
+     // A sitting character may approach its *own seat* only within the last
+     // 0.9 m. Other desks, shelves, cabinets and all other chairs stay solid.
+     if(!exempt&&len<.9){
+       const destination=colliders.find(c=>String(c.tag||'').startsWith('seat-')
+         && circleBox(target.x,target.z,.06,c));
+       if(destination)exempt=destination.tag;
+     }
+     const a=move(at,dx*Math.min(len,dt*1.05),dz*Math.min(len,dt*1.05),
+       .39,other,exempt);
+     const moving=a.distance>.006;
+     at.x=a.x;at.z=a.z;
      if(moving){
        const yaw=Math.atan2(-dx,-dz),old=actor.root.rotation.y;
        actor.root.rotation.y=old+angleDiff(yaw,old)*damp(6,dt);
      }
-     return {arrived:len<.14,moving};
+     return {arrived:Math.hypot(target.x-at.x,target.z-at.z)<.14,moving};
    }
    // Coarse A* only for scripted movement to an existing workstation.
    function path(start,end,exclude){
