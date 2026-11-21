@@ -28,6 +28,27 @@
   // account switches the same scene to free roaming, without signing out when
   // the restricted communication window is closed.
   let approvedSession=false;
+  let accountSignedIn=false, accountEmail='', accountState='guest';
+  function updateAccountIndicator(){
+    const labels={
+      pt:{guest:'Visitante',pending:'Login · autorização pendente',approved:'Logado · autorizado',exit:'Sair / Missões'},
+      en:{guest:'Guest',pending:'Signed in · pending approval',approved:'Signed in · authorized',exit:'Sign out / Missions'},
+      es:{guest:'Visitante',pending:'Sesión iniciada · pendiente',approved:'Conectado · autorizado',exit:'Salir / Misiones'}
+    };
+    const words=labels[lang]||labels.pt;
+    const indicator=$('aylaAccountMode'),control=$('aylaGuestMode');
+    if(indicator){
+      indicator.textContent=words[accountState]||words.guest;
+      indicator.title=accountEmail||'';
+    }
+    if(control){
+      control.textContent=words.exit;
+      control.classList.toggle('hidden',!accountSignedIn);
+      control.title=accountEmail||'';
+    }
+    const missionCode=$('missionCode');
+    if(missionCode)missionCode.textContent=approvedSession?'SECURE COMMS':'AY-001';
+  }
   function syncAccess(){
     if(!$('missionHud'))return;
     const inRoom=playerActive&&!visible('startScreen')&&!visible('introScreen');
@@ -39,10 +60,14 @@
     }else{
       updateHud();
     }
+    updateAccountIndicator();
     updateHint();
   }
   window.addEventListener('ayla:auth-state',event=>{
     approvedSession=event.detail?.approved===true;
+    accountSignedIn=event.detail?.signedIn===true;
+    accountState=event.detail?.state|| (approvedSession?'approved':accountSignedIn?'pending':'guest');
+    accountEmail=typeof event.detail?.email==='string'?event.detail.email:'';
     syncAccess();
   });
   function t(key){return ui[lang][key] ?? key;}
@@ -56,7 +81,7 @@
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
   function restore(){try{const data=JSON.parse(localStorage.getItem(stateKey)||'null');if(data){mentorMet=!!data.mentorMet;mapSeen=!!data.mapSeen;boardSeen=!!data.boardSeen;done=!!data.done;sourcesReviewed=new Set((data.sources||[]).filter(n=>n>=0&&n<4));}}catch(e){}}
   function resetMission(){mentorMet=mapSeen=boardSeen=done=false;sourcesReviewed.clear();selectedSource=-1;save();updateHud();}
-  function localize(){document.documentElement.lang=lang;if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=introIndex>=3?t('enter'):t('next');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;updateAccountIndicator();if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=introIndex>=3?t('enter'):t('next');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');}
   function renderIntro(){const frame=t('storyFrames')[introIndex];$('introHeading').textContent=frame[0];$('introBody').textContent=frame[1];$('artLabel').textContent=frame[2];$('introCounter').textContent=String(introIndex+1).padStart(2,'0')+' / 04';$('introDots').innerHTML=[0,1,2,3].map(i=>'<i class="'+(i===introIndex?'active':'')+'"></i>').join('');$('introArt').style.backgroundImage='linear-gradient(to bottom, transparent, rgba(2,15,12,.26)), url("assets/intro-'+(introIndex+1)+'.svg")';$('nextIntroLabel').textContent=introIndex===3?t('enter'):t('next');}
   function intro(){show('introScreen');introIndex=0;renderIntro();}
@@ -100,6 +125,22 @@
   $('langButton').onclick=()=> $('langDrop').classList.toggle('hidden');
   document.querySelectorAll('[data-lang],[data-language]').forEach(el=>el.addEventListener('click',()=>setLanguage(el.dataset.lang||el.dataset.language)));
   $('startButton').onclick=()=>approvedSession?launch():intro();
+  $('aylaGuestMode').onclick=async()=>{
+    const button=$('aylaGuestMode');
+    if(button.disabled)return;
+    button.disabled=true;
+    try{
+      const ok=await window.AYLARestricted?.signOut?.();
+      if(ok){
+        // Closing the restricted view does not sign out, but explicitly
+        // selecting this action does. Restore the public mission in place.
+        if(activePanel==='restrictedScreen')closePanels();
+        syncAccess();
+      }else if(!window.AYLARestricted?.signOut){
+        notify({pt:'Login ainda não disponível.',en:'Login is not available yet.',es:'El acceso todavía no está disponible.'}[lang]);
+      }
+    }finally{button.disabled=false;}
+  };
   $('resumeButton').onclick=launch;
   $('nextIntro').onclick=()=>{if(introIndex<3){introIndex++;renderIntro();}else launch();};
   $('skipIntro').onclick=launch;
