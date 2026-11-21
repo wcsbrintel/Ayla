@@ -59,6 +59,7 @@
       failed=true;
       legacyMeshes.forEach(m=>m.setEnabled(true));
       console.warn('[AYLA] External avatar unavailable; retaining procedural backup:',err);
+      document.dispatchEvent(new CustomEvent('ayla-character-failed',{detail:{name,error:String(err)}}));
     }
     async function load(){
       if(!B.SceneLoader || !B.SceneLoader.ImportMeshAsync){markFallback('glTF loader unavailable');return;}
@@ -78,13 +79,28 @@
         // These files contain several complete wardrobe options. Only show
         // the model's original clothes, otherwise overlapping outfits render
         // as spiky body parts.
-        const hiddenParents=nodes.filter(n=>outfits.has(n.name) && !showOriginal.has(n.name));
+        function wardrobeLabel(node){
+          const raw=String(node.name||'');
+          const normalized=raw.replace(/_\d+$/,'');
+          if(outfits.has(normalized))return normalized;
+          const parent=String(node.parent?.name||'').replace(/_\d+$/,'');
+          if(outfits.has(parent))return parent;
+          return null;
+        }
+        const hiddenParents=nodes.filter(n=>{
+          const label=wardrobeLabel(n);
+          return label && !showOriginal.has(label);
+        });
         hiddenParents.forEach(n=>n.setEnabled(false));
         importResult.meshes.forEach(m=>{
           if(m.isPickable!==undefined)m.isPickable=false;
           if(m.material){
-            m.material.backFaceCulling=true;
-            // Keep skin and clothing textures intact: no flat green re-tint.
+            // Preserve glTF alpha-tested eyelashes/hair materials.
+            // Body and clothes retain their original photographic albedo.
+            const kind=(m.name+' '+(m.parent?.name||'')).toLowerCase();
+            if(cfg.isWinston && /hair/.test(kind) && m.material.albedoColor){
+              m.material.albedoColor=B.Color3.FromHexString('#9a9a99');
+            }
           }
         });
         for(const group of importResult.animationGroups||[]){
