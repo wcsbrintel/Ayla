@@ -2,6 +2,21 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
+## Alpha 0.9 — vintage intelligence headquarters
+
+- Replaced the fluorescent laboratory atmosphere with a historic investigation study: warm plaster, dark oak floors, ceiling beams, fitted bookcases, reference books, desk lamps, period telephone, archival folders, optical equipment, a clock, and other furnishings.
+- Added **Theo** (male analyst) and **Clara** (female analyst) as independent full-body NPCs with movement routes, a seated work interval, face-to-face encounters, and short PT/EN/ES dialogues. Their movements use the existing collision and pathfinding engine.
+- Added opt-in procedural ambience: quiet keyboard clicks and low, unintelligible office conversation with an accessible on/off control and volume slider. The Web Audio Context starts only after a user gesture.
+- Updated Ayla's and Winston's model material tinting and rig animation blending. Normalized horizontal root motion in donated animation clips to reduce startling walk-start jumps.
+- Ensured Ayla and Winston orient toward one another during their discussions.
+- Removed all distracting dynamic **Winston, OSINT, Evidence, GEOINT and Dossier** signboards and floor hoops. Invisible click targets and the E interaction prompt keep the workstations usable.
+- Restored the correct viewing direction of the Observatory carpet mark, replaced poorly oriented caricature posters with archival prints and credited licensed animal photographs where network access permits.
+- Archived wildlife reference images: *Ara macao* by Adam Jackson (CC0) and *Panthera onca* by Eduardo Estrada (CC BY-SA 3.0). See [Wikimedia Commons Macaw](https://commons.wikimedia.org/wiki/File:Ara_macao_408004141.jpg) and [Wikimedia Commons Jaguar](https://commons.wikimedia.org/wiki/File:Jaguar,_Panthera_Onca.jpg). External photographs are loaded on the client and fall back to archival designs if unavailable.
+- Added a broader actor-collision check so all four characters respect others' occupied positions, and corrected the NPC exit/return routes for workstation chairs.
+- Nothing relies on a paid 3D or audio platform.
+
+**Technical status:** Syntax checks passed and the historic scene passed a deterministic mock-Babylon execution test with ~720 static/dynamic objects. Full WebGL/rendering, downloadable avatar asset loads, photoposter CORS availability and live NPC animations must be visually verified in the published game.
+
 ## Alpha 0.8 — current features
 
 - Movement is now controlled by acceleration/deceleration rather than instantaneous jumps. Character rotation eases into walking direction, and rigged animation clips are blended.
