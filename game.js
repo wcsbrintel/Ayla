@@ -309,7 +309,7 @@
       const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
       let approaching=false;
       if(seatInProgress&&seatTarget){
-        if(!seatApproachStarted){navigation.startSeat(ayla);seatApproachStarted=true;}
+        if(!seatApproachStarted){navigation.stop();navigation.startSeat(ayla);seatApproachStarted=true;}
         if(!seatFinished){
           // A* movement follows open corridors rather than teleporting through desks.
           const arrived=navigation.walkToSeat(ayla,dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
