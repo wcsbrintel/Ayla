@@ -84,7 +84,7 @@
         // weights, bones and morph-target animations retain their relationships.
         const wrap=new B.TransformNode(name+'-photoreal-container',scene);
         wrap.parent=actor.root;
-        wrap.scaling.setAll(cfg.scale || (cfg.isWinston?1.00:1.07));
+        wrap.scaling.setAll(cfg.scale || (cfg.isWinston?1.04:1.00));
         wrap.rotation.y=Math.PI;
         const nodes=[...importResult.meshes,...(importResult.transformNodes||[])];
         const roots=nodes.filter(n=>!n.parent);
