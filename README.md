@@ -2,7 +2,7 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
-## Alpha 0.4 — current features
+## Alpha 0.5 — current features
 
 - Four-scene illustrated opening about Ayla's background, with skip control
 - Third-person exploration of a cinematic intelligence operations center built with Babylon.js
@@ -14,6 +14,7 @@ AYLA is a free, multilingual, browser-based third-person 3D investigation game f
 - Portuguese, English, and Spanish interfaces (English default)
 - Articulated original 3D characters for Ayla and Winston, with refined facial and outfit details based on approved visual references
 - Alpha 0.4 improves head movement, natural blinking, breathing, gait transitions, separately animated knees, idle states and dialogue gestures
+- Alpha 0.5 adds lightweight procedurally generated PBR microtextures, finer facial and hair contours, outfit stitching and equipment details, contextual gestures at the OSINT terminal, GEOINT display, evidence board and dossier, and a close-up camera toggle with **C** or the camera button
 - Improved facial features, individual hairstyles, field jackets, cargo trousers, boots, backpack and credentials
 - Free built-in walk/run and idle motion, with character portraits on the opening screen and Winston dialogue
 - Character generator uses built-in Babylon.js geometry, no paid or proprietary 3D model service
@@ -35,7 +36,9 @@ No Netlify service or separate backend is needed. Babylon.js is loaded from its 
 - `index.html`: screens, user interface, and game entry point
 - `style.css`: core interface and responsive layout
 - `ui-v2.css`: upgraded cinematic theme
-- `characters-v4.js`: current free 3D characters, improved animation and facial motion
+- `characters-v4.js`: baseline free 3D actors and articulated animation
+- `character-fidelity-v5.js`: current procedural character detail, materials and contextual interaction states
+- `visual-v5.css`: current visual enhancements and camera control
 - `visual-v4.css`: current fine-tuning of the interface
 - `characters-v3.js`: previous original character meshes retained as a rollback reference
 - `characters-v3.css`: locally embedded approved character portrait assets
@@ -64,6 +67,8 @@ All code and source materials in this repository should be reviewed before produ
 
 The current AYLA characters are higher-detail procedural 3D characters, not photorealistic scans or image-to-3D conversions. Their proportions, clothing and hair are inspired by the approved concept art; facial likeness is approximate. Both characters can be explored and animated in-engine without external services or additional model fees.
 
-## Alpha 0.4 validation
+## Validation
 
 The character system was checked with automated JavaScript syntax and mock-scene tests for both Ayla and Winston (including idle, walk, and run cycles). GitHub Pages build validation is tracked in repository Actions. Full interactive browser/visual QA is still needed before treating this as a production release.
+
+Alpha 0.5: Node-based simulated Babylon.js rig tests passed for both characters with idle, walk, run and interaction animation states. Full browser visual QA remains necessary; source textures are procedural, not scans of real people.
