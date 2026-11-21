@@ -12,8 +12,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   {id:'Theo',male:true,x:-6.9,z:-1.1,asset:'ryan_smart.glb',scale:1.02,role:'male',goal:{x:-1.93,z:1.12},home:{x:-7.0,z:-1.1},wait:0},
   {id:'Clara',male:false,x:5.8,z:-1.6,asset:'emma_casual.glb',scale:1.02,role:'female',goal:{x:-.68,z:1.12},home:{x:5.8,z:-1.6},wait:0}
  ];
- const crowdPoints=()=>[ayla,winston,...actors.map(x=>x.actor)].filter(Boolean).map(a=>({x:a.root.position.x,z:a.root.position.z,r:.34}));
- function getOthers(actor){return crowdPoints().filter(p=>Math.hypot(p.x-actor.root.position.x,p.z-actor.root.position.z)>.12);}
+ function getOthers(actor){return [ayla,winston,...actors.map(x=>x.actor)].filter(a=>a&&a!==actor).map(a=>({x:a.root.position.x,z:a.root.position.z,r:.35}));}
  function nextPath(c,target){
   const seat=nav.colliders.find(v=>String(v.tag||'').startsWith('seat-')&&(Math.abs(v.x-target.x)<v.w*.5+.40&&Math.abs(v.z-target.z)<v.d*.5+.40||Math.abs(v.x-c.actor.root.position.x)<v.w*.5+.40&&Math.abs(v.z-c.actor.root.position.z)<v.d*.5+.40));
   let p=nav.path(c.actor.root.position,target,seat?.tag||null);
