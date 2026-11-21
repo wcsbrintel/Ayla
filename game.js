@@ -29,7 +29,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;if(ayla && navigation && Math.hypot(ayla.root.position.x-4.65,ayla.root.position.z+1.70)<.7)navigation.releaseSeat('seat-osint');if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;if(ayla && navigation && Math.hypot(ayla.root.position.x-4.65,ayla.root.position.z+1.70)<.7)navigation.releaseSeat('seat-osint');navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
@@ -64,7 +64,9 @@
     cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
     if(ayla?.setInteraction)ayla.setInteraction(id);
     if(ayla?.setCinematic)ayla.setCinematic(id);
-    if(id==='terminal'&&ayla?.setSeated){
+    // Only move Ayla into the chair when the imported model has a valid
+    // seated animation. Otherwise retain the OSINT interaction from standing.
+    if(id==='terminal'&&ayla?.supportsSeatedAnimation?.()){
       // The seat is beside the terminal desk and outside normal player collision.
       seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
     }
@@ -99,7 +101,10 @@
     cue.classList.remove('hidden');$('hintBox').classList.add('hidden');
     demoTimers.push(setTimeout(()=>{
       if(!demoActive)return;
-      cinematicMode='terminal';seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
+      cinematicMode='terminal';
+      if(ayla?.supportsSeatedAnimation?.()){
+        seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
+      }
       if(ayla?.setInteraction)ayla.setInteraction('terminal');
       if(ayla?.setCinematic)ayla.setCinematic('terminal');
       cue.textContent={pt:'AYLA NO TERMINAL OSINT',en:'AYLA AT THE OSINT DESK',es:'AYLA EN EL TERMINAL OSINT'}[lang];
@@ -318,18 +323,33 @@
       const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,othersFor(ayla));
       let approaching=false;
       if(seatInProgress&&seatTarget){
-        if(!seatApproachStarted){navigation.stop();navigation.startSeat(ayla);seatApproachStarted=true;}
-        if(!seatFinished){
-          // A* movement follows open corridors rather than teleporting through desks.
-          const arrived=navigation.walkToSeat(ayla,dt,othersFor(ayla));
-          if(arrived){seatFinished=true;}
-          else {approaching=true;}
+        if(!seatApproachStarted){
+          navigation.stop();
+          const plan=navigation.startSeat(ayla);
+          seatApproachStarted=true;
+          if(!plan.ok){
+            // Inaccessible chairs do not force a body through furniture.
+            navigation.cancelSeat();seatInProgress=false;seatTarget=null;
+            seatFinished=false;seatApproachStarted=false;
+          }
         }
-        if(seatFinished){
+        if(seatInProgress&&!seatFinished){
+          const result=navigation.walkToSeat(ayla,dt,othersFor(ayla));
+          if(result.failed){
+            navigation.cancelSeat();seatInProgress=false;seatTarget=null;
+            seatFinished=false;seatApproachStarted=false;
+          }else if(result.arrived){
+            seatFinished=true;
+          }else{
+            approaching=result.moving;
+          }
+        }
+        if(seatInProgress&&seatFinished){
           if(navigation.seatOrientation(ayla,dt,seatTarget.rotY)){
-            ayla.root.position.x=seatTarget.x;ayla.root.position.z=seatTarget.z;
-            if(ayla?.setSeated)ayla.setSeated(true);
+            // The path has already reached the chair. Never teleport to it.
+            if(ayla?.supportsSeatedAnimation?.()&&ayla?.setSeated)ayla.setSeated(true);
             seatInProgress=false;seatTarget=null;seatApproachStarted=false;
+            seatFinished=false;
           }
         }
       }
