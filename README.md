@@ -2,7 +2,7 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
-## Alpha 0.2 — current features
+## Alpha 0.3 — current features
 
 - Four-scene illustrated opening about Ayla's background, with skip control
 - Third-person exploration of a cinematic intelligence operations center built with Babylon.js
@@ -12,6 +12,10 @@ AYLA is a free, multilingual, browser-based third-person 3D investigation game f
 - Dialogue with Winston; four case materials; source-reliability assessment; route hypotheses and evidence board
 - Three-question evidence-based final assessment, mission ending, and browser-local progress
 - Portuguese, English, and Spanish interfaces (English default)
+- New original, articulated procedural 3D characters for Ayla and Winston, designed to more closely resemble the approved character references
+- Improved facial features, individual hairstyles, field jackets, cargo trousers, boots, backpack and credentials
+- Free built-in walk/run and idle motion, with character portraits on the opening screen and Winston dialogue
+- Character generator uses built-in Babylon.js geometry, no paid or proprietary 3D model service
 
 ## Narrative and source policy
 
@@ -30,6 +34,8 @@ No Netlify service or separate backend is needed. Babylon.js is loaded from its 
 - `index.html`: screens, user interface, and game entry point
 - `style.css`: core interface and responsive layout
 - `ui-v2.css`: upgraded cinematic theme
+- `characters-v3.js`: original free procedural 3D character meshes and animation
+- `characters-v3.css`: locally embedded approved character portrait assets
 - `game.js`: three-language narrative, evidence workflow, and 3D scene
 - `assets/intro-*.svg`: illustrated prologue images
 - `assets/title-visual.svg`: opening illustration
@@ -47,6 +53,10 @@ Open http://localhost:8080/ . Avoid testing through `file://`, because modern br
 
 ## Next milestones
 
-Replace the initial procedural character geometry with original rigged animated models, add cinematic camera transitions and environmental audio, refine navigation and collision geometry, strengthen the evidence viewer, and test performance on multiple devices.
+Further refine the procedural character geometry, potentially replace it with independently created rigged GLB meshes later, and add cinematic camera transitions and environmental audio, refine navigation and collision geometry, strengthen the evidence viewer, and test performance on multiple devices.
 
 All code and source materials in this repository should be reviewed before production use.
+
+## Character rendering limitations
+
+The current AYLA characters are higher-detail procedural 3D characters, not photorealistic scans or image-to-3D conversions. Their proportions, clothing and hair are inspired by the approved concept art; facial likeness is approximate. Both characters can be explored and animated in-engine without external services or additional model fees.
