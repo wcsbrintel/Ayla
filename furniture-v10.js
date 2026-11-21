@@ -140,36 +140,7 @@
       [-6,5.6,3.5,1.7,'archive']
     ];
     desks.forEach(d=>desk(...d));
-    function swivelChair(x,z,rotation,index){
-      const root=new B.TransformNode('f10-leather-chair-'+index,scene);
-      root.position.set(x,0,z);root.rotation.y=rotation;
-      // Same seat center and back direction as the existing interactive chair.
-      for(let i=0;i<5;i++){
-        const a=2*Math.PI*i/5;
-        let spoke=meshBox('cast-iron-swivel-foot',.47,.045,.095,Math.cos(a)*.19,.12,Math.sin(a)*.19,iron,root);
-        spoke.rotation.y=-a;
-        orb('caster',.17,Math.cos(a)*.38,.09,Math.sin(a)*.38,[1,.7,.7],iron,root);
-      }
-      cylinder('swivel-pedestal',.13,.56,0,.48,0,iron,root);
-      cylinder('seat-mount',.37,.08,0,.76,0,antiqueBrass,root);
-      meshBox('seat-pan',.69,.115,.61,0,.84,0,walnutDark,root);
-      orb('rounded-leather-cushion',.72,0,.92,-.015,[1,.20,.81],leather,root);
-      for(const side of [-1,1]){
-        meshBox('chair-side-rail',.06,.08,.55,side*.35,.92,.01,walnut,root);
-        meshBox('carved-arm-post',.075,.41,.074,side*.37,1.06,.13,walnutLight,root);
-        meshBox('armrest',.115,.065,.60,side*.37,1.26,.10,walnut,root);
-        meshBox('leather-arm-padding',.13,.024,.45,side*.37,1.305,.07,leather,root);
-        cylinder('back-side-spindle',.055,.83,side*.30,1.46,.285,walnutLight,root);
-      }
-      meshBox('backrest-shell',.67,.70,.12,0,1.50,.30,walnutDark,root);
-      orb('curved-leather-back',.68,0,1.50,.22,[.98,1.13,.23],leather,root);
-      meshBox('headrest-rail',.76,.10,.16,0,1.84,.29,walnutLight,root);
-      for(let i=-2;i<=2;i++){
-        orb('upholstery-stud',.026,i*.12,1.18,.26,[1,1,.5],antiqueBrass,root);
-      }
-      return root;
-    }
-    [[4.65,-1.7,0,'terminal-1'],[5.8,-1.6,0,'terminal-2'],[-.4,-4.65,Math.PI,'dossier'],[5.4,2.4,Math.PI,'evidence']].forEach(v=>swivelChair(...v));
+    // No chairs: the workstations stay available for standing interactions.
     // Four bookcases are upgraded in place: fluted pilasters, cornices,
     // deeper shelves and fewer, more readable books.
     function shelf(x,z,index){
