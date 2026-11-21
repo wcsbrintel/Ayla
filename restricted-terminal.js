@@ -116,6 +116,7 @@ $("restrictedResetButton")?.addEventListener("click",async()=>{
  status(t().resetSent)
 });
 $("restrictedLogout")?.addEventListener("click",async()=>{if(!auth)return;seq++;await signOut(auth);loginScreen()});
+$("restrictedWaitingLogout")?.addEventListener("click",async()=>{if(!auth)return;seq++;await signOut(auth);loginScreen()});
 $("restrictedRefresh")?.addEventListener("click",()=>auth?.currentUser&&checkAccess(auth.currentUser));
 $("restrictedResend")?.addEventListener("click",async()=>{
  if(!auth?.currentUser)return;
