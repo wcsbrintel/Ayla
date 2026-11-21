@@ -2,7 +2,15 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
-## Alpha 0.6 — current features
+## Alpha 0.7.1 — current features
+
+- **New primary gameplay characters:** textured, rigged, articulated full-body 3D avatars replacing visible procedural heroes, with animation clips for idle, walking, conversation and thought.
+- Ayla uses an adapted female Rocketbox character base; Winston uses an adapted male base with gray hair materials. Both need further likeness and outfit refinement against the approved character references.
+- Balanced, restrained lighting and tone mapping; no more excessive green/cyan floodlighting.
+- Full procedural avatars kept as contingency only if the externally hosted GLB fails to load. An in-game 3D status indicator helps diagnose this.
+- Free MIT-licensed character assets. No accounts, subscriptions or new service costs.
+
+
 
 - Alpha 0.6: Ayla smoothly approaches and sits at the OSINT workstation, using sustained typing gestures during source review
 - Winston now follows a short roaming patrol within the open west corridor and stops to speak with Ayla
@@ -72,7 +80,7 @@ All code and source materials in this repository should be reviewed before produ
 
 ## Character rendering limitations
 
-The current AYLA characters are higher-detail procedural 3D characters, not photorealistic scans or image-to-3D conversions. Their proportions, clothing and hair are inspired by the approved concept art; facial likeness is approximate. Both characters can be explored and animated in-engine without external services or additional model fees.
+The primary characters now use freely licensed rigged GLB humans with textured surfaces and animation tracks; they are substantially more natural than the initial procedural meshes, but not photorealistic scans and not facially identical to the approved concept art. The GLBs are currently loaded from jsDelivr's public GitHub CDN; online access is required. The old procedural figures are retained only as fallback. Attribution and terms appear in THIRD_PARTY_NOTICES.md.
 
 ## Validation
 
@@ -81,3 +89,5 @@ The character system was checked with automated JavaScript syntax and mock-scene
 Alpha 0.5: Node-based simulated Babylon.js rig tests passed for both characters with idle, walk, run and interaction animation states. Full browser visual QA remains necessary; source textures are procedural, not scans of real people.
 
 Alpha 0.6: JavaScript syntax checks and GitHub asset-link checks passed. Cinematic navigation and scene transitions still need full interactive browser visual QA across desktop and mobile. The mission remains a self-contained training scenario, not a case record describing a real investigation.
+
+Alpha 0.7.1: Rigged characters and restrained lighting are integrated in code, the model source is pinned to a public MIT-licensed GitHub commit, and scripts are cache-busted. JavaScript syntax and GitHub Pages deployment have been checked. In-game character rendering on desktop/mobile still requires visual verification: asset CDN availability, material appearance, glTF parser, and animation track names are not asserted as tested in a browser.
