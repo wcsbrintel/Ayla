@@ -19,6 +19,8 @@
   try { const saved=localStorage.getItem('ayla-language'); if(ui[saved])lang=saved; } catch(e){}
   let introIndex=0,dialogIndex=0,playerActive=false,mentorMet=false,mapSeen=false,boardSeen=false,done=false;
   let sourcesReviewed=new Set(),selectedSource=-1,activePanel=null,nearby=null,toastTimeout=null;
+  let cinematicPending=false,cinematicTimer=null,cinematicMode='idle',patrolPaused=false;
+  const sceneCue={pt:{winston:'CONVERSA COM WINSTON',terminal:'ACESSANDO TERMINAL OSINT',map:'ANALISANDO ROTAS',board:'EXAMINANDO EVIDÊNCIAS',report:'PREPARANDO DOSSIÊ'},en:{winston:'BRIEFING WITH WINSTON',terminal:'ACCESSING OSINT TERMINAL',map:'ROUTE INTELLIGENCE',board:'REVIEWING THE EVIDENCE',report:'PREPARING CASE DOSSIER'},es:{winston:'REUNIÓN CON WINSTON',terminal:'ACCEDIENDO A TERMINAL OSINT',map:'ANÁLISIS DE RUTAS',board:'EXAMINANDO EVIDENCIAS',report:'PREPARANDO EXPEDIENTE'}};
   const stateKey='ayla-alpha-v01';
   const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen'];
   function t(key){return ui[lang][key] ?? key;}
@@ -26,7 +28,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){gameplayPanels.forEach(hide);activePanel=null;if(winston?.setTalking)winston.setTalking(false);if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){clearTimeout(cinematicTimer);cinematicPending=false;cinematicMode='idle';$('cinematicCue').classList.add('hidden');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
@@ -53,7 +55,28 @@
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4;const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
   function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if(choices[0]===0&&choices[1]===1&&choices[2]===2){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');updateHud();}else{feedback.textContent=t('answerError');}}
   function updateHint(){const on=playerActive&&!activePanel&&nearby;const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
-  function interact(id){if(!playerActive||activePanel)return;if(ayla?.setInteraction)ayla.setInteraction(id);switch(id){case 'winston':showDialog();break;case 'terminal':showSources();break;case 'map':showMap();break;case 'board':showBoard();break;case 'report':showReport();break;}}
+  function interact(id){
+    if(!playerActive||activePanel||cinematicPending)return;
+    if(!['winston','terminal','map','board','report'].includes(id))return;
+    cinematicPending=true;cinematicMode=id;patrolPaused=(id==='winston');
+    const cue=$('cinematicCue');
+    cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
+    if(ayla?.setInteraction)ayla.setInteraction(id);
+    if(ayla?.setCinematic)ayla.setCinematic(id);
+    if(id==='terminal'&&ayla?.setSeated){
+      // The seat is beside the terminal desk and outside normal player collision.
+      ayla.root.position.set(4.05,0,-1.68);
+      ayla.root.rotation.y=0;
+      ayla.setSeated(true);
+    }
+    if(id==='winston'){
+      if(winston?.setDialogue)winston.setDialogue(true);
+      if(winston?.setTalking)winston.setTalking(true);
+    }
+    $('hintBox').classList.add('hidden');
+    const open=()=>{cinematicPending=false;cue.classList.add('hidden');if(!playerActive)return;switch(id){case 'winston':showDialog();break;case 'terminal':showSources();break;case 'map':showMap();break;case 'board':showBoard();break;case 'report':showReport();break;}};
+    cinematicTimer=setTimeout(open,900);
+  }
 
   $('langButton').onclick=()=> $('langDrop').classList.toggle('hidden');
   document.querySelectorAll('[data-lang],[data-language]').forEach(el=>el.addEventListener('click',()=>setLanguage(el.dataset.lang||el.dataset.language)));
@@ -231,12 +254,39 @@
     winston=window.AYLACharacterFactory.create(B,scene,{name:'Winston',x:-5.7,z:-2.3,isWinston:true});
     winston.root.rotation.y=1.3;
     const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:-.4,z:-6.4}];
+    // Patrol stays within the open west corridor, away from desks and workstations.
+    const patrol=[[-5.7,-2.3],[-7.6,-2.3],[-8.6,-.6],[-7.4,1.0],[-5.8,.7]];
+    let patrolIndex=1,patrolRest=0;
+    function animateWinston(dt,now){
+      const pause=patrolPaused||activePanel==='dialogScreen'||cinematicMode==='winston'||!playerActive;
+      if(pause){winston.animate(dt,false,false,now);return;}
+      if(patrolRest>0){patrolRest-=dt;winston.animate(dt,false,false,now);return;}
+      const [tx,tz]=patrol[patrolIndex],dx=tx-winston.root.position.x,dz=tz-winston.root.position.z,d=Math.hypot(dx,dz);
+      if(d<.13){patrolIndex=(patrolIndex+1)%patrol.length;patrolRest=1.2;winston.animate(dt,false,false,now);return;}
+      const step=Math.min(d,dt*.78),vx=dx/d,vz=dz/d;
+      winston.root.position.x+=vx*step;winston.root.position.z+=vz*step;
+      const yaw=Math.atan2(-vx,-vz);
+      let diff=((yaw-winston.root.rotation.y+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
+      winston.root.rotation.y+=diff*Math.min(1,dt*4);
+      winston.animate(dt,true,false,now);
+    }
     points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;interactables.push(p);});
     camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
     const obstacles=[{x:4.7,z:-3.3,w:4.0,d:2.45},{x:5.4,z:4,w:4,d:2.5},{x:-6,z:5.6,w:4,d:2.3},{x:-.4,z:-6.4,w:4.3,d:2.65}];
     function collision(x,z){if(x<-10.6||x>10.6||z<-8.2||z>8.25)return true;return obstacles.some(o=>Math.abs(x-o.x)<o.w*.5+.26&&Math.abs(z-o.z)<o.d*.5+.26);}
     scene.onPointerObservable.add((info)=>{if(info.type!==B.PointerEventTypes.POINTERPICK||!playerActive||activePanel)return;const mesh=info.pickInfo&&info.pickInfo.pickedMesh;const id=mesh?.metadata?.interaction;if(id)interact(id);});
-    engine.runRenderLoop(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.06);const allow=playerActive&&!activePanel&&!visible('finalScreen');const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);const moving=allow&&(hx!==0||hz!==0);if(moving){let fwd=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);if(fwd.lengthSquared()<.01)fwd=new B.Vector3(0,0,1);fwd.normalize();const right=B.Vector3.Cross(B.Vector3.Up(),fwd).normalize();const v=fwd.scale(hz).add(right.scale(hx)).normalize();const speed=(held['shift']?5:3.1)*dt;let tx=ayla.root.position.x+v.x*speed,tz=ayla.root.position.z+v.z*speed;if(!collision(tx,ayla.root.position.z))ayla.root.position.x=tx;if(!collision(ayla.root.position.x,tz))ayla.root.position.z=tz;ayla.root.rotation.y=Math.atan2(-v.x,-v.z);}const tick=performance.now()*.009;if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving,!!held['shift'],performance.now());winston.animate(dt,false,false,performance.now());camera.setTarget(B.Vector3.Lerp(camera.target,new B.Vector3(ayla.root.position.x,1.46,ayla.root.position.z),.09));winston.root.position.y=.015*Math.sin(performance.now()*.002);interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
+    engine.runRenderLoop(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.06);const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen');const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);const moving=allow&&(hx!==0||hz!==0);if(moving){let fwd=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);if(fwd.lengthSquared()<.01)fwd=new B.Vector3(0,0,1);fwd.normalize();const right=B.Vector3.Cross(B.Vector3.Up(),fwd).normalize();const v=fwd.scale(hz).add(right.scale(hx)).normalize();const speed=(held['shift']?5:3.1)*dt;let tx=ayla.root.position.x+v.x*speed,tz=ayla.root.position.z+v.z*speed;if(!collision(tx,ayla.root.position.z))ayla.root.position.x=tx;if(!collision(ayla.root.position.x,tz))ayla.root.position.z=tz;ayla.root.rotation.y=Math.atan2(-v.x,-v.z);}const tick=performance.now()*.009;if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving,!!held['shift'],performance.now());animateWinston(dt,performance.now());
+      // Cinematic focus when engaging a workstation or speaking with Winston.
+      const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
+      const shot=(cinematicPending||activePanel)&&shots[cinematicMode];
+      const target=shot?new B.Vector3(shot.x,shot.y,shot.z):new B.Vector3(ayla.root.position.x,1.46,ayla.root.position.z);
+      const k=Math.min(1,dt*(shot?3.0:5.5));
+      camera.setTarget(B.Vector3.Lerp(camera.target,target,k));
+      if(shot){camera.radius+=(shot.radius-camera.radius)*k;camera.beta+=(shot.beta-camera.beta)*k;let da=((shot.alpha-camera.alpha+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;camera.alpha+=da*k;}
+      if(!shot&&cinematicMode==='idle'&&closeCamera){camera.radius+=(5.3-camera.radius)*Math.min(1,dt*2.4);}
+      const winstonMarker=interactables.find(p=>p.id==='winston');
+      if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;}
+      winston.root.position.y=.015*Math.sin(performance.now()*.002);interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
   }
   setupScene();
