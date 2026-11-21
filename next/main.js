@@ -114,9 +114,9 @@ function carpet(){let p=B.MeshBuilder.CreateGround('central wool carpet',{width:
  let mm=new B.StandardMaterial('woven wool',scene);mm.diffuseTexture=tx;mm.backFaceCulling=false;mm.specularColor=B.Color3.Black();p.material=mm;
 }
 carpet();
-poster('wildlife-note',-8.50,3.1,-1,-Math.PI/2,'FIELD NOTES',['WILDLIFE  /  CONSERVATION','SPECIES REFERENCE']);
-poster('route-note',-8.50,3.1,2.4,-Math.PI/2,'ROUTE ANALYSIS',['GEOSPATIAL EVIDENCE','CONFIRMED / UNCONFIRMED']);
-poster('archive-note',8.51,3.1,.5,Math.PI/2,'CASE ARCHIVE',['SOURCE VERIFICATION','INTELLIGENCE / 01']);
+poster('wildlife-note',-8.50,3.1,-1,Math.PI/2,'FIELD NOTES',['WILDLIFE  /  CONSERVATION','SPECIES REFERENCE']);
+poster('route-note',-8.50,3.1,2.4,Math.PI/2,'ROUTE ANALYSIS',['GEOSPATIAL EVIDENCE','CONFIRMED / UNCONFIRMED']);
+poster('archive-note',8.51,3.1,.5,-Math.PI/2,'CASE ARCHIVE',['SOURCE VERIFICATION','INTELLIGENCE / 01']);
 function wallScreen(){const frame=box('geoint large frame',4.0,2.7,.17,0,3.14,6.82,m.walnutDark);
  let panel=box('OSINT wall panel',3.79,2.52,.02,0,3.14,6.71,m.slate);
  const tex=new B.DynamicTexture('geospatial network',{width:1024,height:640},scene,true);
@@ -215,7 +215,7 @@ engine.runRenderLoop(()=>{
  const dt=Math.min(.055,engine.getDeltaTime()/1000);clock+=dt;
  let x=(keys.d||keys.arrowright||tap.d?1:0)-(keys.a||keys.arrowleft||tap.a?1:0),z=(keys.w||keys.arrowup||tap.w?1:0)-(keys.s||keys.arrowdown||tap.s?1:0);
  let moving=!!(x||z)&&active&&!modal,run=!!keys.shift;
- if(moving){let forward=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);forward.normalize();let right=new B.Vector3(-forward.z,0,forward.x),v=forward.scale(z).add(right.scale(x)).normalize();approach(ayla,v.x*dt*(run?3.0:1.65),v.z*dt*(run?3.0:1.65),dt);angleTo(ayla,ayla.root.position.x+v.x,ayla.root.position.z+v.z,dt)}
+ if(moving){let forward=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);forward.normalize();let right=new B.Vector3(forward.z,0,-forward.x),v=forward.scale(z).add(right.scale(x)).normalize();approach(ayla,v.x*dt*(run?3.0:1.65),v.z*dt*(run?3.0:1.65),dt);angleTo(ayla,ayla.root.position.x+v.x,ayla.root.position.z+v.z,dt)}
  animate(ayla,moving,dt,run);
  for(let [a,data] of npcPatrol){let stop=a===winston&&modal==='mentor';if(!active||stop||data.pause>0){data.pause=Math.max(0,data.pause-dt);animate(a,false,dt);continue}
  let [px,pz]=data.points[data.i],dx=px-a.root.position.x,dz=pz-a.root.position.z,dist=Math.hypot(dx,dz);
