@@ -65,7 +65,7 @@
     if(ayla?.setCinematic)ayla.setCinematic(id);
     if(id==='terminal'&&ayla?.setSeated){
       // The seat is beside the terminal desk and outside normal player collision.
-      seatTarget={x:4.05,z:-1.68};
+      seatTarget={x:4.65,z:-1.70};
     }
     if(id==='winston'){
       if(winston?.setDialogue)winston.setDialogue(true);
