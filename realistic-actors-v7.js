@@ -21,7 +21,7 @@
     const origTalking = actor.setTalking;
     const legacyMeshes = actor.root.getChildMeshes(false);
     legacyMeshes.forEach(m => m.setEnabled(false));
-    let ready=false,failed=false,active=null, current='Idle',seated=false,interaction='idle',talking=false;
+    let ready=false,failed=false,active=null, previousAction=null,fadeTime=0,current='Idle',seated=false,interaction='idle',talking=false;
     const stages = new Map();
     const name = cfg.isWinston ? 'Winston' : 'Ayla';
     actor.visualVersion = '0.7';
@@ -37,13 +37,20 @@
       let next='Idle';
       if(moving) next=sprint?'Walk':'Walk';
       else if(talking) next=cfg.isWinston?'Talk':'Confident';
-      else if(seated) next='Think';
+      else if(seated) next='Idle';
       else if(interaction==='terminal'||interaction==='report') next='Think';
       else if(interaction==='map'||interaction==='board') next='Think';
       else if(interaction==='winston')next='Talk';
       if(next!==current) play(next);
-      if(active && moving) active.speedRatio=sprint?1.65:1.0;
-      if(active && !moving) active.speedRatio=1;
+      if(active)active.speedRatio=moving?(sprint?1.32:1):1;
+      // Blend across actions instead of stopping/resets that cause jumps.
+      if(previousAction){
+        fadeTime=Math.min(.24,fadeTime+Math.min(dt,.06));
+        const t=fadeTime/.24;
+        if(active?.setWeightForAllAnimatables)active.setWeightForAllAnimatables(t);
+        if(previousAction?.setWeightForAllAnimatables)previousAction.setWeightForAllAnimatables(1-t);
+        if(t>=1){previousAction.stop();previousAction=null;}
+      }
       // Animation groups own the rig; no extra procedural transforms on the
       // skinned model (which previously produced detached limbs).
     };
@@ -51,8 +58,14 @@
       const group=stages.get(next)||stages.get('Idle')||stages.values().next().value;
       if(!group) return;
       if(active===group){current=next;return;}
-      if(active)active.stop();
+      if(previousAction){previousAction.stop();previousAction=null;}
+      previousAction=active;
+      fadeTime=0;
       group.reset();group.start(true,1,group.from,group.to,false);
+      if(previousAction&&group.setWeightForAllAnimatables){
+        group.setWeightForAllAnimatables(0);
+        previousAction.setWeightForAllAnimatables(1);
+      }
       active=group;current=next;
     }
     function markFallback(err){
@@ -71,7 +84,7 @@
         // weights, bones and morph-target animations retain their relationships.
         const wrap=new B.TransformNode(name+'-photoreal-container',scene);
         wrap.parent=actor.root;
-        wrap.scaling.setAll(cfg.isWinston?1.12:1.18);
+        wrap.scaling.setAll(cfg.isWinston?1.00:1.07);
         wrap.rotation.y=Math.PI;
         const nodes=[...importResult.meshes,...(importResult.transformNodes||[])];
         const roots=nodes.filter(n=>!n.parent);
