@@ -28,7 +28,7 @@
    function circleBox(x,z,r,c){const xx=clamp(x,c.x-c.w*.5,c.x+c.w*.5),zz=clamp(z,c.z-c.d*.5,c.z+c.d*.5);return (x-xx)**2+(z-zz)**2<(r+.016)**2;}
    function blocked(x,z,r,other,exclude){
      if(x-r<bounds.xmin||x+r>bounds.xmax||z-r<bounds.zmin||z+r>bounds.zmax)return true;
-     if(other && Math.hypot(x-other.x,z-other.z)<r+other.r+.13)return true;
+     for(const person of (Array.isArray(other)?other:(other?[other]:[]))){if(Math.hypot(x-person.x,z-person.z)<r+person.r+.10)return true;}
      return colliders.some(c=>c.tag!==exclude&&circleBox(x,z,r,c));
    }
    function move(pos,dx,dz,r,other,exclude){
