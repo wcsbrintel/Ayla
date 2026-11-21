@@ -83,7 +83,22 @@
     const oldMeshes=new Set(['deskTop','deskLeg','chairBase','chairPole','seat','backrest','caster',
       'cabinet','cabinetDrawer','cabinetHandle','v9-desk-leather','v9-desk-edge','v9-desk-front',
       'v9-lamp-stand','v9-lamp-column','v9-lamp-shade']);
-    scene.meshes.forEach(a=>{if(oldMeshes.has(a.name))a.setEnabled(false)});
+    // Absolute chair cleanup, including furniture left by a stale old scene
+    // generator. Dispose only the known chair roots and their descendants.
+    // Do not remove desk roots, workstations, or character models.
+    for(const root of [...scene.transformNodes]){
+      if(root.name==='taskchair'||root.name.startsWith('f10-leather-chair-')){
+        root.dispose(false,false);
+      }
+    }
+    // Clean up any unattached pieces from the old stool implementation.
+    for(const mesh of [...scene.meshes]){
+      if(['chairBase','chairPole','seat','backrest','caster'].includes(mesh.name)){
+        mesh.dispose(false,false);
+      }else if(oldMeshes.has(mesh.name)){
+        mesh.setEnabled(false);
+      }
+    }
     scene.transformNodes.filter(n=>n.name.indexOf('v9-bookshelf-')===0)
       .forEach(n=>n.setEnabled(false));
     function handle(root,x,y,z){
