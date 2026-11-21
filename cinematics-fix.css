@@ -16,3 +16,48 @@
 @media(max-width:900px){#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel{width:min(690px,75vw)}#dialogScreen .dialog-card{width:min(650px,72vw)}}
 @media(max-width:650px){#demoButton{min-width:0;font-size:9px;letter-spacing:0;padding:8px 7px}#terminalScreen,#mapScreen,#boardScreen,#reportScreen{padding:65px 0 0;background:rgba(0,10,15,.5)}#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel{width:100vw;max-height:calc(100dvh - 66px);height:100%;border-radius:12px 12px 0 0}#dialogScreen{justify-content:center;align-items:flex-end;padding:65px 8px 14px}#dialogScreen .dialog-card{width:100%;grid-template-columns:105px minmax(0,1fr)}#dialogScreen .dialog-message{padding:13px}#dialogScreen .dialog-message p{font-size:12px}.cinematic-cue{top:13%}}
 @media(prefers-reduced-motion:reduce){#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel,#dialogScreen .dialog-card{animation:none}}
+
+/* AYLA 0.6.2 — Winston portrait: respect the assigned grid track.
+   The old character sheet declared min-width:230px for this element,
+   which pushed the 165px image column over the dialogue text. */
+#dialogScreen .dialog-card{
+  grid-template-columns: minmax(0, 170px) minmax(0, 1fr);
+  width: min(710px, 58vw);
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  align-items: stretch;
+}
+#dialogScreen .dialog-portrait{
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+  background-position:center center;
+  background-size:cover;
+  border-right:1px solid rgba(178,222,195,.3);
+}
+#dialogScreen .dialog-message{
+  position:relative;
+  z-index:1;
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  padding:22px 25px;
+}
+#dialogScreen .dialog-message h2,
+#dialogScreen .dialog-message p{
+  max-width:100%;
+  overflow-wrap:break-word;
+}
+@media(max-width:900px){
+  #dialogScreen .dialog-card{width:min(690px,76vw);grid-template-columns:minmax(0,150px) minmax(0,1fr)}
+}
+@media(max-width:650px){
+  #dialogScreen .dialog-card{
+    width:calc(100vw - 16px);
+    grid-template-columns:minmax(0,100px) minmax(0,1fr);
+    min-height:220px;
+  }
+  #dialogScreen .dialog-portrait{min-width:0;min-height:220px}
+  #dialogScreen .dialog-message{padding:14px 16px}
+}
