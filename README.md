@@ -2,7 +2,12 @@
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
 
-## Alpha 0.5 — current features
+## Alpha 0.6 — current features
+
+- Alpha 0.6: Ayla smoothly approaches and sits at the OSINT workstation, using sustained typing gestures during source review
+- Winston now follows a short roaming patrol within the open west corridor and stops to speak with Ayla
+- Cinematic camera transitions focus on Winston, the terminal, routes, evidence board and dossier before the panel opens; exploration camera is restored when panels close
+- Localized cinematic cues in Portuguese, English and Spanish, with accessible close-camera mode (C)
 
 - Four-scene illustrated opening about Ayla's background, with skip control
 - Third-person exploration of a cinematic intelligence operations center built with Babylon.js
@@ -37,7 +42,9 @@ No Netlify service or separate backend is needed. Babylon.js is loaded from its 
 - `style.css`: core interface and responsive layout
 - `ui-v2.css`: upgraded cinematic theme
 - `characters-v4.js`: baseline free 3D actors and articulated animation
-- `character-fidelity-v5.js`: current procedural character detail, materials and contextual interaction states
+- `character-fidelity-v5.js`: procedural materials and interaction poses
+- `character-cinematics-v6.js`: sitting animation and contextual dialogue/work gestures
+- `cinematics-v6.css`: accessible cinematic scene cues
 - `visual-v5.css`: current visual enhancements and camera control
 - `visual-v4.css`: current fine-tuning of the interface
 - `characters-v3.js`: previous original character meshes retained as a rollback reference
@@ -72,3 +79,5 @@ The current AYLA characters are higher-detail procedural 3D characters, not phot
 The character system was checked with automated JavaScript syntax and mock-scene tests for both Ayla and Winston (including idle, walk, and run cycles). GitHub Pages build validation is tracked in repository Actions. Full interactive browser/visual QA is still needed before treating this as a production release.
 
 Alpha 0.5: Node-based simulated Babylon.js rig tests passed for both characters with idle, walk, run and interaction animation states. Full browser visual QA remains necessary; source textures are procedural, not scans of real people.
+
+Alpha 0.6: JavaScript syntax checks and GitHub asset-link checks passed. Cinematic navigation and scene transitions still need full interactive browser visual QA across desktop and mobile. The mission remains a self-contained training scenario, not a case record describing a real investigation.
