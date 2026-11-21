@@ -85,11 +85,13 @@
       var ready=new Set(),failure=false;
       var el=document.getElementById('avatarStatus');
       document.addEventListener('ayla-character-ready',function(event){
+        if(!['Ayla','Winston'].includes(event.detail.name))return;
         ready.add(event.detail.name);
         el.dataset.status='ready';
         el.textContent='3D · '+ready.size+'/2';
       });
-      document.addEventListener('ayla-character-failed',function(){
+      document.addEventListener('ayla-character-failed',function(event){
+        if(!['Ayla','Winston'].includes(event.detail.name))return;
         failure=true;el.dataset.status='failed';el.textContent='3D · fallback';
       });
     })();
