@@ -127,7 +127,7 @@
   document.querySelectorAll('[data-key]').forEach(b=>{const k=b.dataset.key;b.addEventListener('pointerdown',(e)=>{e.preventDefault();held[k]=true;b.setPointerCapture(e.pointerId);});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>held[k]=false));});
   restore();localize();
 
-  let engine,scene,camera,ayla,winston,navigation;const interactables=[];
+  let engine,scene,camera,ayla,winston,navigation,crowd;const interactables=[];
   function setupScene(){
     const B=window.BABYLON;
     if(!B){$('engineError').textContent='The 3D engine could not be loaded. Check your connection and reload.';$('engineError').classList.remove('hidden');hide('loading');return;}
@@ -265,11 +265,8 @@
       const labelMat=new B.StandardMaterial('labelMaterial '+txt,scene);labelMat.diffuseTexture=tex;labelMat.emissiveColor=new B.Color3(.55,.62,.56);labelMat.backFaceCulling=false;plane.material=labelMat;
       return {pillar,bulb,plane};
     }
-    const winstonBeacon=labelBeacon(-5.7,-2.3,'WINSTON');
-    labelBeacon(4.7,-3.3,'OSINT');
-    labelBeacon(2.2,7.3,'GEOINT');
-    labelBeacon(-6,7.3,'EVIDENCE');
-    labelBeacon(-.4,-6.4,'DOSSIER');
+    // Named 3D billboards and illuminated hoops were removed. The nearby E prompt remains.
+    const winstonBeacon=null;
 
     // AYLA 0.3: original articulated human characters built with Babylon.js meshes.
     // These procedural actors replace the prior geometric placeholder avatars.
@@ -288,31 +285,37 @@
       if(pause){winston.animate(dt,false,false,now);return;}
       if(patrolRest>0){patrolRest-=dt;winston.animate(dt,false,false,now);return;}
       const [tx,tz]=patrol[patrolIndex];
-      const moved=navigation.moveNPC(winston,{x:tx,z:tz},dt,{x:ayla.root.position.x,z:ayla.root.position.z,r:.35});
+      const moved=navigation.moveNPC(winston,{x:tx,z:tz},dt,othersFor(winston));
       if(moved.arrived){patrolIndex=(patrolIndex+1)%patrol.length;patrolRest=1.0;}
       else if(!moved.moving)patrolRest=.3;
       winston.animate(dt,moved.moving,false,now);
     }
-    points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;interactables.push(p);});
+    points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;ring.setEnabled(false);interactables.push(p);});
     camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
     // Capsule-based collision and pathfinding, covering chairs, desks, walls, props and both actors.
     if(!window.AYLANavigationV8||!window.AYLARoomV8)throw new Error('AYLA 0.8 environment was not loaded');
     const room=window.AYLARoomV8.install(B,scene);
-    navigation=window.AYLANavigationV8.create(room.obstacles);
-    function collision(x,z){return navigation.blocked(x,z,.34,{x:winston.root.position.x,z:winston.root.position.z,r:.38},null);}
+    const historic=window.AYLAVintageV9.install(B,scene);
+    navigation=window.AYLANavigationV8.create([...room.obstacles,...historic.obstacles]);
+    crowd=window.AYLACrowdV9.create(B,scene,navigation,ayla,winston,()=>playerActive,()=>lang);
+    function othersFor(actor){
+      return [ayla,winston,...(crowd?.actors||[]).map(c=>c.actor)].filter(a=>a&&a!==actor)
+        .map(a=>({x:a.root.position.x,z:a.root.position.z,r:.37}));
+    }
+    function collision(x,z){return navigation.blocked(x,z,.34,othersFor(ayla),null);}
     scene.onPointerObservable.add((info)=>{if(info.type!==B.PointerEventTypes.POINTERPICK||!playerActive||activePanel)return;const mesh=info.pickInfo&&info.pickInfo.pickedMesh;const id=mesh?.metadata?.interaction;if(id)interact(id);});
     engine.runRenderLoop(()=>{
       const dt=Math.min(engine.getDeltaTime()/1000,.06);
       const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen')&&!seatInProgress&&!ayla?.isSeated?.();
       const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);
       const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);
-      const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
+      const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,othersFor(ayla));
       let approaching=false;
       if(seatInProgress&&seatTarget){
         if(!seatApproachStarted){navigation.stop();navigation.startSeat(ayla);seatApproachStarted=true;}
         if(!seatFinished){
           // A* movement follows open corridors rather than teleporting through desks.
-          const arrived=navigation.walkToSeat(ayla,dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
+          const arrived=navigation.walkToSeat(ayla,dt,othersFor(ayla));
           if(arrived){seatFinished=true;}
           else {approaching=true;}
         }
@@ -327,6 +330,16 @@
       if(moved.moving&&ayla?.setInteraction)ayla.setInteraction('idle');
       ayla.animate(dt,moved.moving||approaching,moved.running&&!approaching,performance.now());
       animateWinston(dt,performance.now());
+      crowd.update(dt,performance.now());
+      if(cinematicMode==='winston' && (cinematicPending||activePanel==='dialogScreen')){
+        // Both investigators face each other throughout their conversation.
+        for(const [person,other] of [[ayla,winston],[winston,ayla]]){
+          const dx=other.root.position.x-person.root.position.x,dz=other.root.position.z-person.root.position.z;
+          const desired=Math.atan2(-dx,-dz);
+          const diff=Math.atan2(Math.sin(desired-person.root.rotation.y),Math.cos(desired-person.root.rotation.y));
+          person.root.rotation.y+=diff*Math.min(1,dt*4.5);
+        }
+      }
       room.tick(dt);
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
