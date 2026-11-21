@@ -15,7 +15,8 @@ function create(B,scene,nav,ayla,winston,canAct,language){
  const crowdPoints=()=>[ayla,winston,...actors.map(x=>x.actor)].filter(Boolean).map(a=>({x:a.root.position.x,z:a.root.position.z,r:.34}));
  function getOthers(actor){return crowdPoints().filter(p=>Math.hypot(p.x-actor.root.position.x,p.z-actor.root.position.z)>.12);}
  function nextPath(c,target){
-  let p=nav.path(c.actor.root.position,target,null);
+  const seat=nav.colliders.find(v=>String(v.tag||'').startsWith('seat-')&&(Math.abs(v.x-target.x)<v.w*.5+.40&&Math.abs(v.z-target.z)<v.d*.5+.40||Math.abs(v.x-c.actor.root.position.x)<v.w*.5+.40&&Math.abs(v.z-c.actor.root.position.z)<v.d*.5+.40));
+  let p=nav.path(c.actor.root.position,target,seat?.tag||null);
   c.route=p?.length?p:[target];c.index=0;c.stuck=0;c.prevX=c.actor.root.position.x;c.prevZ=c.actor.root.position.z;
  }
  function start(){if(started)return;started=true;actors=crowd.map(c=>{
