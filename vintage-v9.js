@@ -4,6 +4,7 @@ const BNAME='AYLAVintageV9';
 function install(B,scene){
  const objects=[],obstacles=[];
  function mat(name,color,metal=0,rough=.83){let m=new B.PBRMaterial('v9-'+name,scene);m.albedoColor=B.Color3.FromHexString(color);m.metallic=metal;m.roughness=rough;return m;}
+ const bookPalette=['#4b3830','#6b4a38','#364944','#61523c','#6b3d35','#55574c'].map((hex,i)=>mat('archival-book-'+i,hex));
  const plaster=mat('warm-plaster','#8e8573'),stone=mat('aged-stone','#746d60'),stone2=mat('limestone','#b7a78c'),walnut=mat('walnut','#3a2823'),wood=mat('dark-oak','#554039'),wood2=mat('oak-highlight','#826850'),brass=mat('aged-brass','#a99567',.65,.45),bronze=mat('bronze','#615d4a',.65,.35),dark=mat('charcoal','#292d2a'),glass=mat('glass','#b2c2b3',.16,.28),copper=mat('old-copper','#8b6550',.75,.45),cloth=mat('linen','#d0bf9e'),paper=mat('aged-paper','#d6c39d');
  function box(n,w,h,d,x,y,z,m,parent){const o=B.MeshBuilder.CreateBox('v9-'+n,{width:w,height:h,depth:d},scene);o.position.set(x,y,z);o.material=m;if(parent)o.parent=parent;objects.push(o);return o;}
  function cylinder(n,diam,h,x,y,z,m,parent){let o=B.MeshBuilder.CreateCylinder('v9-'+n,{diameter:diam,height:h,tessellation:12},scene);o.position.set(x,y,z);o.material=m;if(parent)o.parent=parent;objects.push(o);return o;}
@@ -19,15 +20,15 @@ function install(B,scene){
  for(const z of [-9.28,9.28])for(const x of [-9,-5,-1,3,7]){box('lower-panel',3.6,1.23,.08,x,.70,z,walnut);box('mid-rail',3.65,.10,.14,x,1.42,z,wood2);}
  // Walnut floor with individual seams, scuffs and restrained specular response.
  const floor=scene.getMeshByName('floor');if(floor){floor.material=wood;floor.position.y=-.24;}
- for(let z=-8.9;z<=8.9;z+=.83){const a=box('floor-board',23.48,.048,.80,0,-.063,z,Math.floor(z*2)%2?wood:wood2);a.material=mat('grain'+z,Math.floor(z*3)%3===0?'#514035':'#59483b',0,.93);}
- for(let x=-10.8;x<=10.8;x+=4.1)box('board-seam',.013,.009,17.9,x,-.028,0,walnut);
+ for(let z=-8.9;z<=8.9;z+=.83){const a=box('floor-board',23.48,.048,.80,0,-.079,z,Math.floor(z*2)%2?wood:wood2);a.material=mat('grain'+z,Math.floor(z*3)%3===0?'#514035':'#59483b',0,.93);}
+ for(let x=-10.8;x<=10.8;x+=4.1)box('board-seam',.013,.009,17.9,x,-.054,0,walnut);
  // Deep bookshelves as fitted furniture, pushed against the walls.
  function bookshelf(x,z,alongZ,seed){const root=new B.TransformNode('v9-bookshelf-'+seed,scene);root.position.set(x,0,z);root.rotation.y=alongZ?Math.PI/2:0;
   box('shelf-base',2.65,.14,.56,0,.13,0,walnut,root);box('shelf-back',2.65,4.10,.12,0,2.13,.29,walnut,root);
   for(const sx of [-1.29,1.29])box('shelf-pillar',.13,4.1,.57,sx,2.14,0,wood,root);
   let c=seed*91+4;const rand=()=>{c=(c*16807)%2147483647;return c/2147483647};
   for(let layer=0;layer<5;layer++){let y=.41+layer*.77;box('shelf-layer',2.65,.12,.6,0,y,0,wood2,root);
-   let px=-1.17;while(px<1.07){let w=.10+rand()*.06,h=.38+rand()*.18;let tint=mat('book-'+seed+'-'+layer+'-'+px.toFixed(2),['#4b3830','#6b4a38','#364944','#61523c','#6b3d35','#55574c'][Math.floor(rand()*6)],0,.93);box('book',w,h,.35,px+w*.5,y+.07+h*.5,-.025,tint,root);if(rand()>.5)box('book-spine',.008,h-.10,.27,px+w*.5,y+.09+h*.5,-.21,brass,root);px+=w+.015;}
+   let px=-1.17;while(px<1.07){let w=.10+rand()*.06,h=.38+rand()*.18;let tint=bookPalette[Math.floor(rand()*bookPalette.length)];box('book',w,h,.35,px+w*.5,y+.07+h*.5,-.025,tint,root);if(rand()>.5)box('book-spine',.008,h-.10,.27,px+w*.5,y+.09+h*.5,-.21,brass,root);px+=w+.015;}
   }
   box('top-cornice',2.85,.19,.71,0,4.33,0,wood2,root);return root;
  }
