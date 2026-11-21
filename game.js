@@ -65,7 +65,7 @@
     if(ayla?.setCinematic)ayla.setCinematic(id);
     if(id==='terminal'&&ayla?.setSeated){
       // The seat is beside the terminal desk and outside normal player collision.
-      seatTarget={x:4.65,z:-1.70};
+      seatTarget={x:4.65,z:-1.70,rotY:0};
     }
     if(id==='winston'){
       if(winston?.setDialogue)winston.setDialogue(true);
@@ -196,7 +196,7 @@
       bx('backrest',.64,.76,.12,0,1.24,.27,M.jacket,root);
       for(let i=0;i<5;i++){const theta=i*Math.PI*2/5;bx('caster',.22,.08,.09,Math.cos(theta)*.33,.045,Math.sin(theta)*.33,M.metal,root)}
     }
-    stool(4.65,-1.7,Math.PI);stool(5.8,-1.6,Math.PI);stool(-.4,-4.65,Math.PI);stool(5.4,2.4,Math.PI);
+    stool(4.65,-1.7,0);stool(5.8,-1.6,0);stool(-.4,-4.65,Math.PI);stool(5.4,2.4,Math.PI);
     function terminalSlab(x,y,z,w,h,label){
       const p=bx('dataDisplay',w,h,.06,x,y,z,deep);
       const tex=new B.DynamicTexture('datastream-'+label,{width:1024,height:512},scene,true);
@@ -296,7 +296,7 @@
     function collision(x,z){if(x<-10.6||x>10.6||z<-8.2||z>8.25)return true;return obstacles.some(o=>Math.abs(x-o.x)<o.w*.5+.26&&Math.abs(z-o.z)<o.d*.5+.26);}
     scene.onPointerObservable.add((info)=>{if(info.type!==B.PointerEventTypes.POINTERPICK||!playerActive||activePanel)return;const mesh=info.pickInfo&&info.pickInfo.pickedMesh;const id=mesh?.metadata?.interaction;if(id)interact(id);});
     engine.runRenderLoop(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.06);const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen');const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);const moving=allow&&(hx!==0||hz!==0);if(moving){let fwd=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);if(fwd.lengthSquared()<.01)fwd=new B.Vector3(0,0,1);fwd.normalize();const right=B.Vector3.Cross(B.Vector3.Up(),fwd).normalize();const v=fwd.scale(hz).add(right.scale(hx)).normalize();const speed=(held['shift']?5:3.1)*dt;let tx=ayla.root.position.x+v.x*speed,tz=ayla.root.position.z+v.z*speed;if(!collision(tx,ayla.root.position.z))ayla.root.position.x=tx;if(!collision(ayla.root.position.x,tz))ayla.root.position.z=tz;ayla.root.rotation.y=Math.atan2(-v.x,-v.z);}const tick=performance.now()*.009;
-      if(seatTarget && ayla){const kSeat=Math.min(1,dt*5.5);ayla.root.position.x+=(seatTarget.x-ayla.root.position.x)*kSeat;ayla.root.position.z+=(seatTarget.z-ayla.root.position.z)*kSeat;ayla.root.rotation.y*=1-kSeat;if(Math.hypot(seatTarget.x-ayla.root.position.x,seatTarget.z-ayla.root.position.z)<.065){seatTarget=null;if(cinematicMode==='terminal'&&ayla?.setSeated)ayla.setSeated(true);}}
+      if(seatTarget && ayla){const kSeat=Math.min(1,dt*5.5);ayla.root.position.x+=(seatTarget.x-ayla.root.position.x)*kSeat;ayla.root.position.z+=(seatTarget.z-ayla.root.position.z)*kSeat;const deltaY=Math.atan2(Math.sin(seatTarget.rotY-ayla.root.rotation.y),Math.cos(seatTarget.rotY-ayla.root.rotation.y));ayla.root.rotation.y+=deltaY*kSeat;if(Math.hypot(seatTarget.x-ayla.root.position.x,seatTarget.z-ayla.root.position.z)<.065&&Math.abs(deltaY)<.06){ayla.root.rotation.y=seatTarget.rotY;seatTarget=null;if(cinematicMode==='terminal'&&ayla?.setSeated)ayla.setSeated(true);}}
       if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving||!!seatTarget,!!held['shift']&&moving,performance.now());animateWinston(dt,performance.now());
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
