@@ -113,7 +113,9 @@
   const sea=neutral('earth-sea','#232e36');sea.metallic=.04;sea.roughness=.92;
   const earth=B.MeshBuilder.CreateSphere('v8-Earth',{diameter:3.30,segments:48},scene);earth.parent=earthRoot;earth.material=sea;
   const R=1.658;
-  function latlon(lon,lat,r=R){let a=lon*Math.PI/180,b=lat*Math.PI/180;return new B.Vector3(Math.cos(b)*Math.sin(a)*r,Math.sin(b)*r,Math.cos(b)*Math.cos(a)*r);}
+  // Correct the horizontal mirror of geographic features on the mounted globe.
+  // Use the same handedness for coastlines, graticule, routes and evidence pins.
+  function latlon(lon,lat,r=R){let a=lon*Math.PI/180,b=lat*Math.PI/180;return new B.Vector3(-Math.cos(b)*Math.sin(a)*r,Math.sin(b)*r,Math.cos(b)*Math.cos(a)*r);}
   const coast=window.AYLACoastlineV8||[];const lines=[];
   for(let segment of coast){let points=[];for(let j=0;j<segment.length-1;j+=2)points.push(latlon(segment[j],segment[j+1]));if(points.length>=2)lines.push(points);}
   const coastlines=B.MeshBuilder.CreateLineSystem('v8-Earth-coastlines',{lines},scene);coastlines.color=B.Color3.FromHexString('#9bacb5');coastlines.alpha=.70;coastlines.parent=earthRoot;
