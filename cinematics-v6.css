@@ -1,0 +1,8 @@
+/* AYLA 0.6 • cinematic interaction transitions and readable scene captions */
+.cinematic-cue{position:absolute;z-index:21;top:14%;left:50%;transform:translateX(-50%);width:max-content;max-width:min(85vw,580px);padding:13px 27px;background:linear-gradient(110deg,rgba(6,23,29,.92),rgba(10,42,43,.92));border:1px solid rgba(195,244,166,.44);border-left:3px solid #c6ed95;color:#e9ffe1;box-shadow:0 16px 50px rgba(0,0,0,.65);backdrop-filter:blur(18px);border-radius:8px;font:800 clamp(11px,1.3vw,15px)/1.4 'Space Grotesk',sans-serif;letter-spacing:.16em;text-transform:uppercase;text-align:center;pointer-events:none;animation:cueReveal .32s ease-out}
+.cinematic-cue:before{content:'◈';color:#caef9e;margin-right:12px}
+#dialogScreen .dialog-card{box-shadow:0 32px 115px #000d,0 0 80px rgba(124,218,175,.10)}
+#cinematicCue.hidden{display:none!important}
+@keyframes cueReveal{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(max-width:650px){.cinematic-cue{top:16%;padding:11px 16px;letter-spacing:.06em;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.cinematic-cue{animation:none}}
