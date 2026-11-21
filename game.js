@@ -20,6 +20,7 @@
   let introIndex=0,dialogIndex=0,playerActive=false,mentorMet=false,mapSeen=false,boardSeen=false,done=false;
   let sourcesReviewed=new Set(),selectedSource=-1,activePanel=null,nearby=null,toastTimeout=null;
   let cinematicPending=false,cinematicTimer=null,cinematicMode='idle',patrolPaused=false,seatTarget=null,demoActive=false,demoTimers=[];
+  let seatInProgress=false,seatApproachStarted=false,seatLastPosition=null,seatFinished=false,seatQueued=false;
   const sceneCue={pt:{winston:'CONVERSA COM WINSTON',terminal:'ACESSANDO TERMINAL OSINT',map:'ANALISANDO ROTAS',board:'EXAMINANDO EVIDÊNCIAS',report:'PREPARANDO DOSSIÊ'},en:{winston:'BRIEFING WITH WINSTON',terminal:'ACCESSING OSINT TERMINAL',map:'ROUTE INTELLIGENCE',board:'REVIEWING THE EVIDENCE',report:'PREPARING CASE DOSSIER'},es:{winston:'REUNIÓN CON WINSTON',terminal:'ACCEDIENDO A TERMINAL OSINT',map:'ANÁLISIS DE RUTAS',board:'EXAMINANDO EVIDENCIAS',report:'PREPARANDO EXPEDIENTE'}};
   const stateKey='ayla-alpha-v01';
   const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen'];
@@ -28,7 +29,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
@@ -65,7 +66,7 @@
     if(ayla?.setCinematic)ayla.setCinematic(id);
     if(id==='terminal'&&ayla?.setSeated){
       // The seat is beside the terminal desk and outside normal player collision.
-      seatTarget={x:4.65,z:-1.70,rotY:0};
+      seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
     }
     if(id==='winston'){
       if(winston?.setDialogue)winston.setDialogue(true);
@@ -98,7 +99,7 @@
     cue.classList.remove('hidden');$('hintBox').classList.add('hidden');
     demoTimers.push(setTimeout(()=>{
       if(!demoActive)return;
-      cinematicMode='terminal';seatTarget={x:4.65,z:-1.70};
+      cinematicMode='terminal';seatTarget={x:4.65,z:-1.70,rotY:0};seatInProgress=true;seatApproachStarted=false;seatFinished=false;
       if(ayla?.setInteraction)ayla.setInteraction('terminal');
       if(ayla?.setCinematic)ayla.setCinematic('terminal');
       cue.textContent={pt:'AYLA NO TERMINAL OSINT',en:'AYLA AT THE OSINT DESK',es:'AYLA EN EL TERMINAL OSINT'}[lang];
@@ -286,23 +287,47 @@
       const pause=patrolPaused||activePanel==='dialogScreen'||(cinematicMode==='winston'&&!demoActive)||!playerActive;
       if(pause){winston.animate(dt,false,false,now);return;}
       if(patrolRest>0){patrolRest-=dt;winston.animate(dt,false,false,now);return;}
-      const [tx,tz]=patrol[patrolIndex],dx=tx-winston.root.position.x,dz=tz-winston.root.position.z,d=Math.hypot(dx,dz);
-      if(d<.13){patrolIndex=(patrolIndex+1)%patrol.length;patrolRest=1.2;winston.animate(dt,false,false,now);return;}
-      const step=Math.min(d,dt*1.08),vx=dx/d,vz=dz/d;
-      winston.root.position.x+=vx*step;winston.root.position.z+=vz*step;
-      const yaw=Math.atan2(-vx,-vz);
-      let diff=((yaw-winston.root.rotation.y+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
-      winston.root.rotation.y+=diff*Math.min(1,dt*4);
-      winston.animate(dt,true,false,now);
+      const [tx,tz]=patrol[patrolIndex];
+      const moved=navigation.moveNPC(winston,{x:tx,z:tz},dt,{x:ayla.root.position.x,z:ayla.root.position.z,r:.35});
+      if(moved.arrived){patrolIndex=(patrolIndex+1)%patrol.length;patrolRest=1.0;}
+      else if(!moved.moving)patrolRest=.3;
+      winston.animate(dt,moved.moving,false,now);
     }
     points.forEach((p)=>{const ring=B.MeshBuilder.CreateTorus('interaction_'+p.id,{diameter:1.28,thickness:.08,tessellation:36},scene);ring.position.set(p.x,.22,p.z);ring.rotation.x=Math.PI/2;ring.material=M.green;ring.metadata={interaction:p.id};p.ring=ring;interactables.push(p);});
     camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
-    const obstacles=[{x:4.7,z:-3.3,w:4.0,d:2.45},{x:5.4,z:4,w:4,d:2.5},{x:-6,z:5.6,w:4,d:2.3},{x:-.4,z:-6.4,w:4.3,d:2.65}];
-    function collision(x,z){if(x<-10.6||x>10.6||z<-8.2||z>8.25)return true;return obstacles.some(o=>Math.abs(x-o.x)<o.w*.5+.26&&Math.abs(z-o.z)<o.d*.5+.26);}
+    // Capsule-based collision and pathfinding, covering chairs, desks, walls, props and both actors.
+    if(!window.AYLANavigationV8||!window.AYLARoomV8)throw new Error('AYLA 0.8 environment was not loaded');
+    const room=window.AYLARoomV8.install(B,scene);
+    const navigation=window.AYLANavigationV8.create(room.obstacles);
+    function collision(x,z){return navigation.blocked(x,z,.34,{x:winston.root.position.x,z:winston.root.position.z,r:.38},null);}
     scene.onPointerObservable.add((info)=>{if(info.type!==B.PointerEventTypes.POINTERPICK||!playerActive||activePanel)return;const mesh=info.pickInfo&&info.pickInfo.pickedMesh;const id=mesh?.metadata?.interaction;if(id)interact(id);});
-    engine.runRenderLoop(()=>{const dt=Math.min(engine.getDeltaTime()/1000,.06);const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen');const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);const moving=allow&&(hx!==0||hz!==0);if(moving){let fwd=new B.Vector3(camera.target.x-camera.position.x,0,camera.target.z-camera.position.z);if(fwd.lengthSquared()<.01)fwd=new B.Vector3(0,0,1);fwd.normalize();const right=B.Vector3.Cross(B.Vector3.Up(),fwd).normalize();const v=fwd.scale(hz).add(right.scale(hx)).normalize();const speed=(held['shift']?5:3.1)*dt;let tx=ayla.root.position.x+v.x*speed,tz=ayla.root.position.z+v.z*speed;if(!collision(tx,ayla.root.position.z))ayla.root.position.x=tx;if(!collision(ayla.root.position.x,tz))ayla.root.position.z=tz;ayla.root.rotation.y=Math.atan2(-v.x,-v.z);}const tick=performance.now()*.009;
-      if(seatTarget && ayla){const kSeat=Math.min(1,dt*5.5);ayla.root.position.x+=(seatTarget.x-ayla.root.position.x)*kSeat;ayla.root.position.z+=(seatTarget.z-ayla.root.position.z)*kSeat;const deltaY=Math.atan2(Math.sin(seatTarget.rotY-ayla.root.rotation.y),Math.cos(seatTarget.rotY-ayla.root.rotation.y));ayla.root.rotation.y+=deltaY*kSeat;if(Math.hypot(seatTarget.x-ayla.root.position.x,seatTarget.z-ayla.root.position.z)<.065&&Math.abs(deltaY)<.06){ayla.root.rotation.y=seatTarget.rotY;seatTarget=null;if(cinematicMode==='terminal'&&ayla?.setSeated)ayla.setSeated(true);}}
-      if(moving&&ayla?.setInteraction)ayla.setInteraction('idle');ayla.animate(dt,moving||!!seatTarget,!!held['shift']&&moving,performance.now());animateWinston(dt,performance.now());
+    engine.runRenderLoop(()=>{
+      const dt=Math.min(engine.getDeltaTime()/1000,.06);
+      const allow=playerActive&&!activePanel&&!cinematicPending&&!visible('finalScreen')&&!seatInProgress&&!ayla?.isSeated?.();
+      const hx=(held['d']||held['arrowright']?1:0)-(held['a']||held['arrowleft']?1:0);
+      const hz=(held['w']||held['arrowup']?1:0)-(held['s']||held['arrowdown']?1:0);
+      const moved=navigation.walk(ayla,camera,hx,hz,allow,!!held['shift'],dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
+      let approaching=false;
+      if(seatInProgress&&seatTarget){
+        if(!seatApproachStarted){navigation.startSeat(ayla);seatApproachStarted=true;}
+        if(!seatFinished){
+          // A* movement follows open corridors rather than teleporting through desks.
+          const arrived=navigation.walkToSeat(ayla,dt,{x:winston.root.position.x,z:winston.root.position.z,r:.37});
+          if(arrived){seatFinished=true;}
+          else {approaching=true;}
+        }
+        if(seatFinished){
+          if(navigation.seatOrientation(ayla,dt,seatTarget.rotY)){
+            ayla.root.position.x=seatTarget.x;ayla.root.position.z=seatTarget.z;
+            if(ayla?.setSeated)ayla.setSeated(true);
+            seatInProgress=false;seatTarget=null;seatApproachStarted=false;
+          }
+        }
+      }
+      if(moved.moving&&ayla?.setInteraction)ayla.setInteraction('idle');
+      ayla.animate(dt,moved.moving||approaching,moved.running&&!approaching,performance.now());
+      animateWinston(dt,performance.now());
+      room.tick(dt);
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
       const shot=(cinematicPending||activePanel)&&shots[cinematicMode];
@@ -313,7 +338,7 @@
       if(!shot&&cinematicMode==='idle'){camera.radius+=((closeCamera?5.3:9.8)-camera.radius)*Math.min(1,dt*2.4);camera.beta+=(1.15-camera.beta)*Math.min(1,dt*1.8);}
       const winstonMarker=interactables.find(p=>p.id==='winston');
       if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
-      winston.root.position.y=.015*Math.sin(performance.now()*.002);interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
+      winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
   }
   setupScene();
