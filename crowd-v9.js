@@ -19,13 +19,13 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   let p=nav.path(c.actor.root.position,target,seat?.tag||null);
   c.route=p?.length?p:[target];c.index=0;c.stuck=0;c.prevX=c.actor.root.position.x;c.prevZ=c.actor.root.position.z;
  }
- function start(){if(started)return;started=true;actors=crowd.map(c=>{
+ function start(){if(started)return;started=true;actors.push(...crowd.map(c=>{
    const actor=window.AYLACharacterFactory.create(B,scene,{name:c.id,x:c.x,z:c.z,asset:c.asset,scale:c.scale,role:c.role,isWinston:c.male});
    actor.root.rotation.y=c.male?-1.15:0;
    c.actor=actor;c.route=[];c.index=0;
    if(!c.male){actor.setSeated?.(true);c.sitting=true;}
    return c;
- });
+ }));
  }
  function rotateTo(actor,target,dt){
    const dx=target.x-actor.root.position.x,dz=target.z-actor.root.position.z;
