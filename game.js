@@ -433,7 +433,7 @@
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
       const shot=activePanel==='wallScreen'&&approvedSession
-        ?{x:-1.55,y:2.95,z:-9.1,radius:8.3,beta:1.28,alpha:1.5708}
+        ?{x:-1.55,y:2.95,z:-9.1,radius:6.6,beta:1.43,alpha:1.5708}
         :activePanel==='restrictedScreen'&&approvedSession
         ?{x:.45,y:2.95,z:-9.1,radius:8.5,beta:1.22,alpha:1.27}
         :(cinematicPending||activePanel)&&shots[cinematicMode];
