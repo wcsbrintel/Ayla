@@ -33,7 +33,7 @@ function notifyGame(){
 }
 function views(which){for(const v of ["Login","Waiting","Approved"])show("restricted"+v,which===v)}
 function stopListener(){if(stopLive){stopLive();stopLive=null}}
-function clearChat(){stopListener();history=[];page=0;canLoadMore=false;latestSnapshots=[];$("restrictedMessages")?.replaceChildren();show("restrictedChat",false);$("restrictedScreen")?.classList.remove("restricted-authorized")}
+function clearChat(){stopListener();history=[];page=0;canLoadMore=false;latestSnapshots=[];$("restrictedMessages")?.replaceChildren();show("restrictedChat",false);show("restrictedObservatoryLink",false);$("restrictedScreen")?.classList.remove("restricted-authorized")}
 function loginView(){approved=false;user=null;clearChat();views("Login");status("");notifyGame()}
 function waiting(reason){approved=false;clearChat();views("Waiting");setText("restrictedWaitingTitle",tr()[reason]);show("restrictedResend",reason==="verify");status("");notifyGame()}
 function formatStamp(raw){const date=raw?.toDate?.();if(!date)return tr().time;try{return new Intl.DateTimeFormat(locale,{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}).format(date)}catch{return tr().time}}
@@ -104,6 +104,8 @@ function authorized(){
  views("Approved");approved=true;$("restrictedScreen")?.classList.add("restricted-authorized");
  setText("restrictedAccount",user?.email||"");
  setText("restrictedApprovedTitle",tr().connected);show("restrictedChat",true);status("");
+ const link=$("restrictedObservatoryLink");
+ if(link){link.href="https://wcsbrintel.github.io/iwt_globalobservatory/restricted/secure.html?lang="+encodeURIComponent(locale);show("restrictedObservatoryLink",true)}
  notifyGame();listenLatest();
 }
 async function check(u){
@@ -122,6 +124,8 @@ async function check(u){
 }
 function localize(l){
  locale=T[l]?l:"pt";
+ const restrictedLink=$("restrictedObservatoryLink");
+ if(restrictedLink)restrictedLink.href="https://wcsbrintel.github.io/iwt_globalobservatory/restricted/secure.html?lang="+encodeURIComponent(locale);
  const keys={restrictedHeading:"title",restrictedIntro:"intro",restrictedEmailLabel:"email",restrictedPasswordLabel:"password",restrictedLoginButton:"login",restrictedResetButton:"reset",restrictedLogout:"logout",restrictedRefresh:"refresh",restrictedResend:"resend",restrictedChannelHeading:"chatTitle",restrictedChannelSubtitle:"online",restrictedSend:"send",restrictedHistoryNote:"hint",restrictedMapTitle:"map",restrictedMapSubtitle:"mapSub"};
  for(const [id,key] of Object.entries(keys))setText(id,tr()[key]);
  const input=$("restrictedMessageInput");if(input)input.placeholder=tr().write;
@@ -129,11 +133,14 @@ function localize(l){
  if(approved){setText("restrictedApprovedTitle",tr().connected);renderRows(currentSnapshots())}
  else if(user){views("Waiting");setText("restrictedWaitingTitle",tr()[user.emailVerified?"pending":"verify"])}
  else views("Login");
+ if(restrictedLink)restrictedLink.textContent={pt:"Abrir Área restrita do Observatório",en:"Open Observatory restricted area",es:"Abrir Área restringida del Observatorio"}[locale];
 }
 async function init(){
  if(auth)return;
  try{
-  const app=initializeApp(config,"ayla-game");
+  // Use the same Firebase app name as the Observatory restricted workspace,
+  // so Firebase Auth persistence can be shared across the two GitHub pages.
+  const app=initializeApp(config);
   auth=getAuth(app);db=getFirestore(app);
   onAuthStateChanged(auth,u=>check(u),()=>waiting("failure"));
  }catch(e){console.warn("[AYLA] Firebase init",e?.code||e?.message);waiting("failure")}
