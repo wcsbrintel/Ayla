@@ -1,0 +1,15 @@
+/* AYLA 0.5 - grounded cinematic portrait and close camera controls. */
+#cameraButton{font-family:system-ui,sans-serif;font-size:19px;line-height:1;position:relative;min-width:42px}
+#cameraButton.active{color:#e7ffc4;border-color:rgba(189,243,154,.7);background:rgba(158,220,145,.14)}
+#cameraButton:focus-visible{outline:2px solid #c8f5a0;outline-offset:3px}
+.dialog-card{overflow:hidden;border:1px solid rgba(178,222,195,.36)}
+.dialog-portrait{position:relative}
+.dialog-portrait:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px rgba(0,0,0,.36);background:linear-gradient(180deg,transparent 40%,rgba(4,16,18,.45) 100%)}
+.dialog-message{background:radial-gradient(ellipse at 80% 20%,rgba(66,134,109,.12),transparent 70%)}
+.dialog-message h2{letter-spacing:.035em}
+.source-button:focus-visible,.question label:focus-within{outline:2px solid #c8f5a0;outline-offset:2px}
+.doc-note{border-left:3px solid #c3ec98}
+#hintBox{transition:opacity .15s ease}
+#missionHud .progress-bar{overflow:hidden;border-radius:5px}
+@media(max-width:650px){#cameraButton{min-width:36px;font-size:17px}.header-actions{gap:4px}}
+@media(prefers-reduced-motion:reduce){#hintBox{transition:none}}
