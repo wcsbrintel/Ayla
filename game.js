@@ -131,13 +131,18 @@
     const B=window.BABYLON;
     if(!B){$('engineError').textContent='The 3D engine could not be loaded. Check your connection and reload.';$('engineError').classList.remove('hidden');hide('loading');return;}
     try{engine=new B.Engine($('renderCanvas'),true,{antialias:true,stencil:true});}catch(err){$('engineError').textContent='WebGL initialization failed: '+String(err);$('engineError').classList.remove('hidden');hide('loading');return;}
-    scene=new B.Scene(engine);scene.clearColor=new B.Color4(.018,.055,.052,1);
-    const hemi=new B.HemisphericLight('ambient',new B.Vector3(0,1,0),scene);hemi.intensity=.92;hemi.diffuse=B.Color3.FromHexString('#d5f3e6');hemi.groundColor=B.Color3.FromHexString('#456168');
-    const dir=new B.DirectionalLight('keyLight',new B.Vector3(-.3,-1,.45),scene);dir.position=new B.Vector3(4,11,-5);dir.intensity=1.45;
-    const l1=new B.PointLight('greenGlow',new B.Vector3(-7,4,5),scene);l1.diffuse=B.Color3.FromHexString('#a6ed75');l1.intensity=16;l1.range=17;
-    const l2=new B.PointLight('cyanGlow',new B.Vector3(5,4,-4),scene);l2.diffuse=B.Color3.FromHexString('#64dbcf');l2.intensity=18;l2.range=17;
+    scene=new B.Scene(engine);scene.clearColor=new B.Color4(.018,.042,.048,1);
+    // Neutral cinematic exposure prevents the green/cyan lights from blowing out faces.
+    const imaging=scene.imageProcessingConfiguration;
+    imaging.toneMappingEnabled=true;
+    imaging.toneMappingType=B.ImageProcessingConfiguration.TONEMAPPING_ACES;
+    imaging.exposure=.82;imaging.contrast=1.17;
+    const hemi=new B.HemisphericLight('ambient',new B.Vector3(0,1,0),scene);hemi.intensity=.64;hemi.diffuse=B.Color3.FromHexString('#e0e9e4');hemi.groundColor=B.Color3.FromHexString('#454d4b');
+    const dir=new B.DirectionalLight('keyLight',new B.Vector3(-.3,-1,.45),scene);dir.position=new B.Vector3(4,11,-5);dir.intensity=1.02;dir.diffuse=B.Color3.FromHexString('#f7eee1');
+    const l1=new B.PointLight('greenGlow',new B.Vector3(-7,4,5),scene);l1.diffuse=B.Color3.FromHexString('#8ba99b');l1.intensity=1.75;l1.range=11;
+    const l2=new B.PointLight('cyanGlow',new B.Vector3(5,4,-4),scene);l2.diffuse=B.Color3.FromHexString('#84b1b3');l2.intensity=2.0;l2.range=11;
     function material(name,color,emissive){const m=new B.StandardMaterial(name,scene);m.diffuseColor=B.Color3.FromHexString(color);m.specularColor=new B.Color3(.07,.13,.1);if(emissive)m.emissiveColor=B.Color3.FromHexString(emissive);return m;}
-    const M={floor:material('floor','#203c3a'),wall:material('wall','#142f30'),wall2:material('wall2','#0a252a'),frame:material('frame','#3a5750'),green:material('green','#9fda70','#527931'),wood:material('wood','#435d4a'),metal:material('metal','#192c2b'),screen:material('screen','#1a4549','#2b6e65'),paper:material('paper','#b9cbb4'),glass:material('glass','#35665e'),skin:material('skin','#b67e65'),hair:material('hair','#202020'),jacket:material('jacket','#24615c'),pants:material('pants','#20343c'),skinW:material('skinW','#aa846a'),hairW:material('hairW','#b7beb6'),jacketW:material('jacketW','#4d6465')};M.glass.alpha=.34;
+    const M={floor:material('floor','#203c3a'),wall:material('wall','#142f30'),wall2:material('wall2','#0a252a'),frame:material('frame','#3a5750'),green:material('green','#8caa7b','#233e2c'),wood:material('wood','#435d4a'),metal:material('metal','#192c2b'),screen:material('screen','#1a4549','#123b3e'),paper:material('paper','#8eaa9b'),glass:material('glass','#35665e'),skin:material('skin','#b67e65'),hair:material('hair','#202020'),jacket:material('jacket','#24615c'),pants:material('pants','#20343c'),skinW:material('skinW','#aa846a'),hairW:material('hairW','#b7beb6'),jacketW:material('jacketW','#4d6465')};M.glass.alpha=.34;
     function bx(name,w,h,d,x,y,z,mat,parent){const o=B.MeshBuilder.CreateBox(name,{width:w,height:h,depth:d},scene);o.position.set(x,y,z);o.material=mat;if(parent)o.parent=parent;return o;}
     function ball(name,r,x,y,z,mat,parent){const o=B.MeshBuilder.CreateSphere(name,{diameter:r*2,segments:14},scene);o.position.set(x,y,z);o.material=mat;if(parent)o.parent=parent;return o;}
     function cylinder(name,r,h,x,y,z,mat,parent){const o=B.MeshBuilder.CreateCylinder(name,{diameter:r*2,height:h,tessellation:16},scene);o.position.set(x,y,z);o.material=mat;if(parent)o.parent=parent;return o;}
