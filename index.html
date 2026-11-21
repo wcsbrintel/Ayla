@@ -8,6 +8,7 @@
   <title>AYLA — Wildlife Crime Investigation</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ui-v2.css">
+  <link rel="stylesheet" href="characters-v3.css">
 </head>
 <body>
   <div id="app">
@@ -29,9 +30,10 @@
 
     <section id="startScreen" class="screen overlay start-screen hidden">
       <div class="start-backdrop"><div class="start-orb"></div><div class="grid-horizon"></div></div>
+      <div class="character-keyart" aria-hidden="true"></div>
       <img class="title-visual" alt="" aria-hidden="true" src="assets/title-visual.svg">
       <aside class="case-preview" aria-hidden="true"><div class="cv-code">AYLA / MISSION CONTROL</div><div class="cv-title">CASE FILE AY-001</div><div class="cv-row"><span>OSINT INTELLIGENCE</span><strong>ACTIVE</strong></div><div class="cv-row"><span>WORKSPACE</span><strong>OPERATIONS CENTER</strong></div><div class="cv-row"><span>OBJECTIVE</span><strong>VERIFY THE EVIDENCE</strong></div><div class="cv-footer"><b></b> INVESTIGATION IN PROGRESS</div></aside>
-      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / <span data-t="missionCount">MISSÃO DEMONSTRATIVA</span></span><span>PT • EN • ES</span><span>AYLA — ALPHA 0.2 / MISSION 01</span></div></div>
+      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Toda evidência tem uma história. Nem toda história é verdade.</div><p data-t="heroDescription">Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">INICIAR INVESTIGAÇÃO</span><b>→</b></button><button class="ghost-button" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / <span data-t="missionCount">MISSÃO DEMONSTRATIVA</span></span><span>PT • EN • ES</span><span>AYLA — ALPHA 0.3 / MISSION 01</span></div></div>
       <div class="start-language"><span data-t="language">IDIOMA</span><button data-language="pt">PT</button><button data-language="en">EN</button><button data-language="es">ES</button></div>
     </section>
 
@@ -58,6 +60,7 @@
     <div id="engineError" class="engine-error hidden">3D engine unavailable. Check your connection and reload.</div>
   </div>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="characters-v3.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
