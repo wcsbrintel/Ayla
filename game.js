@@ -24,6 +24,27 @@
   const sceneCue={pt:{winston:'CONVERSA COM WINSTON',terminal:'ACESSANDO TERMINAL OSINT',map:'ANALISANDO ROTAS',board:'EXAMINANDO EVIDÊNCIAS',report:'PREPARANDO DOSSIÊ'},en:{winston:'BRIEFING WITH WINSTON',terminal:'ACCESSING OSINT TERMINAL',map:'ROUTE INTELLIGENCE',board:'REVIEWING THE EVIDENCE',report:'PREPARING CASE DOSSIER'},es:{winston:'REUNIÓN CON WINSTON',terminal:'ACCEDIENDO A TERMINAL OSINT',map:'ANÁLISIS DE RUTAS',board:'EXAMINANDO EVIDENCIAS',report:'PREPARANDO EXPEDIENTE'}};
   const stateKey='ayla-alpha-v01';
   const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen','restrictedScreen'];
+  // Missions remain available before login. A verified, approved Firebase
+  // account switches the same scene to free roaming, without signing out when
+  // the restricted communication window is closed.
+  let approvedSession=false;
+  function syncAccess(){
+    if(!$('missionHud'))return;
+    const inRoom=playerActive&&!visible('startScreen')&&!visible('introScreen');
+    $('missionHud').classList.toggle('hidden',!inRoom||approvedSession);
+    $('demoButton')?.classList.toggle('hidden',approvedSession);
+    if(approvedSession){
+      $('resumeButton')?.classList.add('hidden');
+      if(activePanel&&activePanel!=='restrictedScreen')closePanels();
+    }else{
+      updateHud();
+    }
+    updateHint();
+  }
+  window.addEventListener('ayla:auth-state',event=>{
+    approvedSession=event.detail?.approved===true;
+    syncAccess();
+  });
   function t(key){return ui[lang][key] ?? key;}
   function safe(str){return String(str).replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
@@ -39,9 +60,9 @@
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');}
   function renderIntro(){const frame=t('storyFrames')[introIndex];$('introHeading').textContent=frame[0];$('introBody').textContent=frame[1];$('artLabel').textContent=frame[2];$('introCounter').textContent=String(introIndex+1).padStart(2,'0')+' / 04';$('introDots').innerHTML=[0,1,2,3].map(i=>'<i class="'+(i===introIndex?'active':'')+'"></i>').join('');$('introArt').style.backgroundImage='linear-gradient(to bottom, transparent, rgba(2,15,12,.26)), url("assets/intro-'+(introIndex+1)+'.svg")';$('nextIntroLabel').textContent=introIndex===3?t('enter'):t('next');}
   function intro(){show('introScreen');introIndex=0;renderIntro();}
-  function launch(){show('');screens.forEach(hide);$('topbar').classList.remove('hidden');$('missionHud').classList.add('hidden');$('compass').classList.remove('hidden');$('mobileControls').classList.remove('hidden');playerActive=true;updateHud();updateHint();if(engine)engine.resize();}
+  function launch(){show('');screens.forEach(hide);$('topbar').classList.remove('hidden');$('missionHud').classList.toggle('hidden',approvedSession);$('compass').classList.remove('hidden');$('mobileControls').classList.remove('hidden');playerActive=true;updateHud();syncAccess();if(engine)engine.resize();}
   function progress(){return (mentorMet?1:0)+(sourcesReviewed.size===4?1:0)+(mapSeen?1:0)+(boardSeen?1:0);}
-  function updateHud(){const p=progress();$('progressFill').style.width=(25*p)+'%';$('progressText').textContent=p+' / 4';let objective='objectiveWinston';if(done)objective='objectiveComplete';else if(!mentorMet)objective='objectiveWinston';else if(sourcesReviewed.size!==4)objective='objectiveTerminal';else if(!mapSeen)objective='objectiveMap';else if(!boardSeen)objective='objectiveBoard';else objective='objectiveReport';$('objectiveText').textContent=t(objective);$('resumeButton').classList.toggle('hidden',p===0&&!done);}
+  function updateHud(){const p=progress();$('progressFill').style.width=(25*p)+'%';$('progressText').textContent=p+' / 4';let objective='objectiveWinston';if(done)objective='objectiveComplete';else if(!mentorMet)objective='objectiveWinston';else if(sourcesReviewed.size!==4)objective='objectiveTerminal';else if(!mapSeen)objective='objectiveMap';else if(!boardSeen)objective='objectiveBoard';else objective='objectiveReport';$('objectiveText').textContent=t(objective);$('resumeButton').classList.toggle('hidden',approvedSession||(p===0&&!done));}
   function markMentor(){mentorMet=true;save();updateHud();}
   function showDialog(){dialogIndex=0;if(winston?.setTalking)winston.setTalking(true);enterPanel('dialogScreen');renderDialog();}
   function renderDialog(){$('dialogBody').textContent=t('mentorLines')[dialogIndex];$('dialogNext').querySelector('span').textContent=t('dialogNext');}
@@ -56,11 +77,12 @@
   function showReport(){enterPanel('reportScreen');renderReport();}
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4;const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
   function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if(choices[0]===0&&choices[1]===1&&choices[2]===2){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');updateHud();}else{feedback.textContent=t('answerError');}}
-  function updateHint(){const on=playerActive&&!activePanel&&nearby;const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
+  function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
   function interact(id){
     if(!playerActive||activePanel||cinematicPending)return;
-    if(id!=='restricted')return;
-    cinematicMode='restricted';showRestricted();return;
+    if(!['winston','terminal','restricted','map','board','report'].includes(id))return;
+    if(approvedSession&&id!=='restricted')return;
+    if(id==='restricted'){cinematicMode='restricted';showRestricted();return;}
     cinematicPending=true;cinematicMode=id;patrolPaused=(id==='winston');
     const cue=$('cinematicCue');
     cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
@@ -77,7 +99,7 @@
 
   $('langButton').onclick=()=> $('langDrop').classList.toggle('hidden');
   document.querySelectorAll('[data-lang],[data-language]').forEach(el=>el.addEventListener('click',()=>setLanguage(el.dataset.lang||el.dataset.language)));
-  $('startButton').onclick=launch;
+  $('startButton').onclick=()=>approvedSession?launch():intro();
   $('resumeButton').onclick=launch;
   $('nextIntro').onclick=()=>{if(introIndex<3){introIndex++;renderIntro();}else launch();};
   $('skipIntro').onclick=launch;
@@ -288,7 +310,7 @@
     ayla=window.AYLACharacterFactory.create(B,scene,{name:'Ayla',x:0,z:1.2,isWinston:false});
     winston=window.AYLACharacterFactory.create(B,scene,{name:'Winston',x:-5.7,z:-2.3,isWinston:true});
     winston.root.rotation.y=1.3;
-    const points=[{id:'restricted',x:5.65,z:-3.18}];
+    const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'restricted',x:5.65,z:-3.18},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:-.4,z:-6.4}];
     // Patrol stays within the open west corridor, away from desks and workstations.
     const patrol=[[-5.7,-2.3],[-7.6,-2.3],[-8.6,-.6],[-7.4,1.0],[-5.8,.7]];
     let patrolIndex=1,patrolRest=0;
@@ -346,7 +368,7 @@
       room.tick(dt);
       // Cinematic focus when engaging a workstation or speaking with Winston.
       const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-.4,y:1.45,z:-6.0,radius:5.4,beta:1.14,alpha:-1.25}};
-      const shot=window.AYLARestricted?.authorized?.()
+      const shot=activePanel==='restrictedScreen'&&approvedSession
         ?{x:.45,y:2.95,z:-9.1,radius:8.5,beta:1.22,alpha:1.27}
         :(cinematicPending||activePanel)&&shots[cinematicMode];
       const target=shot?new B.Vector3(shot.x,shot.y,shot.z):new B.Vector3(ayla.root.position.x,1.46,ayla.root.position.z);
@@ -356,7 +378,7 @@
       if(!shot&&cinematicMode==='idle'){camera.radius+=((closeCamera?5.3:9.8)-camera.radius)*Math.min(1,dt*2.4);camera.beta+=(1.15-camera.beta)*Math.min(1,dt*1.8);}
       const winstonMarker=interactables.find(p=>p.id==='winston');
       if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonMarker.proxy){winstonMarker.proxy.position.x=winstonMarker.x;winstonMarker.proxy.position.z=winstonMarker.z;}if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
-      winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
+      winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{if(approvedSession&&p.id!=='restricted')return;const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
   }
   setupScene();
