@@ -10,7 +10,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
  const stage=document.getElementById('app');subtitle=document.createElement('div');subtitle.id='npcDialogue';subtitle.className='npc-dialogue hidden';subtitle.setAttribute('aria-live','off');stage.appendChild(subtitle);
  const crowd=[
   {id:'Theo',male:true,x:-6.9,z:-1.1,asset:'ryan_smart.glb',scale:1.02,role:'male',goal:{x:-1.93,z:1.12},home:{x:-7.0,z:-1.1},wait:0},
-  {id:'Clara',male:false,x:5.8,z:-1.6,asset:'emma_casual.glb',scale:1.02,role:'female',goal:{x:-.68,z:1.12},home:{x:5.8,z:-1.6},wait:0}
+  {id:'Clara',male:false,x:6.9,z:-1.05,asset:'emma_casual.glb',scale:1.02,role:'female',goal:{x:-.68,z:1.12},home:{x:6.9,z:-1.05},wait:0}
  ];
  function getOthers(actor){return [ayla,winston,...actors.map(x=>x.actor)].filter(a=>a&&a!==actor).map(a=>({x:a.root.position.x,z:a.root.position.z,r:.35}));}
  function nextPath(c,target){
@@ -43,7 +43,8 @@ function create(B,scene,nav,ayla,winston,canAct,language){
    const actor=window.AYLACharacterFactory.create(B,scene,{name:c.id,x:c.x,z:c.z,asset:c.asset,scale:c.scale,role:c.role,isWinston:c.male});
    actor.root.rotation.y=c.male?-1.15:0;
    c.actor=actor;c.route=[];c.index=0;
-   if(!c.male){actor.setSeated?.(true);c.sitting=true;}
+   // No pose is forced into a rig that lacks an authored sit clip.
+   c.sitting=false;
    return c;
  }));
  }
@@ -70,7 +71,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   dt=Math.min(dt,.05);t+=dt;
   if(mode==='work'){
     actors.forEach(c=>{c.actor.animate(dt,false,false,now);if(c.sitting)c.actor.setSeated?.(true);});
-    if(t>7.5){actors.find(c=>c.id==='Clara').actor.setSeated?.(false);actors.forEach(c=>c.sitting=false);setMode('meet');}
+    if(t>7.5){actors.forEach(c=>{c.actor.setSeated?.(false);c.sitting=false;});setMode('meet');}
   }else if(mode==='meet'){
     let allArrived=true;
     for(const c of actors){const m=moveAlong(c,c.goal,dt);c.actor.animate(dt,m.moving,false,now);if(!m.arrived)allArrived=false;}
@@ -83,7 +84,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
   }else if(mode==='return'){
     let all=true;
     for(const c of actors){const m=moveAlong(c,c.home,dt);c.actor.animate(dt,m.moving,false,now);if(!m.arrived)all=false;}
-    if(all||t>35){for(const c of actors){if(c.id==='Clara'){c.actor.setSeated?.(true);c.sitting=true;}}setMode('work');}
+    if(all||t>35){actors.forEach(c=>{c.actor.setSeated?.(false);c.sitting=false;});setMode('work');}
   }
  }
  return {update,actors,others:getOthers,ready:()=>started};
