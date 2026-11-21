@@ -1,0 +1,18 @@
+/* AYLA 0.6.1 — Cinematic visibility and verification fixes */
+#demoButton{min-width:104px;padding:9px 13px;font-size:10px;font-weight:800;letter-spacing:.07em;color:#e8ffd1;border:1px solid rgba(202,241,157,.65);background:rgba(68,112,80,.28);white-space:nowrap;cursor:pointer}
+#demoButton:hover,#demoButton:focus-visible{background:rgba(161,221,138,.32);box-shadow:0 0 18px rgba(167,231,129,.25)}
+/* Preserve a clear view of the actor and camera framing while the evidence panel is open. */
+#terminalScreen,#mapScreen,#boardScreen,#reportScreen{justify-content:flex-end;align-items:stretch;padding:80px 22px 18px 0;background:linear-gradient(90deg,rgba(2,15,18,.06),rgba(2,14,19,.3) 58%,rgba(1,11,16,.55));backdrop-filter:none}
+#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel{width:min(720px,54vw);max-height:100%;height:100%;border:1px solid rgba(165,228,194,.48);box-shadow:-25px 0 70px rgba(0,0,0,.55);animation:panelSlide .35s ease-out}
+#terminalScreen .terminal-layout{grid-template-columns:minmax(180px,34%) minmax(0,1fr)}
+#terminalScreen .terminal-document{padding:23px}
+#dialogScreen{align-items:flex-end;justify-content:flex-end;padding:75px 28px 24px;background:linear-gradient(90deg,transparent,rgba(2,17,23,.27));backdrop-filter:none}
+#dialogScreen .dialog-card{width:min(650px,51vw);grid-template-columns:165px minmax(0,1fr);min-height:230px;animation:panelSlide .35s ease-out}
+#dialogScreen .dialog-message{padding:23px}
+#dialogScreen .dialog-message p{font-size:13px;min-height:auto}
+.cinematic-cue{top:20%;z-index:26!important;letter-spacing:.1em}
+#renderCanvas.panel-active{filter:saturate(1.08) brightness(1.08)}
+@keyframes panelSlide{from{opacity:.5;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:900px){#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel{width:min(690px,75vw)}#dialogScreen .dialog-card{width:min(650px,72vw)}}
+@media(max-width:650px){#demoButton{min-width:0;font-size:9px;letter-spacing:0;padding:8px 7px}#terminalScreen,#mapScreen,#boardScreen,#reportScreen{padding:65px 0 0;background:rgba(0,10,15,.5)}#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel{width:100vw;max-height:calc(100dvh - 66px);height:100%;border-radius:12px 12px 0 0}#dialogScreen{justify-content:center;align-items:flex-end;padding:65px 8px 14px}#dialogScreen .dialog-card{width:100%;grid-template-columns:105px minmax(0,1fr)}#dialogScreen .dialog-message{padding:13px}#dialogScreen .dialog-message p{font-size:12px}.cinematic-cue{top:13%}}
+@media(prefers-reduced-motion:reduce){#terminalScreen .panel,#mapScreen .panel,#boardScreen .panel,#reportScreen .panel,#dialogScreen .dialog-card{animation:none}}
