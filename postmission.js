@@ -5,6 +5,7 @@
  'use strict';
  const copy={
   pt:{
+   levelUpTitle:'SUBIR DE NÍVEL',levelUpDescription:'Conclua as quatro missões para desbloquear o novo desdobramento do caso AY-003. Depois, converse com Winston para alcançar o Nível 2.',levelUpProgress:'MISSÕES CONCLUÍDAS',levelUpLocked:'EM PROGRESSO',levelUpReady:'PROMOÇÃO DISPONÍVEL',levelUpTalk:'CONVERSAR COM WINSTON',levelUpSee:'VER NOVO DESDOBRAMENTO',levelUpDone:'NÍVEL 2 CONQUISTADO',levelUpReview:'REVER DESDOBRAMENTO',levelUpPending:'AVALIAÇÃO PENDENTE',
    eventTag:'DESDOBRAMENTO · AY-003',
    eventTitle:'Interceptação em Guarulhos: 38 ovos de psitacídeos',
    eventLead:'A Receita Federal interceptou, no Aeroporto Internacional de Guarulhos (SP), um homem identificado como Ovir Mukalbahr ao tentar embarcar com 38 ovos de psitacídeos. Ele havia chegado de Foz do Iguaçu (PR).',
@@ -28,6 +29,7 @@
    ]
   },
   en:{
+   levelUpTitle:'LEVEL UP',levelUpDescription:'Complete all four missions to unlock a new development in case AY-003. Then speak with Winston to reach Level 2.',levelUpProgress:'MISSIONS COMPLETED',levelUpLocked:'IN PROGRESS',levelUpReady:'PROMOTION AVAILABLE',levelUpTalk:'SPEAK WITH WINSTON',levelUpSee:'VIEW NEW DEVELOPMENT',levelUpDone:'LEVEL 2 ACHIEVED',levelUpReview:'REVIEW DEVELOPMENT',levelUpPending:'DEBRIEF PENDING',
    eventTag:'CASE DEVELOPMENT · AY-003',
    eventTitle:'Guarulhos interception: 38 parrot eggs',
    eventLead:'Brazilian Federal Revenue (Customs) intercepted a man identified as Ovir Mukalbahr at Guarulhos International Airport, São Paulo, as he attempted to board with 38 parrot eggs. He had arrived from Foz do Iguaçu, Paraná.',
@@ -51,6 +53,7 @@
    ]
   },
   es:{
+   levelUpTitle:'SUBIR DE NIVEL',levelUpDescription:'Completa las cuatro misiones para desbloquear una novedad del caso AY-003. Después, habla con Winston para llegar al Nivel 2.',levelUpProgress:'MISIONES COMPLETADAS',levelUpLocked:'EN PROGRESO',levelUpReady:'ASCENSO DISPONIBLE',levelUpTalk:'HABLAR CON WINSTON',levelUpSee:'VER NOVEDAD',levelUpDone:'NIVEL 2 CONSEGUIDO',levelUpReview:'REVISAR NOVEDAD',levelUpPending:'EVALUACIÓN PENDIENTE',
    eventTag:'NOVEDAD DEL CASO · AY-003',
    eventTitle:'Intercepción en Guarulhos: 38 huevos de psitácidos',
    eventLead:'La Receita Federal de Brasil (Aduanas) interceptó en el Aeropuerto Internacional de Guarulhos, São Paulo, a un hombre identificado como Ovir Mukalbahr cuando intentaba embarcar con 38 huevos de psitácidos. Había llegado desde Foz do Iguaçu, Paraná.',
