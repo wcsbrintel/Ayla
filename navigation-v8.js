@@ -9,16 +9,13 @@
  function create(extra){
    const colliders=[
      {x:4.7,z:-3.3,w:3.55,d:1.75,tag:'desk-osint'},
-     {x:4.0,z:-6.4,w:3.85,d:1.95,tag:'desk-report'},
+     {x:8.0,z:-8.05,w:3.85,d:1.95,tag:'desk-report'},
      {x:5.4,z:4.0,w:3.45,d:1.85,tag:'desk-files'},
      {x:-6.0,z:5.6,w:3.55,d:1.75,tag:'desk-board'},
      {x:-9.55,z:2.0,w:2.3,d:.88,tag:'cabinet'},
      {x:10.7,z:-6.7,w:1.15,d:1.02,tag:'rack-1'},
      {x:10.7,z:-5.3,w:1.15,d:1.02,tag:'rack-2'},
      {x:10.7,z:-3.9,w:1.15,d:1.02,tag:'rack-3'},
-     {x:-9.9,z:-7.4,w:.58,d:.58,tag:'plant-1'},
-     {x:-.8,z:-7.4,w:.58,d:.58,tag:'plant-2'},
-     {x:8.3,z:-7.4,w:.58,d:.58,tag:'plant-3'},
      ...(extra||[])
    ];
    function circleBox(x,z,r,c){const xx=clamp(x,c.x-c.w*.5,c.x+c.w*.5),zz=clamp(z,c.z-c.d*.5,c.z+c.d*.5);return (x-xx)**2+(z-zz)**2<(r+.016)**2;}
