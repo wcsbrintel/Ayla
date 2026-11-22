@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="restricted-terminal.css?v=1.2.3">
   <link rel="stylesheet" href="observatory-wall.css?v=1.3.0">
   <link rel="stylesheet" href="intro-story.css?v=1.5.0">
-  <link rel="stylesheet" href="missions-v2.css?v=4.2.0">
+  <link rel="stylesheet" href="missions-v2.css?v=4.3.0">
 </head>
 <body>
   <div id="app">
@@ -48,12 +48,23 @@
 
     <section id="missionSelectScreen" class="screen overlay mission-select-screen hidden" aria-labelledby="missionSelectTitle">
       <header class="mission-select-top"><div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span></div><span id="missionSelectBadge">INVESTIGATION ARCHIVE / 04 MISSIONS</span><button id="missionSelectClose" class="ghost-button" type="button">←</button></header>
-      <div class="mission-select-main"><div class="eyebrow">AYLA / MISSION ARCHIVE</div><h1 id="missionSelectTitle">MISSÕES DE INVESTIGAÇÃO</h1><p id="missionSelectIntro">Selecione uma missão. Seu progresso é salvo.</p><div class="mission-select-grid">
+      <div class="mission-select-main"><div class="eyebrow">AYLA / MISSION ARCHIVE</div><h1 id="missionSelectTitle">MISSÕES DE INVESTIGAÇÃO</h1><p id="missionSelectIntro">Selecione uma missão. Seu progresso é salvo.</p><section id="aftermathArchive" class="aftermath-archive level-up-card" aria-labelledby="aftermathArchiveTitle">
+        <div class="level-up-seal" aria-hidden="true">✧</div>
+        <div class="level-up-main">
+          <div class="level-up-heading"><span class="aftermath-archive-code">AYLA / PROGRESSÃO</span><span id="aylaMissionLevel">NÍVEL 1 · INVESTIGADORA</span></div>
+          <h2 id="aftermathArchiveTitle">SUBIR DE NÍVEL</h2>
+          <p id="aftermathArchiveDescription">Complete as quatro missões e converse com Winston para alcançar o Nível 2.</p>
+          <div class="level-up-meter" role="progressbar" aria-label="Missões concluídas" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0"><span id="aylaLevelProgressFill"></span></div>
+          <div class="level-up-bottom"><span id="aylaLevelProgressText">0 / 4 MISSÕES</span><span id="aftermathArchiveStatus">EM PROGRESSO</span></div>
+        </div>
+        <button id="aftermathArchiveButton" class="primary-button" type="button" disabled>CONCLUA A MISSÃO 4</button>
+      </section>
+      <div class="mission-select-grid">
         <article class="mission-choice" id="missionCard1"><div class="mission-choice-number">01 / AY-001</div><div class="mission-choice-art mission-choice-art-one" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus1">DISPONÍVEL</span><h2 id="missionTitle1">O Manifesto Inconsistente</h2><p id="missionDescription1"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay1">INICIAR</button><button class="ghost-button hidden" type="button" id="missionReplay1">REJOGAR</button></div></div></article>
         <article class="mission-choice" id="missionCard2"><div class="mission-choice-number">02 / AY-002</div><div class="mission-choice-art mission-choice-art-two" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus2">BLOQUEADA</span><h2 id="missionTitle2">O Código Duplicado</h2><p id="missionDescription2"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay2" disabled>DESBLOQUEAR</button><button class="ghost-button hidden" type="button" id="missionReplay2">REJOGAR</button></div></div></article>
         <article class="mission-choice" id="missionCard3"><div class="mission-choice-number">03 / AY-003</div><div class="mission-choice-art mission-choice-art-three" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus3">BLOQUEADA</span><h2 id="missionTitle3">A Oferta Internacional</h2><p id="missionDescription3"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay3" disabled>DESBLOQUEAR</button><button class="ghost-button hidden" type="button" id="missionReplay3">REJOGAR</button></div></div></article>
         <article class="mission-choice" id="missionCard4"><div class="mission-choice-number">04 / AY-004</div><div class="mission-choice-art mission-choice-art-four" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus4">BLOQUEADA</span><h2 id="missionTitle4">As Seis Travessias</h2><p id="missionDescription4"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay4" disabled>DESBLOQUEAR</button><button class="ghost-button hidden" type="button" id="missionReplay4">REJOGAR</button></div></div></article>
-      </div><div id="aftermathArchive" class="aftermath-archive hidden"><span class="aftermath-archive-code">AY-003 / CASE DEVELOPMENT</span><div><strong id="aftermathArchiveTitle"></strong><p id="aftermathArchiveDescription"></p></div><span id="aftermathArchiveStatus"></span><button id="aftermathArchiveButton" class="primary-button" type="button"></button></div><div class="mission-progress-tools"><span id="missionProgressNotice">Progresso salvo neste dispositivo</span><button id="missionExport" type="button" class="ghost-button">COPIAR CÓDIGO DE PROGRESSO</button><button id="missionImport" type="button" class="ghost-button">IMPORTAR PROGRESSO</button></div></div>
+      </div><div class="mission-progress-tools"><span id="missionProgressNotice">Progresso salvo neste dispositivo</span><button id="missionExport" type="button" class="ghost-button">COPIAR CÓDIGO DE PROGRESSO</button><button id="missionImport" type="button" class="ghost-button">IMPORTAR PROGRESSO</button></div></div>
     </section>
 
     <section id="startScreen" class="screen overlay start-screen hidden">
@@ -211,9 +222,9 @@
   <script src="observatory-wall.js?v=1.3.5"></script>
   <script src="mission3.js?v=3.0.0"></script>
   <script src="mission4.js?v=4.1.0"></script>
-  <script src="postmission.js?v=4.2.0"></script>
+  <script src="postmission.js?v=4.3.0"></script>
   <script src="missions-v2.js?v=4.2.0"></script>
-  <script src="game.js?v=4.2.0"></script>
+  <script src="game.js?v=4.3.0"></script>
   <script type="module" src="restricted-terminal.js?v=1.3.1"></script>
   <script>
     (function(){
