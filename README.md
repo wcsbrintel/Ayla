@@ -1,3 +1,13 @@
+## AYLA 5.0 — Advanced SOCMINT: The Hidden Farm
+
+- **AY-005 — The Hidden Farm** unlocks after completing AY-004, reading the AY-003 follow-up, and receiving **Level 2 / Intelligence Analyst** from Winston. It remains independently replayable and uses the same browser and export/import progress system.
+- This is a **fictional in-game visual-location puzzle**, not an identification of a real person's property. The town **Vale das Garças**, sector **C4**, plot **07**, and alternatives **Campo Verde / A2 / 11** and **Serra Azul / B3 / 02** are invented references with no coordinates linked to real property.
+- Two original generated and locally hosted photographic clues (`assets/mission5-social-1.webp` and `assets/mission5-social-2.webp`) depict the gate and aviary from different angles. They share a **yellow footbridge, red water tower, blue barn, and creek**. Four records in the OSINT terminal explain source provenance, feature correlation and a fictional land-register comparison.
+- The terminal and fictional map provide a **direct, explicitly external link** to [Google Lens](https://lens.google.com/), [Google Earth](https://earth.google.com/web/) and [OpenStreetMap](https://www.openstreetmap.org/). These websites open in another tab and do **not** query game data automatically. No invented scene should be presented as a real Lens match or satellite site.
+- Inside the integrated SOCMINT map workspace, the player selects the matching **town and plot**; the verified pairing is stored in `m5Town`, `m5Plot` and `m5Solved`. The final dossier is disabled until the player has solved the grid alongside the normal four-source, Winston, map and evidence-board checkpoints.
+- Available in PT/EN/ES. Case material is in `mission5.js`, page styling in `missions-v2.css`, mission state in `missions-v2.js` and gameplay integration in `game.js`.
+- The experience does not offer workflows for pinpointing an actual private property from social posts. If a real suspected wildlife offense is being investigated, attribution, location, identity and criminal activity require lawful independent verification by responsible authorities.
+
 ## AYLA 4.2 — Post-AY-004 case development and promotion
 
 - After completing the **AY-004** dossier, a new **AY-003 case-development bulletin** becomes accessible both from the mission-completion screen and the mission archive; it is not a fifth mission.
