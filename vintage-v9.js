@@ -59,70 +59,73 @@ function install(B,scene){
  const clock=B.MeshBuilder.CreatePlane('v9-antique-clock',{width:.9,height:.9},scene);clock.position.set(6.1,4.15,9.37);clock.material=new B.StandardMaterial('v9-clockmaterial',scene);clock.material.diffuseTexture=face;clock.material.backFaceCulling=false;
  // Warm wall-mounted lights (non-neon, not over-exposed).
  for(const x of [-8,-2,4,9]){let l=new B.PointLight('v9-candle-wall-light',new B.Vector3(x,3.5,8.65),scene);l.diffuse=B.Color3.FromHexString('#f1c99a');l.intensity=.48;l.range=5.5;box('sconce-base',.26,.36,.12,x,3.62,9.20,brass);sphere('opal-lamp',.24,x,3.65,9.11,cloth);}
- // Four approved AYLA dossier posters. Keep the original walnut/gold
- // frames, but use native Babylon image textures instead of asynchronously
- // copying a quadrant from the atlas into mutable DynamicTextures.
- // This also eliminates a black texture on WebGL devices where updating a
- // DynamicTexture after first upload fails or renders as the back face.
+ // Four photographic dossier frames on the west wall.
+ // Prefer direct image textures on double-sided planes, in front of any frame geometry.
+ // A drawn fallback is always present until the file has loaded.
  scene.meshes.filter(m=>/^v8-poster-|^v8-poster-frame-/.test(m.name))
    .forEach(m=>m.setEnabled(false));
  const gallery=[
-  {title:'ARA MACAO',z:-7.2,file:'ara-macao.webp'},
-  {title:'PANTHERA ONCA',z:-3.55,file:'panthera-onca.webp'},
-  {title:'PODOCNEMIS EXPANSA',z:0,file:'podocnemis-expansa.webp'},
-  {title:'PERSON OF INTEREST',z:3.56,file:'person-of-interest.webp'}
+   {title:'ARA MACAO',z:-7.2,file:'ara-macao.webp'},
+   {title:'PANTHERA ONCA',z:-3.55,file:'panthera-onca.webp'},
+   {title:'PODOCNEMIS EXPANSA',z:0,file:'podocnemis-expansa.webp'},
+   {title:'PERSON OF INTEREST',z:3.56,file:'person-of-interest.webp'}
  ];
  function fallbackPoster(info,i){
-  const fallback=new B.DynamicTexture('ayla-poster-backup-'+i,{width:512,height:704},scene,false);
-  const ctx=fallback.getContext();
-  ctx.fillStyle='#d8cbb0';ctx.fillRect(0,0,512,704);
-  ctx.strokeStyle='#55442f';ctx.lineWidth=16;ctx.strokeRect(17,17,478,670);
-  ctx.fillStyle='#382e25';ctx.font='bold 20px Georgia';ctx.textAlign='center';
-  ctx.fillText('AYLA / INTELLIGENCE ARCHIVE',256,80);
-  ctx.font='bold 31px Georgia';ctx.fillText(info.title,256,352);
-  ctx.font='21px Georgia';ctx.fillText('FIELD REFERENCE / DOSSIER',256,406);
-  fallback.update(false);
-  return fallback;
+   const fallback=new B.DynamicTexture('ayla-gallery-fallback-'+i,{width:512,height:704},scene,false);
+   const ctx=fallback.getContext();
+   ctx.fillStyle='#d6c5a1';ctx.fillRect(0,0,512,704);
+   ctx.fillStyle='#28322a';ctx.fillRect(20,20,472,664);
+   ctx.strokeStyle='#af9162';ctx.lineWidth=8;ctx.strokeRect(31,31,450,642);
+   ctx.textAlign='center';ctx.fillStyle='#e9dec3';
+   ctx.font='bold 22px Georgia';ctx.fillText('AYLA / INTELLIGENCE ARCHIVE',256,85);
+   ctx.font='bold 31px Georgia';ctx.fillText(info.title,256,344);
+   ctx.font='18px Georgia';ctx.fillText('FIELD REFERENCE / DOSSIER',256,390);
+   fallback.hasAlpha=false;fallback.update(false);
+   return fallback;
  }
  gallery.forEach((info,i)=>{
-  const z=info.z;
-  box('frame-'+i,.15,2.92,2.27,-11.53,2.72,z,wood);
-  box('frame-gold-'+i,.02,2.72,2.10,-11.42,2.72,z,brass);
-  // The visible surface must be in front of both solid frame boxes.
-  // The wall is at negative X and the room/camera at positive X.
-  const plane=B.MeshBuilder.CreatePlane('v9-archive-poster-'+i,{
-    width:2.02,height:2.65,sideOrientation:B.Mesh.DOUBLESIDE
-  },scene);
-  plane.position.set(-11.315,2.72,z);
-  plane.rotation.y=Math.PI/2;
-  plane.isPickable=false;
-  const mat=new B.StandardMaterial('ayla-gallery-mat-'+i,scene);
-  mat.backFaceCulling=false;
-  mat.twoSidedLighting=true;
-  mat.disableLighting=true;
-  mat.diffuseColor=new B.Color3(0,0,0);
-  mat.emissiveColor=new B.Color3(1,1,1);
-  mat.emissiveTexture=fallbackPoster(info,i);
-  plane.material=mat;
-  // File-per-poster loading prevents atlas UV/canvas races and makes every
-  // portrait independently recoverable. On error, keep the readable fallback.
-  const url='assets/posters/'+info.file+'?v=1.3.9';
-  const texture=new B.Texture(url,scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,
-    ()=>{
-      if(plane.isDisposed())return;
-      texture.wrapU=B.Texture.CLAMP_ADDRESSMODE;
-      texture.wrapV=B.Texture.CLAMP_ADDRESSMODE;
-      // The west-wall faces east; correcting U only preserves upright images.
-      texture.uScale=-1;texture.uOffset=1;
-      const previous=mat.emissiveTexture;
-      mat.emissiveTexture=texture;
-      if(previous&&previous!==texture)previous.dispose();
-      mat.markAsDirty(B.Material.TextureDirtyFlag);
-    },
-    (message,exception)=>{
-      console.warn('[AYLA] Poster '+info.file+' unavailable:',message||exception);
-    }
-  );
+   const z=info.z;
+   box('frame-'+i,.15,2.92,2.27,-11.53,2.72,z,wood);
+   box('frame-gold-'+i,.024,2.75,2.13,-11.42,2.72,z,brass);
+   const plane=B.MeshBuilder.CreatePlane('v9-archive-poster-'+i,{
+     width:2.05,height:2.67,sideOrientation:B.Mesh.DOUBLESIDE
+   },scene);
+   // West wall faces the room at +X. Place the image ahead of the solid backing.
+   plane.position.set(-11.245,2.72,z);
+   plane.rotation.y=Math.PI/2;
+   plane.isPickable=false;
+   plane.alwaysSelectAsActiveMesh=true;
+   plane.renderingGroupId=2;
+   const m=new B.StandardMaterial('ayla-gallery-image-'+i,scene);
+   m.backFaceCulling=false;
+   m.twoSidedLighting=true;
+   m.disableLighting=true;
+   m.diffuseColor=new B.Color3(1,1,1);
+   m.emissiveColor=new B.Color3(.85,.85,.85);
+   m.specularColor=new B.Color3(0,0,0);
+   const backup=fallbackPoster(info,i);
+   m.diffuseTexture=backup;
+   m.emissiveTexture=backup;
+   plane.material=m;
+   const url='assets/posters/'+info.file+'?v=1.5.1';
+   const tex=new B.Texture(url,scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,
+     ()=>{
+       if(plane.isDisposed())return;
+       tex.wrapU=B.Texture.CLAMP_ADDRESSMODE;
+       tex.wrapV=B.Texture.CLAMP_ADDRESSMODE;
+       // Prevent mirror reversal of portrait text on the inward-facing wall.
+       tex.uScale=-1;tex.uOffset=1;
+       tex.hasAlpha=false;
+       m.diffuseTexture=tex;
+       m.emissiveTexture=tex;
+       m.markAsDirty(B.Material.TextureDirtyFlag);
+       backup.dispose();
+       console.info('[AYLA] Gallery image ready:',info.file);
+     },
+     (message,error)=>{
+       console.warn('[AYLA] Gallery image load failed:',info.file,message||error);
+     }
+   );
  });
  // Fix logo reflection seen in the previous version.
  const rug=scene.getMeshByName('v8-observatory-rug');if(rug?.material?.diffuseTexture){rug.material.diffuseTexture.uScale=-1;rug.material.diffuseTexture.uOffset=1;}
