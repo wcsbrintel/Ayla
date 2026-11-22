@@ -18,14 +18,13 @@
  let engine=null,scene=null,camera=null,B=null,allowed=false,focused=false,ready=false,lang='en',loaded=false;
  const point=(x,y,z)=>new B.Vector3(x,y,z);
  const center=()=>point(-1.55,2.93,-9.045);
- // The wall is viewed from positive Z, looking toward negative Z.
- // Screen-right must follow increasing world X and screen-up increasing Y.
- // Keep the HTML iframe corners in the SAME order as an ordinary flat screen:
- // top-left, top-right, bottom-right, bottom-left. Reversing both axes here
- // used to rotate the Observatory's text and its controls 180 degrees.
+ // Babylon's projection views this wall with horizontal X reversed.
+ // Map iframe top-left to the world-right corner and top-right to world-left.
+ // Preserve Y: the latest screenshot confirms labels are upright vertically,
+ // but mirrored horizontally. This corrects text, controls and geography.
  const corners=()=>[
-  point(-4.27,4.70,-9.045),point(1.17,4.70,-9.045),
-  point(1.17,.88,-9.045),point(-4.27,.88,-9.045)
+  point(1.17,4.70,-9.045),point(-4.27,4.70,-9.045),
+  point(-4.27,.88,-9.045),point(1.17,.88,-9.045)
  ];
  function solve(matrix,values){
   const a=matrix.map((row,i)=>[...row,values[i]]);
