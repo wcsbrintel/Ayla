@@ -141,3 +141,37 @@
 .promotion-actions button{padding:14px 20px}
 .mission-final-buttons #aftermathFinalButton{border:1px solid #aee889}
 @media(max-width:680px){.aftermath-top{height:auto;min-height:62px;padding:14px}.aftermath-route{flex-direction:column;align-items:flex-start}.aftermath-route>span{transform:rotate(90deg);font-size:28px}.aftermath-facts{grid-template-columns:1fr}.aftermath-actions button,.promotion-actions button{width:100%}.aftermath-archive{flex-direction:column;align-items:stretch}.aftermath-archive>div{min-width:0}}
+
+/* AYLA 4.3 — permanent promotion pathway in mission archive */
+.mission-select-main>.level-up-card{
+  display:flex!important;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:22px;
+  margin:28px 0 26px;
+  padding:22px 24px;
+  background:linear-gradient(110deg,#173528,#0c2521 76%);
+  border:1px solid #9ed28a80;
+  border-left:5px solid #a7e77f;
+  border-radius:13px;
+  box-shadow:0 12px 28px #0003;
+}
+.level-up-card.is-locked{opacity:1}
+.level-up-card.is-ready{border-color:#b7ee8f;box-shadow:0 0 26px #9dec7140}
+.level-up-card.is-promoted{border-color:#d8bf74;box-shadow:0 0 35px #d5b97026}
+.level-up-seal{flex:0 0 68px;height:68px;display:grid;place-items:center;border:2px solid #acdf89;border-radius:50%;font-size:41px;color:#c7f3a2;background:#294b35}
+.level-up-card.is-promoted .level-up-seal{border-color:#e9d389;color:#f4db9a;background:#453a2a}
+.level-up-main{min-width:0;flex:1}
+.level-up-heading{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.level-up-heading #aylaMissionLevel{font:700 11px 'Space Grotesk';color:#d3eecc;letter-spacing:.05em}
+.level-up-card h2{margin:7px 0!important;color:#f6fff2;font:800 clamp(22px,2.5vw,34px)/1.12 'Space Grotesk'}
+.level-up-card p{font:500 13px/1.5 'DM Sans';color:#b7d8c2;margin:0 0 14px}
+.level-up-meter{height:7px;overflow:hidden;background:#315549;border-radius:9px}
+.level-up-meter span{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,#66c273,#bde986);transition:width .3s ease}
+.level-up-card.is-promoted .level-up-meter span{background:linear-gradient(90deg,#d1b36b,#f6e1a2)}
+.level-up-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:9px;color:#a9cdb1;font:700 10px 'Space Grotesk';letter-spacing:.06em}
+.level-up-bottom #aftermathArchiveStatus{color:#ccec9c}
+.level-up-card .primary-button{flex:0 0 auto;min-width:190px;padding:13px 18px;justify-content:center}
+.level-up-card .primary-button:disabled{opacity:.6;filter:grayscale(.5);cursor:not-allowed}
+@media(max-width:850px){.mission-select-main>.level-up-card{flex-wrap:wrap;gap:14px}.level-up-card .primary-button{width:100%}}
+@media(max-width:520px){.mission-select-main>.level-up-card{padding:16px;align-items:flex-start}.level-up-seal{flex-basis:44px;height:44px;font-size:25px}.level-up-main{flex:1 1 calc(100% - 65px)}.level-up-heading{display:block}.level-up-heading #aylaMissionLevel{display:block;margin-top:7px}.level-up-card h2{font-size:22px}}
