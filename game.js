@@ -186,10 +186,10 @@
   }
 
   function renderMissionArchive(){
-    const fields={missionSelectTitle:'header',missionSelectIntro:'intro',missionTitle1:'m1',missionTitle2:'m2',missionTitle3:'m3',missionTitle4:'m4',missionDescription1:'m1Description',missionDescription2:'m2Description',missionDescription3:'m3Description',missionDescription4:'m4Description',missionProgressNotice:'local',missionExport:'backup',missionImport:'restore',missionSelectClose:'back'};
+    const fields={missionSelectTitle:'header',missionSelectIntro:'intro',missionTitle1:'m1',missionTitle2:'m2',missionTitle3:'m3',missionTitle4:'m4',missionTitle5:'m5',missionDescription1:'m1Description',missionDescription2:'m2Description',missionDescription3:'m3Description',missionDescription4:'m4Description',missionDescription5:'m5Description',missionProgressNotice:'local',missionExport:'backup',missionImport:'restore',missionSelectClose:'back'};
     for(const [id,key] of Object.entries(fields))if($(id))$(id).textContent=mi(key);
     renderAftermathArchive();
-    for(let i=1;i<=4;i++){
+    for(let i=1;i<=5;i++){
       const id='AY-00'+i,state=missions.load(id),locked=!missions.unlocked(id),completed=state.completed;
       const started=state.mentorMet||state.mapSeen||state.boardSeen||state.sources.length>0;
       $('missionCard'+i).classList.toggle('is-locked',locked);
@@ -199,7 +199,7 @@
       $('missionPlay'+i).disabled=locked;
       $('missionReplay'+i).classList.toggle('hidden',!completed);
       $('missionReplay'+i).textContent=mi('replay');
-      $('missionDescription'+i).textContent=mi('m'+i+'Description')+(locked?' '+mi(i===4?'unlock4':i===3?'unlock3':'unlock'):'');
+      $('missionDescription'+i).textContent=mi('m'+i+'Description')+(locked?' '+mi(i===5?'unlock5':i===4?'unlock4':i===3?'unlock3':'unlock'):'');
     }
   }
   function openMissionArchive(){
@@ -210,7 +210,7 @@
     show('missionSelectScreen');renderMissionArchive();
   }
   function selectMission(id,replay=false){
-    if(!missions?.unlocked(id)){notify(mi(id==='AY-004'?'needFinish4':id==='AY-003'?'needFinish3':'needFinish'));return;}
+    if(!missions?.unlocked(id)){notify(mi(id==='AY-005'?'needFinish5':id==='AY-004'?'needFinish4':id==='AY-003'?'needFinish3':'needFinish'));return;}
     if(activePanel)closePanels();
     missions.choose(id);activeMission=id;restore();
     if(replay)resetMission();
@@ -223,7 +223,7 @@
     $('finalMissionCode').textContent=activeMission;
     $('finalScreen').querySelector('[data-t="finalHeading"]').textContent=t('finalHeading');
     $('finalScreen').querySelector('[data-t="finalBody"]').textContent=t('finalBody');
-    const nextMission=activeMission==='AY-001'?'AY-002':activeMission==='AY-002'?'AY-003':activeMission==='AY-003'?'AY-004':null;
+    const nextMission=activeMission==='AY-001'?'AY-002':activeMission==='AY-002'?'AY-003':activeMission==='AY-003'?'AY-004':activeMission==='AY-004'&&missions.unlocked('AY-005')?'AY-005':null;
     $('missionNextButton').classList.toggle('hidden',!nextMission||!missions.unlocked(nextMission));
     $('missionNextButton').textContent=mi('next');$('missionReturnButton').textContent=mi('select');
     $('aftermathFinalButton').classList.toggle('hidden',activeMission!=='AY-004'||!missions.aftermath().unlocked);
@@ -264,14 +264,46 @@
   }
   function showSources(){selectedSource=-1;enterPanel('terminalScreen');renderSources();}
   function showRestricted(){enterPanel('restrictedScreen');if(window.AYLARestricted)window.AYLARestricted.open(lang);else $('restrictedStatus').textContent={pt:'Conectando ao Firebase...',en:'Connecting to Firebase...',es:'Conectando a Firebase...'}[lang];}
-  function renderSources(){const s=t('sources');$('sourceCount').textContent=sourcesReviewed.size+'/4';$('sourceList').innerHTML=s.map((d,i)=>'<button type="button" class="source-button '+(i===selectedSource?'active':'')+'" data-source="'+i+'"><span class="src-id">'+safe(d.id)+' '+(sourcesReviewed.has(i)?'<span class="reviewed">✓</span>':'')+'</span><strong>'+safe(d.title)+'</strong><small>'+safe(d.cat)+'</small></button>').join('');$('sourceList').querySelectorAll('[data-source]').forEach(btn=>btn.onclick=()=>{selectedSource=Number(btn.dataset.source);renderSources();});if(selectedSource===-1){$('sourceDetail').innerHTML='<div class="empty-state">'+safe(t('selectSource'))+'</div>';return;}const d=s[selectedSource];$('sourceDetail').innerHTML='<div class="doc-meta"><span>'+safe(d.id)+'</span><span>'+safe(d.cat)+'</span><span>'+safe(d.date)+'</span></div><h3 class="doc-title">'+safe(d.title)+'</h3>'+(activeMission==='AY-004'?(window.AYLAMissionFour?.renderEvidence(selectedSource,lang)||''):activeMission==='AY-003'?(window.AYLAMissionThree?.renderEvidence(selectedSource,lang)||''):'')+'<p class="doc-body">'+safe(d.body)+'</p><div class="doc-note"><strong>'+safe(t('docAlert'))+'</strong><br>'+safe(d.note)+'</div><div class="doc-meta">'+safe(t('docClassification'))+'</div><div class="doc-actions"><button type="button" id="reviewSourceButton" class="primary-button"><span>'+(sourcesReviewed.has(selectedSource)?safe(t('viewed'))+' ✓':safe(t('markReviewed')))+' </span>→</button></div>';$('reviewSourceButton').onclick=()=>{sourcesReviewed.add(selectedSource);save();updateHud();notify(sourcesReviewed.size===4?t('readyToast'):t('sourceToast'));renderSources();};}
+  function renderSources(){const s=t('sources');$('sourceCount').textContent=sourcesReviewed.size+'/4';$('sourceList').innerHTML=s.map((d,i)=>'<button type="button" class="source-button '+(i===selectedSource?'active':'')+'" data-source="'+i+'"><span class="src-id">'+safe(d.id)+' '+(sourcesReviewed.has(i)?'<span class="reviewed">✓</span>':'')+'</span><strong>'+safe(d.title)+'</strong><small>'+safe(d.cat)+'</small></button>').join('');$('sourceList').querySelectorAll('[data-source]').forEach(btn=>btn.onclick=()=>{selectedSource=Number(btn.dataset.source);renderSources();});if(selectedSource===-1){$('sourceDetail').innerHTML='<div class="empty-state">'+safe(t('selectSource'))+'</div>';return;}const d=s[selectedSource];$('sourceDetail').innerHTML='<div class="doc-meta"><span>'+safe(d.id)+'</span><span>'+safe(d.cat)+'</span><span>'+safe(d.date)+'</span></div><h3 class="doc-title">'+safe(d.title)+'</h3>'+(activeMission==='AY-005'?(window.AYLAMissionFive?.renderEvidence(selectedSource,lang)||''):activeMission==='AY-004'?(window.AYLAMissionFour?.renderEvidence(selectedSource,lang)||''):activeMission==='AY-003'?(window.AYLAMissionThree?.renderEvidence(selectedSource,lang)||''):'')+'<p class="doc-body">'+safe(d.body)+'</p><div class="doc-note"><strong>'+safe(t('docAlert'))+'</strong><br>'+safe(d.note)+'</div><div class="doc-meta">'+safe(t('docClassification'))+'</div><div class="doc-actions"><button type="button" id="reviewSourceButton" class="primary-button"><span>'+(sourcesReviewed.has(selectedSource)?safe(t('viewed'))+' ✓':safe(t('markReviewed')))+' </span>→</button></div>';$('reviewSourceButton').onclick=()=>{sourcesReviewed.add(selectedSource);save();updateHud();notify(sourcesReviewed.size===4?t('readyToast'):t('sourceToast'));renderSources();};}
   function showMap(){mapSeen=true;save();updateHud();enterPanel('mapScreen');renderMap();}
-  function renderMap(){const mapWrap=document.querySelector('#mapScreen .map-svg-wrap');if(mapWrap){mapWrap.classList.toggle('mission-two-map',activeMission==='AY-002');mapWrap.classList.toggle('mission-three-map',activeMission==='AY-003');mapWrap.classList.toggle('mission-four-map',activeMission==='AY-004');mapWrap.dataset.caseLabel=activeMission==='AY-004'?({pt:'SANTA CATARINA → 6 VIAGENS À ÁSIA EM 2025 · PASSAGEM POR HONG KONG / CARGA NÃO VERIFICADA',en:'SANTA CATARINA → SIX ASIA VOYAGES IN 2025 · HONG KONG PORT CALL / CARGO UNVERIFIED',es:'SANTA CATARINA → SEIS VIAJES A ASIA EN 2025 · ESCALA EN HONG KONG / CARGA SIN VERIFICAR'}[lang]||''):activeMission==='AY-003'?({pt:'PERFIL ONLINE → CONTATO ••••6142 → PROPOSTA VIA AEROPORTO / TRAJETO NÃO COMPROVADO',en:'SOCIAL PROFILE → CONTACT ••••6142 → AIRPORT PROPOSAL / NO JOURNEY VERIFIED',es:'PERFIL SOCIAL → CONTACTO ••••6142 → PROPUESTA EN AEROPUERTO / VIAJE SIN VERIFICAR'}[lang]||''):({pt:'SERRA CLARA · LOCAL DE FISCALIZAÇÃO DOCUMENTADO / ORIGEM E DESTINO NÃO CONFIRMADOS',en:'SERRA CLARA · DOCUMENTED INSPECTION SITE / ORIGIN AND DESTINATION UNVERIFIED',es:'SERRA CLARA · LUGAR DE INSPECCIÓN DOCUMENTADO / ORIGEN Y DESTINO SIN CONFIRMAR'}[lang]||'');}$('mapLegend').innerHTML='<div class="legend-item"><strong>● '+safe(t('legendConfirmed'))+'</strong>'+safe(t('legendConfirmedText'))+'</div><div class="legend-item warn"><strong>◌ '+safe(t('legendSuspected'))+'</strong>'+safe(t('legendSuspectedText'))+'</div>';}
+  function renderMap(){const mapWrap=document.querySelector('#mapScreen .map-svg-wrap');if(mapWrap){mapWrap.classList.toggle('mission-two-map',activeMission==='AY-002');mapWrap.classList.toggle('mission-three-map',activeMission==='AY-003');mapWrap.classList.toggle('mission-four-map',activeMission==='AY-004');mapWrap.classList.toggle('mission-five-map',activeMission==='AY-005');mapWrap.dataset.caseLabel=activeMission==='AY-005'?({pt:'MAPA DO JOGO · CIDADES E LOTES INVENTADOS',en:'GAME MAP · INVENTED TOWNS AND PLOTS',es:'MAPA DEL JUEGO · CIUDADES Y PARCELAS INVENTADAS'}[lang]||''):activeMission==='AY-004'?({pt:'SANTA CATARINA → 6 VIAGENS À ÁSIA EM 2025 · PASSAGEM POR HONG KONG / CARGA NÃO VERIFICADA',en:'SANTA CATARINA → SIX ASIA VOYAGES IN 2025 · HONG KONG PORT CALL / CARGO UNVERIFIED',es:'SANTA CATARINA → SEIS VIAJES A ASIA EN 2025 · ESCALA EN HONG KONG / CARGA SIN VERIFICAR'}[lang]||''):activeMission==='AY-003'?({pt:'PERFIL ONLINE → CONTATO ••••6142 → PROPOSTA VIA AEROPORTO / TRAJETO NÃO COMPROVADO',en:'SOCIAL PROFILE → CONTACT ••••6142 → AIRPORT PROPOSAL / NO JOURNEY VERIFIED',es:'PERFIL SOCIAL → CONTACTO ••••6142 → PROPUESTA EN AEROPUERTO / VIAJE SIN VERIFICAR'}[lang]||''):({pt:'SERRA CLARA · LOCAL DE FISCALIZAÇÃO DOCUMENTADO / ORIGEM E DESTINO NÃO CONFIRMADOS',en:'SERRA CLARA · DOCUMENTED INSPECTION SITE / ORIGIN AND DESTINATION UNVERIFIED',es:'SERRA CLARA · LUGAR DE INSPECCIÓN DOCUMENTADO / ORIGEN Y DESTINO SIN CONFIRMAR'}[lang]||'');}$('mapLegend').innerHTML='<div class="legend-item"><strong>● '+safe(t('legendConfirmed'))+'</strong>'+safe(t('legendConfirmedText'))+'</div><div class="legend-item warn"><strong>◌ '+safe(t('legendSuspected'))+'</strong>'+safe(t('legendSuspectedText'))+'</div>';renderMissionFiveMap();}
+
+  function renderMissionFiveMap(){
+    const target=$('mapScreen').querySelector('.map-space');
+    if(!target)return;
+    let root=$('m5-workspace');
+    if(activeMission!=='AY-005'){
+      if(root)root.remove();
+      return;
+    }
+    if(!root){
+      root=document.createElement('div');
+      root.id='m5-workspace';
+      target.appendChild(root);
+    }
+    const cfg=window.AYLAMissionFive;
+    root.innerHTML=cfg.renderMap(lang,missions.load('AY-005'));
+    const btn=root.querySelector('#m5-check');
+    if(!btn)return;
+    btn.onclick=()=>{
+      const town=root.querySelector('#m5-town').value;
+      const plot=root.querySelector('#m5-plot').value;
+      const text=cfg.copy(lang);
+      if(!town||!plot){root.querySelector('#m5-result').textContent=text.missing;return;}
+      const solved=cfg.valid(town,plot);
+      missions.save('AY-005',{m5Town:town,m5Plot:plot,m5Solved:solved});
+      root.querySelector('#m5-result').textContent=solved?text.success:text.failure;
+      root.classList.toggle('m5-correct',solved);
+      updateHud();
+      if(solved)notify(text.success);
+    };
+  }
+
   function showBoard(){boardSeen=true;save();updateHud();enterPanel('boardScreen');renderBoard();}
   function renderBoard(){const all=[{key:'evidenceConfirmed',body:'evidenceObserved',warn:false,source:0},{key:'evidenceOpen',body:'evidenceLead',warn:true,source:1},{key:'evidenceRoute',body:'evidenceRouteText',warn:true,source:3},{key:'evidenceGap',body:'evidenceGapText',warn:true,source:3}];$('boardContent').innerHTML=all.map((c)=>'<div class="board-card '+(c.warn?'warn ':'')+(sourcesReviewed.has(c.source)?'':'locked')+'"><div class="tag">'+(c.warn?'[N] / ?':'[O] / ✓')+'</div><h3>'+safe(t(c.key))+'</h3><p>'+safe(t(c.body))+'</p></div>').join('');}
   function showReport(){enterPanel('reportScreen');renderReport();}
-  function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4;const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
-  function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if(choices.every((choice,i)=>choice===(missions?.correct(activeMission)||[0,1,2])[i])){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');showMissionComplete();updateHud();}else{feedback.textContent=t('answerError');}}
+  function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4&&(activeMission!=='AY-005'||missions.load('AY-005').m5Solved);const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
+  function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if((activeMission!=='AY-005'||missions.load('AY-005').m5Solved)&&choices.every((choice,i)=>choice===(missions?.correct(activeMission)||[0,1,2])[i])){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');showMissionComplete();updateHud();}else{feedback.textContent=t('answerError');}}
   function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted'||nearby.id==='wall');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],wall:{pt:'Telão do Observatório',en:'Observatory display',es:'Pantalla del Observatorio'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
   function interact(id){
     if(!playerActive||activePanel||cinematicPending)return;
@@ -307,6 +339,7 @@
   $('missionPlay2').onclick=()=>selectMission('AY-002');
   $('missionPlay3').onclick=()=>selectMission('AY-003');
   $('missionPlay4').onclick=()=>selectMission('AY-004');
+  $('missionPlay5').onclick=()=>selectMission('AY-005');
   $('aftermathArchiveButton').onclick=()=>{
     const st=missions.aftermath();
     if(!st.unlocked)return;
@@ -325,7 +358,8 @@
   $('missionReplay2').onclick=()=>selectMission('AY-002',true);
   $('missionReplay3').onclick=()=>selectMission('AY-003',true);
   $('missionReplay4').onclick=()=>selectMission('AY-004',true);
-  $('missionNextButton').onclick=()=>{const nextMission=activeMission==='AY-001'?'AY-002':activeMission==='AY-002'?'AY-003':activeMission==='AY-003'?'AY-004':null;if(nextMission)selectMission(nextMission);};
+  $('missionReplay5').onclick=()=>selectMission('AY-005',true);
+  $('missionNextButton').onclick=()=>{const nextMission=activeMission==='AY-001'?'AY-002':activeMission==='AY-002'?'AY-003':activeMission==='AY-003'?'AY-004':activeMission==='AY-004'&&missions.unlocked('AY-005')?'AY-005':null;if(nextMission)selectMission(nextMission);};
   $('missionReturnButton').onclick=openMissionArchive;
   $('missionExport').onclick=async()=>{
     const code=missions.copyCode();
