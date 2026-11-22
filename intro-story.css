@@ -54,3 +54,66 @@
 @media(max-width:800px){#introScreen.intro-screen{overflow-y:auto}.intro-storyboard{overflow:visible;min-height:1000px;flex:none;grid-template-rows:330px 320px 350px}.intro-brand-divider{display:none}.intro-brand strong{font-size:15px}.intro-story-row--first,.intro-story-row--second{grid-template-columns:repeat(3,minmax(0,1fr))}.intro-story-row--last{grid-template-columns:60% 40%}.intro-caption{font-size:12px;left:8px;right:8px;padding-left:7px;border-width:3px}.intro-mission p{font-size:12px}.intro-mission h2{font-size:19px}.intro-operations-wildlife{width:18%}}
 @media(max-width:560px){.intro-top{position:sticky;top:0;z-index:20!important}.intro-brand{gap:7px}.intro-brand-name{font-size:22px}.intro-brand strong{font-size:12px}.intro-heading-line{display:none}#introScreen #skipIntro{font-size:10px}.intro-storyboard{display:block;min-height:0}.intro-story-row{display:grid;border-bottom:0}.intro-story-row--first,.intro-story-row--second{grid-template-columns:1fr;grid-template-rows:repeat(3,235px)}.intro-story-row--last{grid-template-columns:1fr;grid-template-rows:290px auto}.intro-panel{border-right:0;border-bottom:3px solid #eef6ef}.intro-caption{font-size:15px;bottom:15px;left:15px;right:15px;max-width:90%}.intro-mission{padding:25px 22px;gap:24px;min-height:270px}.intro-mission h2{font-size:26px}.intro-mission p{font-size:15px}.intro-identity div>span{font-size:12px}.intro-panel--operations .intro-operations-figure{width:65%}.intro-mission .intro-next{max-width:none}}
 @media(prefers-reduced-motion:reduce){#introScreen *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+
+/* 1.4.1 photographic correction: use the complete seven-scene artwork as the canvas.
+   Previous vector panels/character cutouts were placeholders and must not cover it. */
+#introScreen .intro-storyboard{
+  position:relative;
+  background:#071210 url("assets/ayla-introduction.webp?v=1.4.1") center center / 100% 100% no-repeat;
+  isolation:isolate;
+}
+#introScreen .intro-story-row{position:relative;z-index:2;border-bottom:0;background:transparent}
+#introScreen .intro-panel{
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  isolation:isolate;
+}
+#introScreen .intro-panel:before{
+  z-index:1;
+  background:linear-gradient(0deg,rgba(1,9,10,.90) 0%,rgba(2,10,11,.68) 22%,transparent 68%);
+}
+#introScreen .intro-panel:after{display:none}
+#introScreen .intro-actor,
+#introScreen .intro-study-figure,
+#introScreen .intro-winston-portrait,
+#introScreen .intro-cage,
+#introScreen .intro-patch,
+#introScreen .intro-operations-figure,
+#introScreen .intro-operations-grid,
+#introScreen .intro-operations-wildlife{display:none!important}
+#introScreen .intro-caption{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:8;
+  bottom:clamp(14px,1.4vw,28px);
+  font-size:clamp(12px,1.02vw,17px);
+  line-height:1.30;
+  font-weight:600;
+  color:#fff;
+  text-shadow:0 2px 7px #000,0 1px 2px #000;
+  max-width:90%;
+}
+#introScreen .intro-mission{background:linear-gradient(90deg,rgba(2,11,13,.05),rgba(1,10,12,.2));z-index:3}
+#introScreen .intro-mission h2{font-size:clamp(20px,1.9vw,31px);text-shadow:0 2px 7px #000}
+#introScreen .intro-mission p{font-size:clamp(12px,1.05vw,16px);text-shadow:0 2px 6px #000}
+#introScreen .intro-mission-kicker{color:#c0f18f}
+#introScreen .intro-identity{bottom:clamp(12px,2vh,24px);left:clamp(15px,1.5vw,30px)}
+@media (max-width:800px){
+  #introScreen .intro-storyboard{background-size:auto 100%;background-position:center}
+  #introScreen .intro-panel{background:none!important}
+}
+@media (max-width:560px){
+  #introScreen .intro-storyboard{background-image:none!important;background:#071712}
+  #introScreen .intro-panel--forest{background:url("assets/ayla-introduction.webp?v=1.4.1") 0% 0% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--rescue{background:url("assets/ayla-introduction.webp?v=1.4.1") 50% 0% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--study{background:url("assets/ayla-introduction.webp?v=1.4.1") 100% 0% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--winston{background:url("assets/ayla-introduction.webp?v=1.4.1") 0% 47% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--insignia{background:url("assets/ayla-introduction.webp?v=1.4.1") 50% 47% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--amazon{background:url("assets/ayla-introduction.webp?v=1.4.1") 100% 47% / 280% auto no-repeat!important}
+  #introScreen .intro-panel--operations{background:url("assets/ayla-introduction.webp?v=1.4.1") 25% 100% / 195% auto no-repeat!important}
+  #introScreen .intro-mission{background:linear-gradient(140deg,#091c1d,#031014)!important}
+  #introScreen .intro-caption{font-size:15px;max-width:88%;padding:0 0 0 9px}
+}
