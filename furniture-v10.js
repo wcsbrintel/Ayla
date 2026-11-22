@@ -150,7 +150,7 @@
     }
     const desks=[
       [4.7,-3.3,3.5,1.7,'osint'],
-      [4.0,-6.4,3.8,1.9,'case-dossier'],
+      [8.0,-8.05,3.8,1.9,'case-dossier'],
       [5.4,4.0,3.4,1.8,'evidence'],
       [-6,5.6,3.5,1.7,'archive']
     ];
@@ -227,7 +227,7 @@
       meshBox('lampshade-fine-rim',.65,.027,.35,0,1.75,0,antiqueBrass,root);
       cylinder('shade-cap',.066,.07,0,1.95,0,antiqueBrass,root);
     }
-    [[5.92,-3.05,1],[2.75,-6.24,2],[-5.15,5.25,3]].forEach(v=>lamp(...v));
+    [[5.92,-3.05,1],[6.75,-7.89,2],[-5.15,5.25,3]].forEach(v=>lamp(...v));
     // Existing collision footprints and interaction coordinates are unchanged;
     // the cabinet's solid volume is the only extra blocked footprint.
     result.obstacles.push({x:-9.55,z:2.0,w:2.33,d:.88,tag:'f10-filing-cabinet'});
