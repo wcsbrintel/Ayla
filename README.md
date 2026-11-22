@@ -1,3 +1,11 @@
+## AYLA 5.1 — Observatory mark, replay introduction, full progress reset
+
+- The game start screen displays a **background-free Observatory mark**, cropped from the existing Central rug SVG (`assets/observatory-rug.svg`) into `assets/observatory-mark-transparent.svg`. The mark is shown at 95% opacity (5% transparency), in the top-left corner.
+- **Back to Home** reopens Ayla's visual introduction directly from the operations center or mission archive. **Replay introduction** is available on the start screen. Neither changes mission completion, saved evidence, promotion or level, and completing/skipping the introduction returns to the mission archive.
+- **Reset progress** is available on the start screen and in the mission archive. It presents a localized confirmation in Portuguese, English or Spanish. Cancel changes nothing; confirmation resets all five missions, discoveries, unlocks, AY-003 follow-up and Level 2 promotion, returning Ayla to Level 1 and making only Mission 1 available.
+- The full reset explicitly deletes the legacy `ayla-alpha-v01` storage key to prevent unwanted restoration, then writes a clean `ayla-missions-v2` state. Language preference and separate restricted-area authentication are unaffected.
+- JavaScript syntax and UI behavior were simulated for introduction replay, cancellation, complete reset, Level 1 restoration and locked/unlocked mission states. Full graphical browser verification remains pending.
+
 ## AYLA 5.0 — Advanced SOCMINT: The Hidden Farm
 
 - **AY-005 — The Hidden Farm** unlocks after completing AY-004, reading the AY-003 follow-up, and receiving **Level 2 / Intelligence Analyst** from Winston. It remains independently replayable and uses the same browser and export/import progress system.
