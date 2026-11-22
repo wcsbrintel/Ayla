@@ -186,7 +186,7 @@
   }
 
   function renderMissionArchive(){
-    const fields={missionSelectTitle:'header',missionSelectIntro:'intro',missionTitle1:'m1',missionTitle2:'m2',missionTitle3:'m3',missionTitle4:'m4',missionTitle5:'m5',missionDescription1:'m1Description',missionDescription2:'m2Description',missionDescription3:'m3Description',missionDescription4:'m4Description',missionDescription5:'m5Description',missionProgressNotice:'local',missionExport:'backup',missionImport:'restore',missionSelectClose:'back'};
+    const fields={missionSelectTitle:'header',missionSelectIntro:'intro',missionTitle1:'m1',missionTitle2:'m2',missionTitle3:'m3',missionTitle4:'m4',missionTitle5:'m5',missionDescription1:'m1Description',missionDescription2:'m2Description',missionDescription3:'m3Description',missionDescription4:'m4Description',missionDescription5:'m5Description',missionProgressNotice:'local',missionExport:'backup',missionImport:'restore'};
     for(const [id,key] of Object.entries(fields))if($(id))$(id).textContent=mi(key);
     renderAftermathArchive();
     for(let i=1;i<=5;i++){
