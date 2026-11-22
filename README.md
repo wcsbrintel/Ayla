@@ -1,3 +1,13 @@
+## AYLA 5.4 — Clara & Theo ambient intelligence conversations
+
+- Replaced the old three-line dialogue loop with **eight randomized, fully localized conversation topics** in `clara-theo-dialogues.js`. PT, EN and ES each contain 67 dialogue turns distributed across 8 scenes; the long-form topics run roughly 40–75 seconds.
+- Topics: WCS Brasil **IWT Global Observatory** and weekly reports; **CITES Appendices / Species+**; **TRAFFIC Wildlife Trade Portal**; **CITES Trade Database**; **GBIF** and taxonomy; **UNODC World Wildlife Crime Report**; container-movement inference limits; and a 2027 congress exchange.
+- The congress conversation includes Theo asking Clara if she will attend next year, Clara saying she is overwhelmed by investigations and risks remaining behind a computer forever without strong results, and natural replies from Theo.
+- `crowd-v9.js` now selects topics at random, avoids repeating the immediately previous scene, mixes short and long exchanges, varies work and conversation breaks, turns actors to face each other and switches captions with the selected language.
+- Dialogue playback is paused and captions hidden while the player uses an investigation panel or talks to Winston; no new player-facing interaction is required.
+- References are thematic learning sources, not claimed primary evidence about the missions.
+- JavaScript syntax and a simulated 3D NPC update loop were validated. Full live browser/WebGL visual verification remains pending.
+
 ## AYLA 5.3 — Soft piano soundtrack
 
 - Switched to **Mystical Piano**, by **Indieteur**, CC0, from OpenGameArt: https://opengameart.org/content/mystical-piano .
