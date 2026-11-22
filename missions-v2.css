@@ -68,7 +68,7 @@
 
 /* AYLA 4.0 — urgent shark-fin shipyard investigation */
 .mission-select-grid:has(#missionCard4){grid-template-columns:repeat(2,minmax(0,1fr))}
-.mission-choice-art-four{background-image:linear-gradient(0deg,#0d2419e8,transparent 90%),url('assets/mission4-shipyard.svg');background-position:center 48%;filter:saturate(.9)}
+.mission-choice-art-four{background-image:linear-gradient(0deg,#0d2419e8,transparent 90%),url('assets/mission4-shipyard-photo.webp?v=4.1.0');background-position:center 48%;filter:saturate(.9)}
 .ayla-shark-brief,.ayla-container-history,.ayla-hk-brief,.ayla-urgent-brief{background:linear-gradient(140deg,#0e2827,#081a1a);border:1px solid #7ea99466;border-radius:12px;padding:18px;margin:12px 0 24px;max-width:640px;color:#ecf6eb}
 .ayla-shark-brief-kicker,.ayla-container-history header,.ayla-hk-brief>strong{font:700 11px 'Space Grotesk';letter-spacing:.1em;color:#b3e5a0}
 .ayla-shark-facility{display:flex;align-items:center;gap:18px;margin-top:12px}
