@@ -1,3 +1,13 @@
+## AYLA 5.6 — PEC MAN arcade
+
+- Added **PEC MAN**, an original maze-chase mini-game available from the **PEC MAN** button inside the 3D operations center and from a small interactive arcade cabinet on the east side of the room.
+- Player navigates an independently generated maze with arrow keys or WASD (on-screen direction buttons on touchscreens), collects clues, avoids three pursuers, and activates temporary protection through special clues.
+- Includes level progression, points (10 for ordinary clues, 50 for special clues, 200 for neutralizing an opponent during protection, a 250-point bonus dossier, and 500 points for clearing a level), three lives, pause/resume, restart, and a high score.
+- Provides Portuguese, English and Spanish UI strings; pressing **P** pauses and **Escape** returns to the operations center. The arcade pauses automatically when the browser tab loses focus.
+- The **high score is saved locally** in `ayla-pec-man-record-v1`, independently from the five case missions, their checkpoints, authorization and the restricted Observatory.
+- Files: `pec-man.js`, `pec-man.css`; links, arcade cabinet and interaction integration: `index.html` and `game.js`.
+- Validated in an isolated JavaScript DOM/Canvas simulation: initial HUD, playable start, RAF ticks, pause, resume, exit callback, and presence of application integration hooks. A live browser/GitHub Pages render could not be independently verified in this session.
+
 ## AYLA 5.5 — More active Clara and Theo behavior
 
 - Corrected Clara's initial position from a collision-blocked point near the right side of the room to a navigable coordinate (x=6.25, z=-1.10).
