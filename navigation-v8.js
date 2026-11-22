@@ -9,7 +9,7 @@
  function create(extra){
    const colliders=[
      {x:4.7,z:-3.3,w:3.55,d:1.75,tag:'desk-osint'},
-     {x:-.4,z:-6.4,w:3.85,d:1.95,tag:'desk-report'},
+     {x:4.0,z:-6.4,w:3.85,d:1.95,tag:'desk-report'},
      {x:5.4,z:4.0,w:3.45,d:1.85,tag:'desk-files'},
      {x:-6.0,z:5.6,w:3.55,d:1.75,tag:'desk-board'},
      {x:-9.55,z:2.0,w:2.3,d:.88,tag:'cabinet'},
