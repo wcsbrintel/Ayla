@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="restricted-terminal.css?v=1.2.3">
   <link rel="stylesheet" href="observatory-wall.css?v=1.3.0">
   <link rel="stylesheet" href="intro-story.css?v=1.5.0">
+  <link rel="stylesheet" href="missions-v2.css?v=2.0.0">
 </head>
 <body>
   <div id="app">
@@ -35,7 +36,7 @@
     <header id="topbar" class="hidden">
       <div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span><small>3D // INTELLIGENCE EXPERIENCE</small></div>
       <div class="header-status"><i class="live-dot"></i><span data-t="hudLocation">CENTRAL DE INTELIGÊNCIA</span><span class="sep">/</span><span id="missionCode">AY-001</span><span class="sep">/</span><span id="aylaAccountMode" role="status" aria-live="polite">Visitante</span></div>
-      <div class="header-actions"><button class="icon-button hidden" id="aylaGuestMode" type="button" aria-label="Sair da sessão e voltar às missões">Sair / Missões</button><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button hidden" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
+      <div class="header-actions"><button class="icon-button hidden" id="missionMenuButton" type="button">MISSÕES</button><button class="icon-button hidden" id="aylaGuestMode" type="button" aria-label="Sair da sessão e voltar às missões">Sair / Missões</button><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button hidden" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
     </header>
 
     <aside id="missionHud" class="hud-panel hidden"><div class="eyebrow" data-t="hudMission">CENTRAL DE INTELIGÊNCIA</div><div class="hud-title" data-t="missionTitle">O Manifesto Inconsistente</div><div class="hud-caption" data-t="missionSubtitle">Identifique o que as evidências realmente demonstram.</div><div class="progress-bar"><div id="progressFill"></div></div><div id="progressText">0 / 4</div><div class="hud-objective" id="objectiveText">Converse com Winston.</div></aside>
@@ -44,6 +45,14 @@
     <div id="toast" class="toast hidden" role="status"></div>
     <div id="cinematicCue" class="cinematic-cue hidden" aria-live="polite"></div>
     <div id="mobileControls" class="mobile-controls hidden"><div class="dpad"><button data-key="w">▲</button><div><button data-key="a">◀</button><button data-key="s">▼</button><button data-key="d">▶</button></div></div><button id="mobileInteract">E</button></div>
+
+    <section id="missionSelectScreen" class="screen overlay mission-select-screen hidden" aria-labelledby="missionSelectTitle">
+      <header class="mission-select-top"><div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span></div><span id="missionSelectBadge">INVESTIGATION ARCHIVE / 02 MISSIONS</span><button id="missionSelectClose" class="ghost-button" type="button">←</button></header>
+      <div class="mission-select-main"><div class="eyebrow">AYLA / MISSION ARCHIVE</div><h1 id="missionSelectTitle">MISSÕES DE INVESTIGAÇÃO</h1><p id="missionSelectIntro">Selecione uma missão. Seu progresso é salvo.</p><div class="mission-select-grid">
+        <article class="mission-choice" id="missionCard1"><div class="mission-choice-number">01 / AY-001</div><div class="mission-choice-art mission-choice-art-one" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus1">DISPONÍVEL</span><h2 id="missionTitle1">O Manifesto Inconsistente</h2><p id="missionDescription1"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay1">INICIAR</button><button class="ghost-button hidden" type="button" id="missionReplay1">REJOGAR</button></div></div></article>
+        <article class="mission-choice" id="missionCard2"><div class="mission-choice-number">02 / AY-002</div><div class="mission-choice-art mission-choice-art-two" aria-hidden="true"></div><div class="mission-choice-content"><span class="mission-choice-state" id="missionStatus2">BLOQUEADA</span><h2 id="missionTitle2">O Código Duplicado</h2><p id="missionDescription2"></p><div class="mission-choice-buttons"><button class="primary-button" type="button" id="missionPlay2" disabled>DESBLOQUEAR</button><button class="ghost-button hidden" type="button" id="missionReplay2">REJOGAR</button></div></div></article>
+      </div><div class="mission-progress-tools"><span id="missionProgressNotice">Progresso salvo neste dispositivo</span><button id="missionExport" type="button" class="ghost-button">COPIAR CÓDIGO DE PROGRESSO</button><button id="missionImport" type="button" class="ghost-button">IMPORTAR PROGRESSO</button></div></div>
+    </section>
 
     <section id="startScreen" class="screen overlay start-screen hidden">
       <div class="start-backdrop"><div class="start-orb"></div><div class="grid-horizon"></div></div>
@@ -158,7 +167,7 @@
 
     <section id="reportScreen" class="modal-backdrop panel-backdrop hidden"><div class="panel report-panel"><div class="panel-top"><div><div class="eyebrow">AYLA / CASE ASSESSMENT</div><h2 data-t="reportTitle">RELATÓRIO DE INTELIGÊNCIA</h2></div><button class="close-panel" data-close aria-label="Close">✕</button></div><div class="report-intro" data-t="reportIntro">Revise as evidências e selecione a conclusão mais defensável em cada tópico.</div><form id="reportForm"><div id="reportQuestions"></div><div class="report-actions"><button type="button" class="ghost-button" id="closeReport" data-t="backToScene">VOLTAR À CENTRAL</button><button type="submit" class="primary-button"><span data-t="submitReport">ENTREGAR DOSSIÊ</span><b>↗</b></button></div></form><div id="reportFeedback" class="report-feedback hidden" role="status"></div></div></section>
 
-    <section id="finalScreen" class="screen overlay final-screen hidden"><div class="final-card"><div class="final-icon">✓</div><div class="eyebrow">AY-001 / <span data-t="caseComplete">DOSSIÊ CONCLUÍDO</span></div><h1 data-t="finalHeading">A verdade exige evidências.</h1><p data-t="finalBody">Você identificou uma inconsistência documental, separou rotas observadas de destinos não confirmados e encaminhou os elementos para verificação pelas autoridades. Nenhuma prisão foi realizada sem investigação formal.</p><div class="final-metrics"><div><strong>04</strong><span data-t="sourcesReviewed">FONTES REVISADAS</span></div><div><strong>03</strong><span data-t="findings">CONCLUSÕES SUSTENTADAS</span></div><div><strong>01</strong><span data-t="case">DOSSIÊ</span></div></div><button id="restartButton" class="primary-button"><span data-t="playAgain">REINICIAR MISSÃO</span> →</button></div></section>
+    <section id="finalScreen" class="screen overlay final-screen hidden"><div class="final-card"><div class="final-icon">✓</div><div class="eyebrow"><span id="finalMissionCode">AY-001</span> / <span data-t="caseComplete">DOSSIÊ CONCLUÍDO</span></div><h1 data-t="finalHeading">A verdade exige evidências.</h1><p data-t="finalBody">Você identificou uma inconsistência documental, separou rotas observadas de destinos não confirmados e encaminhou os elementos para verificação pelas autoridades. Nenhuma prisão foi realizada sem investigação formal.</p><div class="final-metrics"><div><strong>04</strong><span data-t="sourcesReviewed">FONTES REVISADAS</span></div><div><strong>03</strong><span data-t="findings">CONCLUSÕES SUSTENTADAS</span></div><div><strong>01</strong><span data-t="case">DOSSIÊ</span></div></div><div class="mission-final-buttons"><button id="missionNextButton" class="primary-button" type="button">PRÓXIMA MISSÃO →</button><button id="missionReturnButton" class="ghost-button" type="button">ESCOLHER MISSÃO</button><button id="restartButton" class="ghost-button" type="button"><span data-t="playAgain">REINICIAR MISSÃO</span> ↻</button></div></div></section>
 
     <section id="helpScreen" class="modal-backdrop hidden"><div class="help-card"><button class="close-panel" data-close>✕</button><div class="eyebrow">AYLA / HELP</div><h2 data-t="controls">CONTROLES</h2><div class="help-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span data-t="move">Mover Ayla</span></div><div class="help-row"><kbd>↔</kbd><span data-t="camera">Arraste para girar a câmera</span></div><div class="help-row"><kbd>E</kbd><span data-t="interact">Interagir com objetos e personagens</span></div><div class="help-row"><kbd>C</kbd><span>Camera / close inspection</span></div><div class="help-row"><kbd>ESC</kbd><span data-t="close">Fechar painéis</span></div><button class="primary-button" data-close><span data-t="understood">ENTENDI</span> →</button></div></section>
 
@@ -179,7 +188,8 @@
   <script src="crowd-v9.js?v=1.0.3"></script>
   <script src="audio-v9.js?v=0.9.1"></script>
   <script src="observatory-wall.js?v=1.3.5"></script>
-  <script src="game.js?v=1.5.0"></script>
+  <script src="missions-v2.js?v=2.0.0"></script>
+  <script src="game.js?v=2.0.0"></script>
   <script type="module" src="restricted-terminal.js?v=1.3.1"></script>
   <script>
     (function(){
