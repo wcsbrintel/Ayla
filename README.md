@@ -1,3 +1,13 @@
+## AYLA 2.0.1 — Missions, unlocks, and saved progress
+
+- **AY-001 — The Inconsistent Manifest** retains the original fictional OSINT evidence workflow.
+- **AY-002 — The Duplicated Code** unlocks after completion of AY-001. This new fictional training case concerns a repeated bird-ring identifier; players analyze four independent records, an observed inspection location, possible documentation errors, and chain of custody. It does not allege a real seizure, individual, route, or criminal network.
+- The mission archive distinguishes locked, available, in-progress, and completed missions. Each mission keeps its own checklist and submitted dossier status.
+- Mission data is saved automatically using browser `localStorage` under `ayla-missions-v2`; existing `ayla-alpha-v01` saves migrate on load. A completed mission remains unlocked when replayed; replay resets only that mission's checklist.
+- Returning players can choose a mission without replaying the introduction. A **MISSIONS** control in the scene and a **NEXT MISSION** control on the completion screen provide navigation.
+- **COPY PROGRESS CODE** and **IMPORT PROGRESS** enable user-directed transfer between browsers/devices. There is currently **no cloud-sync or per-account saved state**; private browsing, cleared site data, or another device will not see local progress unless a code is imported. The code is a convenience backup, not a tamper-resistant credential.
+- The protected Observatory communications access remains independent of the public training missions.
+
 # AYLA — Wildlife Crime Investigation
 
 AYLA is a free, multilingual, browser-based third-person 3D investigation game focused on wildlife trafficking and open-source intelligence (OSINT). **Ayla** is the playable investigator; **Winston** is her mentor.
