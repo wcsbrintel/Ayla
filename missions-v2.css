@@ -32,3 +32,36 @@
 #mapScreen .map-svg-wrap.mission-two-map:after{content:attr(data-case-label);white-space:normal;position:absolute;left:8%;right:8%;bottom:15%;font:700 clamp(13px,1.7vw,20px)/1.5 'Space Grotesk';color:#e6f5e2;letter-spacing:.06em;text-align:center}
 @media(max-width:780px){.mission-select-grid{grid-template-columns:1fr}.mission-select-top #missionSelectBadge{display:none}.mission-select-main{padding:30px 17px}.mission-choice-art{height:160px}}
 @media(max-width:650px){.mission-select-top{height:70px;padding:13px 16px}.mission-choice-content{padding:18px}.mission-final-buttons{flex-direction:column}.mission-final-buttons button{width:100%}}
+
+/* AYLA 3.0 — international online trafficking mission */
+.mission-choice-art-three{background-image:linear-gradient(0deg,#10211bed,transparent 92%),url('assets/mission3-social-1.webp');background-size:cover;background-position:center 35%}
+.mission-select-grid:has(#missionCard3){grid-template-columns:repeat(3,minmax(0,1fr))}
+.mission-select-grid:has(#missionCard3) .mission-choice-art{height:clamp(145px,18vh,225px)}
+.mission-select-grid:has(#missionCard3) .mission-choice-content{padding:19px 20px 22px}
+.mission-select-grid:has(#missionCard3) .mission-choice h2{font-size:clamp(19px,1.8vw,29px)}
+.ayla-social-evidence{max-width:440px;margin:14px 0 24px;border:1px solid #8abc9870;border-radius:13px;overflow:hidden;background:#0a1716;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.ayla-post-header{display:flex;align-items:center;gap:10px;padding:12px 14px;color:#e8f5ec}
+.ayla-post-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#204c37;border:1px solid #84cb92;color:#bcf4ae}
+.ayla-post-header strong,.ayla-post-header small{display:block}
+.ayla-post-header strong{font-size:12px}
+.ayla-post-header small{font-size:9px;color:#8fae9b;margin-top:3px;letter-spacing:.08em}
+.ayla-post-menu{margin-left:auto;letter-spacing:.1em;color:#c9e6cf}
+.ayla-social-evidence img{display:block;width:100%;height:auto;max-height:360px;object-fit:cover;object-position:center center;background:#16372c}
+.ayla-social-evidence figcaption{margin:0;padding:12px 14px;color:#bdd9c9;font-size:11px;line-height:1.5}
+.ayla-social-evidence figcaption strong{color:#b6ee90}
+.ayla-message-evidence{border:1px solid #85bba15a;background:linear-gradient(125deg,#0c231d,#091817);padding:14px 15px;margin:14px 0 23px;border-radius:13px;max-width:590px}
+.ayla-message-heading{font:700 10px 'Space Grotesk',monospace;color:#b7ef98;letter-spacing:.09em;margin:0 0 12px;border-bottom:1px solid #9ad9ab45;padding-bottom:9px}
+.ayla-msg{width:fit-content;max-width:89%;padding:10px 12px;margin:10px 0;border-radius:12px;background:#173f34;border:1px solid #6b99815c}
+.ayla-msg.from-contact{margin-left:auto;background:#23392c;border-color:#b5c78b69}
+.ayla-msg small{font:600 9px monospace;color:#b4d1bd}
+.ayla-msg p{font-size:12px;line-height:1.48;margin:6px 0 0;color:#f2f9f2}
+.ayla-message-evidence footer{border-top:1px solid #8abd9a36;font-size:10px;color:#a8c6b4;padding-top:10px;margin-top:13px}
+.ayla-link-brief{border:1px solid #a4de9a66;border-left:4px solid #b5ed81;padding:13px 16px;background:#10251c;margin:16px 0;border-radius:4px}
+.ayla-link-brief strong{color:#bdf19d;font-size:12px}
+.ayla-link-brief p{margin:8px 0 0;font-size:12px;line-height:1.5;color:#c5d6c8}
+#mapScreen .map-svg-wrap.mission-three-map svg{opacity:0;visibility:hidden}
+#mapScreen .map-svg-wrap.mission-three-map{position:relative;min-height:300px;background:radial-gradient(ellipse at 30% 40%,#1d503d,#081922 76%);border:1px solid #79c19c58}
+#mapScreen .map-svg-wrap.mission-three-map:before{content:'◉   · · ·   ✈';position:absolute;top:25%;left:0;right:0;text-align:center;letter-spacing:.22em;color:#b9f096;font:700 clamp(30px,5vw,62px) 'Space Grotesk';opacity:.85}
+#mapScreen .map-svg-wrap.mission-three-map:after{content:attr(data-case-label);white-space:normal;position:absolute;left:8%;right:8%;bottom:14%;font:700 clamp(12px,1.6vw,19px)/1.5 'Space Grotesk';color:#e6f5e2;text-align:center;letter-spacing:.04em}
+@media(max-width:1040px){.mission-select-grid:has(#missionCard3){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.mission-select-grid:has(#missionCard3){grid-template-columns:1fr}.ayla-social-evidence{max-width:100%}.ayla-social-evidence img{max-height:280px}.ayla-msg{max-width:96%}}
