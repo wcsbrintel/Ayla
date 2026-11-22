@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="restricted-terminal.css?v=1.2.3">
   <link rel="stylesheet" href="observatory-wall.css?v=1.3.0">
   <link rel="stylesheet" href="intro-story.css?v=1.5.0">
-  <link rel="stylesheet" href="missions-v2.css?v=5.0.0">
+  <link rel="stylesheet" href="missions-v2.css?v=5.1.0">
 </head>
 <body>
   <div id="app">
@@ -36,7 +36,7 @@
     <header id="topbar" class="hidden">
       <div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span><small>3D // INTELLIGENCE EXPERIENCE</small></div>
       <div class="header-status"><i class="live-dot"></i><span data-t="hudLocation">CENTRAL DE INTELIGÊNCIA</span><span class="sep">/</span><span id="missionCode">AY-001</span><span class="sep">/</span><span id="aylaAccountMode" role="status" aria-live="polite">Visitante</span></div>
-      <div class="header-actions"><button class="icon-button hidden" id="missionMenuButton" type="button">MISSÕES</button><button class="icon-button hidden" id="aylaGuestMode" type="button" aria-label="Sair da sessão e voltar às missões">Sair / Missões</button><span id="aylaRank" class="ayla-rank hidden"></span><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button hidden" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
+      <div class="header-actions"><button class="icon-button" id="homeFromCentral" type="button">← Início</button><button class="icon-button hidden" id="missionMenuButton" type="button">MISSÕES</button><button class="icon-button hidden" id="aylaGuestMode" type="button" aria-label="Sair da sessão e voltar às missões">Sair / Missões</button><span id="aylaRank" class="ayla-rank hidden"></span><span id="avatarStatus" data-status="loading" aria-live="polite">3D · 0/2</span><button class="icon-button" id="langButton" aria-label="Change language">PT <span>⌄</span></button><div id="langDrop" class="lang-drop hidden"><button data-lang="pt">Português</button><button data-lang="en">English</button><button data-lang="es">Español</button></div><button class="icon-button hidden" id="demoButton" title="Demonstrar animações 3D" aria-label="Demonstrar cenas 3D">▶ CENAS 3D</button><button class="icon-button" id="cameraButton" title="Aproximar câmera / C" aria-label="Alternar câmera de inspeção" aria-pressed="false">◎</button><button class="icon-button" id="helpButton" title="Controles">?</button></div>
     </header>
 
     <aside id="missionHud" class="hud-panel hidden"><div class="eyebrow" data-t="hudMission">CENTRAL DE INTELIGÊNCIA</div><div class="hud-title" data-t="missionTitle">O Manifesto Inconsistente</div><div class="hud-caption" data-t="missionSubtitle">Identifique o que as evidências realmente demonstram.</div><div class="progress-bar"><div id="progressFill"></div></div><div id="progressText">0 / 4</div><div class="hud-objective" id="objectiveText">Converse com Winston.</div></aside>
@@ -47,7 +47,7 @@
     <div id="mobileControls" class="mobile-controls hidden"><div class="dpad"><button data-key="w">▲</button><div><button data-key="a">◀</button><button data-key="s">▼</button><button data-key="d">▶</button></div></div><button id="mobileInteract">E</button></div>
 
     <section id="missionSelectScreen" class="screen overlay mission-select-screen hidden" aria-labelledby="missionSelectTitle">
-      <header class="mission-select-top"><div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span></div><span id="missionSelectBadge">INVESTIGATION ARCHIVE / 05 MISSIONS</span><button id="missionSelectClose" class="ghost-button" type="button">←</button></header>
+      <header class="mission-select-top"><div class="brand"><span class="brand-symbol">◈</span><span>AYL<span class="acid">A</span></span></div><span id="missionSelectBadge">INVESTIGATION ARCHIVE / 05 MISSIONS</span><div class="mission-navigation-actions"><button id="missionSelectClose" class="ghost-button" type="button">← Início</button><button id="resetFromArchive" class="ghost-button reset-progress" type="button">Resetar progresso</button></div></header>
       <div class="mission-select-main"><div class="eyebrow">AYLA / MISSION ARCHIVE</div><h1 id="missionSelectTitle">MISSÕES DE INVESTIGAÇÃO</h1><p id="missionSelectIntro">Selecione uma missão. Seu progresso é salvo.</p><section id="aftermathArchive" class="aftermath-archive level-up-card" aria-labelledby="aftermathArchiveTitle">
         <div class="level-up-seal" aria-hidden="true">✧</div>
         <div class="level-up-main">
@@ -71,9 +71,10 @@
     <section id="startScreen" class="screen overlay start-screen hidden">
       <div class="start-backdrop"><div class="start-orb"></div><div class="grid-horizon"></div></div>
       <div class="character-keyart" aria-hidden="true"></div>
+      <img class="observatory-corner-mark" src="assets/observatory-mark-transparent.svg?v=5.1.0" alt="" aria-hidden="true">
       <img class="title-visual" alt="" aria-hidden="true" src="assets/title-visual.svg">
       <aside class="case-preview" aria-hidden="true"><div class="cv-code">AYLA / MISSION CONTROL</div><div class="cv-title">CASE FILE AY-001</div><div class="cv-row"><span>OSINT INTELLIGENCE</span><strong>ACTIVE</strong></div><div class="cv-row"><span>WORKSPACE</span><strong>OPERATIONS CENTER</strong></div><div class="cv-row"><span>ACCESS</span><strong>PUBLIC + RESTRICTED</strong></div><div class="cv-footer"><b></b> INVESTIGATION IN PROGRESS</div></aside>
-      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Uma central de inteligência conectada.</div><p data-t="heroDescription">Explore a central e acesse a comunicação reservada a usuários autorizados.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">ENTRAR NA CENTRAL</span><b>→</b></button><button class="ghost-button hidden" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button></div><div class="start-foot"><span>01 / MISSÃO DEMONSTRATIVA</span><span>PT • EN • ES</span><span>AYLA — ALPHA 1.3.9 / DOSSIER GALLERY</span></div></div>
+      <div class="start-content"><div class="overline">AN INTERACTIVE INVESTIGATION EXPERIENCE <span class="dot">●</span> PROTOTYPE 01</div><div class="hero-line">AYL<span>A</span><sup>3D</sup></div><div class="hero-sub" data-t="heroSub">Uma central de inteligência conectada.</div><p data-t="heroDescription">Explore a central e acesse a comunicação reservada a usuários autorizados.</p><div class="start-actions"><button class="primary-button" id="startButton"><span data-t="begin">ENTRAR NA CENTRAL</span><b>→</b></button><button class="ghost-button hidden" id="resumeButton" data-t="resume">CONTINUAR MISSÃO</button><button class="ghost-button" id="replayIntroduction" type="button">Rever introdução</button><button class="ghost-button reset-progress" id="resetFromStart" type="button">Resetar progresso</button></div><div class="start-foot"><span>01 / MISSÃO DEMONSTRATIVA</span><span>PT • EN • ES</span><span>AYLA — ALPHA 1.3.9 / DOSSIER GALLERY</span></div></div>
       <div class="start-language"><span data-t="language">IDIOMA</span><button data-language="pt">PT</button><button data-language="en">EN</button><button data-language="es">ES</button></div>
     </section>
 
@@ -225,8 +226,8 @@
   <script src="mission4.js?v=4.1.0"></script>
   <script src="postmission.js?v=4.3.0"></script>
   <script src="mission5.js?v=5.0.0"></script>
-  <script src="missions-v2.js?v=5.0.0"></script>
-  <script src="game.js?v=5.0.0"></script>
+  <script src="missions-v2.js?v=5.1.0"></script>
+  <script src="game.js?v=5.1.0"></script>
   <script type="module" src="restricted-terminal.js?v=1.3.1"></script>
   <script>
     (function(){
