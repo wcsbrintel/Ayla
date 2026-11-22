@@ -1,0 +1,34 @@
+/* AYLA 2.0: per-mission archive, saved progress, and return navigation */
+.mission-select-screen{z-index:29;overflow:auto;background:radial-gradient(ellipse at 85% 0%,#183828 0%,#071611 46%,#030e0b 100%);color:#e8f3e8}
+.mission-select-top{display:flex;align-items:center;gap:24px;justify-content:space-between;padding:18px clamp(20px,4vw,56px);height:85px;border-bottom:1px solid #92c87944;background:#06110fe8}
+.mission-select-top #missionSelectBadge{color:#97b5a3;font:700 11px 'Space Grotesk';letter-spacing:.15em}
+.mission-select-main{max-width:1250px;margin:0 auto;padding:clamp(25px,4vw,56px) 22px 60px}
+.mission-select-main h1{font:700 clamp(30px,4vw,52px)/1.1 'Space Grotesk';letter-spacing:-.035em;margin:10px 0}
+#missionSelectIntro{color:#aec5b4;font-size:15px;max-width:730px;line-height:1.6}
+.mission-select-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:36px}
+.mission-choice{position:relative;min-width:0;overflow:hidden;border:1px solid rgba(170,228,154,.3);background:#10201b;box-shadow:0 15px 45px #0005;display:flex;flex-direction:column}
+.mission-choice-number{position:absolute;top:15px;left:18px;font:700 11px 'Space Grotesk';color:#e5f8da;background:#061612c9;border:1px solid #b7e89e55;padding:8px 10px;z-index:1;letter-spacing:.13em}
+.mission-choice-art{height:clamp(160px,22vh,240px);background-size:cover;background-position:center;filter:saturate(.9);border-bottom:1px solid #abcfae33}
+.mission-choice-art-one{background-image:linear-gradient(0deg,#10211be0,transparent 80%),url('assets/ayla-introduction.webp')}
+.mission-choice-art-two{background-image:linear-gradient(0deg,#10211bf0,transparent 85%),url('assets/posters/ara-macao.webp');background-position:center 50%}
+.mission-choice-content{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column}
+.mission-choice-state{font:700 11px 'Space Grotesk';letter-spacing:.14em;color:#b5ed8e}
+.mission-choice h2{font:700 clamp(22px,2.3vw,32px)/1.2 'Space Grotesk';margin:13px 0}
+.mission-choice p{color:#b3c9bb;font:400 14px/1.65 'DM Sans';margin:0 0 26px;flex:1}
+.mission-choice-buttons{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mission-choice-buttons .primary-button,.mission-choice-buttons .ghost-button{font-size:12px;justify-content:center;min-width:130px}
+.mission-choice.is-locked{filter:saturate(.38);opacity:.7}
+.mission-choice.is-locked .primary-button{background:#6c8e72;color:#d0dacf;cursor:not-allowed}
+.mission-choice.is-complete{border-color:#aceb8d88}
+.mission-progress-tools{margin:33px 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:21px;border-top:1px solid #87b28a33}
+.mission-progress-tools span{font:500 12px 'DM Sans';color:#9ab1a0;flex:1;min-width:220px}
+.mission-progress-tools button{font-size:11px}
+.mission-final-buttons{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.mission-final-buttons .primary-button,.mission-final-buttons .ghost-button{min-width:170px;justify-content:center;padding:14px 18px}
+#missionMenuButton{border-color:#b1e08d77;color:#e5f4dc}
+#mapScreen .map-svg-wrap.mission-two-map svg{opacity:0;visibility:hidden}
+#mapScreen .map-svg-wrap.mission-two-map{position:relative;min-height:300px;background:radial-gradient(ellipse at 40% 55%,#204c42,#081c20 70%);border:1px solid #9bdd8c44}
+#mapScreen .map-svg-wrap.mission-two-map:before{content:'⌖';position:absolute;left:45%;top:27%;font-size:75px;color:#bbef89;text-shadow:0 0 30px #78d66a77}
+#mapScreen .map-svg-wrap.mission-two-map:after{content:'SERRA CLARA / DOCUMENTED INSPECTION POINT\\a AX-2047 — ORIGIN AND DESTINATION UNVERIFIED';white-space:pre-line;position:absolute;left:8%;right:8%;bottom:15%;font:700 clamp(13px,1.7vw,20px)/1.5 'Space Grotesk';color:#e6f5e2;letter-spacing:.06em;text-align:center}
+@media(max-width:780px){.mission-select-grid{grid-template-columns:1fr}.mission-select-top #missionSelectBadge{display:none}.mission-select-main{padding:30px 17px}.mission-choice-art{height:160px}}
+@media(max-width:650px){.mission-select-top{height:70px;padding:13px 16px}.mission-choice-content{padding:18px}.mission-final-buttons{flex-direction:column}.mission-final-buttons button{width:100%}}
