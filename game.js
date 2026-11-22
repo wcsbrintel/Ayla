@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
-  const screens = ['startScreen','introScreen','dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','finalScreen','helpScreen','restrictedScreen'];
+  const screens = ['missionSelectScreen','startScreen','introScreen','dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','finalScreen','helpScreen','restrictedScreen'];
   const ui = {
     pt: {
       hudLocation:'CENTRAL DE INTELIGÊNCIA',hudMission:'MISSÃO EM ANDAMENTO',missionTitle:'O Manifesto Inconsistente',missionSubtitle:'Identifique o que as evidências realmente demonstram.',heroSub:'Toda evidência tem uma história. Nem toda história é verdade.',heroDescription:'Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.',begin:'INICIAR INVESTIGAÇÃO',resume:'CONTINUAR MISSÃO',missionCount:'MISSÃO DEMONSTRATIVA',language:'IDIOMA',prologue:'PRÓLOGO',skip:'PULAR INTRODUÇÃO ↗',story:'A HISTÓRIA DE AYLA',next:'CONTINUAR',enter:'ENTRAR NA CENTRAL',mentor:'SEU MENTOR',continue:'CONTINUAR',terminal:'TERMINAL DE FONTES ABERTAS',selectSource:'SELECIONE UMA FONTE PARA ANALISAR',terminalFoot:'Analise a procedência de cada registro e compare as evidências disponíveis.',mapTitle:'HIPÓTESES DE ROTA',routeWarning:'Linhas tracejadas indicam hipóteses, não rotas criminosas comprovadas.',boardTitle:'QUADRO DE EVIDÊNCIAS',boardFoot:'A semelhança entre ocorrências não demonstra, por si só, uma rede comum.',reportTitle:'RELATÓRIO DE INTELIGÊNCIA',reportIntro:'Revise as evidências e selecione a conclusão mais defensável para cada tópico.',backToScene:'VOLTAR À CENTRAL',submitReport:'ENTREGAR DOSSIÊ',caseComplete:'DOSSIÊ CONCLUÍDO',finalHeading:'A verdade exige evidências.',finalBody:'Você documentou uma inconsistência, separou locais confirmados de destinos alegados e encaminhou o dossiê para análise por autoridades competentes. Ninguém foi acusado sem provas verificadas.',sourcesReviewed:'FONTES REVISADAS',findings:'CONCLUSÕES',case:'DOSSIÊ',playAgain:'REINICIAR MISSÃO',controls:'CONTROLES',move:'Mover Ayla',camera:'Arraste para girar a câmera',interact:'Interagir com objetos e personagens',close:'Fechar painéis',understood:'ENTENDI',beginLabel:'INICIANDO CENTRAL DE INTELIGÊNCIA',hint:'INTERAGIR',hintSub:'Pressione E ou clique',objectiveWinston:'Converse com Winston.',objectiveTerminal:'Examine as quatro fontes no terminal OSINT.',objectiveMap:'Analise o mapa e diferencie rotas comprovadas de hipóteses.',objectiveBoard:'Compare evidências no quadro.',objectiveReport:'Acesse a mesa de relatórios e conclua o dossiê.',objectiveComplete:'Missão concluída.',sourceReviewed:'FONTE REVISADA',markReviewed:'ADICIONAR À ANÁLISE',viewed:'Fonte revisada',docAlert:'AVALIAÇÃO DE CONFIABILIDADE',docClassification:'ANÁLISE DE EVIDÊNCIAS / AY-001',dialogNext:'CONTINUAR',legendConfirmed:'CONFIRMADO',legendConfirmedText:'Fiscalização no Posto Rio Claro; 18 aves apreendidas conforme o registro.',legendSuspected:'NÃO VERIFICADO',legendSuspectedText:'Destinos e vínculos sugeridos por publicações online; não há confirmação independente.',evidenceConfirmed:'Fatos observados',evidenceObserved:'Registro administrativo: 18 aves vivas; documentação incompatível com o conteúdo.',evidenceOpen:'Pista de fonte aberta',evidenceLead:'Postagem menciona 30 aves e suposto destino no Porto Azul, sem fonte original verificável.',evidenceRoute:'Limites geográficos',evidenceRouteText:'O ponto de apreensão é conhecido, mas o destino final não foi comprovado.',evidenceGap:'Lacunas relevantes',evidenceGapText:'Não há identidade confirmada de articuladores, registros de transporte adicionais nem destinatário verificado.',locked:'Antes de finalizar, converse com Winston, examine as quatro fontes, analise o mapa e consulte o quadro.',question1:'1. Qual quantidade está documentada na apreensão?',question2:'2. Qual interpretação da rota está sustentada?',question3:'3. Qual encaminhamento respeita os limites das evidências?',answers1:['18 aves vivas.','30 aves vendidas no exterior.','Nenhuma apreensão foi realizada.'],answers2:['O carregamento chegou ao exterior.','O destino foi sugerido, mas não confirmado.','A postagem comprova a rota completa.'],answers3:['Acusar publicamente alguém com base na postagem.','Encerrar a investigação por falta de dados.','Preservar provas, apontar lacunas e encaminhar pistas às autoridades competentes.'],answerError:'Revise suas respostas: uma hipótese não substitui prova. Reavalie os documentos e tente novamente.',incomplete:'Responda às três perguntas antes de concluir.',successToast:'Avaliação concluída com rigor. Bom trabalho!',sourceToast:'Fonte adicionada ao dossiê.',readyToast:'As quatro fontes foram analisadas.',mentorLines:['Ayla, antes de concluir qualquer coisa, verifique o que os documentos realmente mostram. Nosso trabalho não é encontrar alguém para culpar. É esclarecer os fatos.','Há quatro fontes no terminal. Algumas se contradizem. Compare-as com o mapa e depois prepare seu dossiê. Uma pista não é prova.'],storyFrames:[['O rio foi seu primeiro mapa','Ayla cresceu ouvindo a floresta. Sabia reconhecer os sons das aves muito antes de conhecer o nome de todas as cidades.','01 / THE BEGINNING'],['O silêncio mudou tudo','Na adolescência, viu aves resgatadas de um transporte clandestino. Quase nada se sabia sobre quem organizou a captura. Aquela dúvida ficou com ela.','02 / THE TURNING POINT'],['Perguntas viraram vocação','Anos de estudo em conservação, geografia e fontes abertas lhe ensinaram algo fundamental: uma informação só é útil quando sua origem e seus limites são conhecidos.','03 / THE PATH'],['Winston tinha uma regra','Winston, investigador veterano, tornou-se seu mentor. “A intuição pode iniciar uma investigação. Mas só a evidência pode concluí-la.” Hoje, o primeiro caso está esperando.','04 / THE MENTOR']],sources:[{id:'SR-047',cat:'[O] REGISTRO OFICIAL',title:'Auto de fiscalização',date:'14 NOV · CASO AY-001',body:'Uma fiscalização no Posto Rio Claro identificou 18 aves vivas em recipientes de transporte. Os documentos do veículo indicavam “material decorativo” como conteúdo. Não há identificação de destinatário neste registro.',note:'FATO OBSERVADO [O]: local, data, quantidade e declaração documental. Não demonstra destino nem autoria.'},{id:'OS-047',cat:'[N] FONTE ABERTA',title:'Postagem sobre Porto Azul',date:'DATA NÃO VERIFICADA',body:'Uma postagem pública sem autoria verificável alega que “30 aves raras foram enviadas ao Porto Azul”. Não inclui imagem original datada, documento ou segunda fonte independente.',note:'PISTA [N]: a postagem não confirma 30 aves, Porto Azul, nem conexão com a apreensão.'},{id:'VT-047',cat:'[O] VERIFICAÇÃO TÉCNICA',title:'Registro veterinário',date:'15 NOV · CASO AY-001',body:'O registro veterinário documenta o recebimento de 18 aves vivas procedentes da fiscalização. O estado sanitário exige cuidados. Nenhuma espécie ou origem geográfica foi individualmente validada nesse documento.',note:'FATO OBSERVADO [O]: 18 aves recebidas. Não extrapolar para espécies, rotas ou redes.'},{id:'AN-047',cat:'[N] NOTA DE ANÁLISE',title:'Comparação de fontes',date:'NOTA TÉCNICA / AY-001',body:'O auto e o registro veterinário coincidem quanto às 18 aves. A postagem fala em 30 aves e em um porto, mas carece de corroboração. Não existe, por ora, vínculo documentado entre a pessoa que postou e qualquer delito.',note:'LACUNA: divergência de quantidade; destino e envolvidos sem confirmação.'}]},
@@ -70,6 +70,8 @@
   let cinematicPending=false,cinematicTimer=null,cinematicMode='idle',patrolPaused=false,seatTarget=null,demoActive=false,demoTimers=[];
   let seatInProgress=false,seatApproachStarted=false,seatLastPosition=null,seatFinished=false,seatQueued=false;
   const sceneCue={pt:{winston:'CONVERSA COM WINSTON',terminal:'ACESSANDO TERMINAL OSINT',map:'ANALISANDO ROTAS',board:'EXAMINANDO EVIDÊNCIAS',report:'PREPARANDO DOSSIÊ'},en:{winston:'BRIEFING WITH WINSTON',terminal:'ACCESSING OSINT TERMINAL',map:'ROUTE INTELLIGENCE',board:'REVIEWING THE EVIDENCE',report:'PREPARING CASE DOSSIER'},es:{winston:'REUNIÓN CON WINSTON',terminal:'ACCEDIENDO A TERMINAL OSINT',map:'ANÁLISIS DE RUTAS',board:'EXAMINANDO EVIDENCIAS',report:'PREPARANDO EXPEDIENTE'}};
+  const missions=window.AYLAMissionsV2;
+  let activeMission=missions?.current()||'AY-001';
   const stateKey='ayla-alpha-v01';
   const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen','restrictedScreen'];
   // Missions remain available before login. A verified, approved Firebase
@@ -95,9 +97,10 @@
       control.title=accountEmail||'';
     }
     const missionCode=$('missionCode');
-    if(missionCode)missionCode.textContent=approvedSession?'SECURE COMMS':'AY-001';
+    if(missionCode)missionCode.textContent=approvedSession?'SECURE COMMS':activeMission;
   }
   function syncAccess(){
+    $('missionMenuButton')?.classList.toggle('hidden',approvedSession||!playerActive);
     if(!$('missionHud'))return;
     const inRoom=playerActive&&!visible('startScreen')&&!visible('introScreen');
     $('missionHud').classList.toggle('hidden',!inRoom||approvedSession);
@@ -126,7 +129,7 @@
     accountEmail=typeof event.detail?.email==='string'?event.detail.email:'';
     syncAccess();
   });
-  function t(key){return ui[lang][key] ?? key;}
+  function t(key){return missions?.override(activeMission,lang,key)??ui[lang][key]??key;}
   function safe(str){return String(str).replace(/[&<>"']/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
@@ -134,11 +137,52 @@
   function closePanels(){if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
-  function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
-  function restore(){try{const data=JSON.parse(localStorage.getItem(stateKey)||'null');if(data){mentorMet=!!data.mentorMet;mapSeen=!!data.mapSeen;boardSeen=!!data.boardSeen;done=!!data.done;sourcesReviewed=new Set((data.sources||[]).filter(n=>n>=0&&n<4));}}catch(e){}}
-  function resetMission(){mentorMet=mapSeen=boardSeen=done=false;sourcesReviewed.clear();selectedSource=-1;save();updateHud();}
+  function save(){missions?.save(activeMission,{mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]});}
+  function restore(){const data=missions?.load(activeMission);if(data){mentorMet=!!data.mentorMet;mapSeen=!!data.mapSeen;boardSeen=!!data.boardSeen;done=!!data.done;sourcesReviewed=new Set(data.sources||[]);}}
+  function resetMission(){mentorMet=mapSeen=boardSeen=done=false;sourcesReviewed.clear();selectedSource=-1;missions?.reset(activeMission);updateHud();}
+
+  const mi=(key)=>missions?.text(lang,key)||key;
+  function renderMissionArchive(){
+    const fields={missionSelectTitle:'header',missionSelectIntro:'intro',missionTitle1:'m1',missionTitle2:'m2',missionDescription1:'m1Description',missionDescription2:'m2Description',missionProgressNotice:'local',missionExport:'backup',missionImport:'restore',missionSelectClose:'back'};
+    for(const [id,key] of Object.entries(fields))if($(id))$(id).textContent=mi(key);
+    for(let i=1;i<=2;i++){
+      const id='AY-00'+i,state=missions.load(id),locked=!missions.unlocked(id),completed=state.completed;
+      const started=state.mentorMet||state.mapSeen||state.boardSeen||state.sources.length>0;
+      $('missionCard'+i).classList.toggle('is-locked',locked);
+      $('missionCard'+i).classList.toggle('is-complete',completed);
+      $('missionStatus'+i).textContent=locked?mi('locked'):completed?mi('finished'):started?mi('inProgress'):mi('available');
+      $('missionPlay'+i).textContent=locked?mi('locked'):completed?mi('review'):started?mi('resume'):mi('start');
+      $('missionPlay'+i).disabled=locked;
+      $('missionReplay'+i).classList.toggle('hidden',!completed);
+      $('missionReplay'+i).textContent=mi('replay');
+      $('missionDescription'+i).textContent=mi('m'+i+'Description')+(locked?' '+mi('unlock'):'');
+    }
+  }
+  function openMissionArchive(){
+    if(activePanel)closePanels();
+    playerActive=false;
+    for(const id of ['missionMenuButton','missionHud','hintBox','mobileControls','compass','topbar'])$(id)?.classList.add('hidden');
+    show('missionSelectScreen');renderMissionArchive();
+  }
+  function selectMission(id,replay=false){
+    if(!missions?.unlocked(id)){notify(mi('needFinish'));return;}
+    if(activePanel)closePanels();
+    missions.choose(id);activeMission=id;restore();
+    if(replay)resetMission();
+    selectedSource=-1;
+    if(ayla)ayla.root.position.set(0,0,1.2);
+    localize();launch();
+  }
+  function showMissionComplete(){
+    $('finalMissionCode').textContent=activeMission;
+    $('finalScreen').querySelector('[data-t="finalHeading"]').textContent=t('finalHeading');
+    $('finalScreen').querySelector('[data-t="finalBody"]').textContent=t('finalBody');
+    $('missionNextButton').classList.toggle('hidden',!missions.unlocked('AY-002')||activeMission==='AY-002');
+    $('missionNextButton').textContent=mi('next');$('missionReturnButton').textContent=mi('select');
+  }
+
   function localize(){document.documentElement.lang=lang;updateAccountIndicator();if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
-  function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');}
+  function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');if(visible('missionSelectScreen'))renderMissionArchive();}
   function renderIntro(){
     const story=introNarrative[lang]||introNarrative.en;
     document.querySelectorAll('[data-intro-caption]').forEach((node)=>{
@@ -148,14 +192,14 @@
     $('introMissionTitle').textContent=story.title;
     $('introMissionBody').textContent=story.body;
     document.querySelector('[data-intro-kicker]').textContent=story.kicker;
-    document.querySelector('[data-intro-patch]').textContent=story.patch;
-    document.querySelector('[data-intro-role]').textContent=story.role;
+    if(document.querySelector('[data-intro-patch]'))document.querySelector('[data-intro-patch]').textContent=story.patch;
+    if(document.querySelector('[data-intro-role]'))document.querySelector('[data-intro-role]').textContent=story.role;
     $('nextIntroLabel').textContent=t('enter');
   }
   function intro(){show('introScreen');introIndex=0;renderIntro();}
-  function launch(){show('');screens.forEach(hide);$('topbar').classList.remove('hidden');$('missionHud').classList.toggle('hidden',approvedSession);$('compass').classList.remove('hidden');$('mobileControls').classList.remove('hidden');playerActive=true;updateHud();syncAccess();if(engine)engine.resize();}
+  function launch(){missions?.markIntro();show('');screens.forEach(hide);$('topbar').classList.remove('hidden');$('missionHud').classList.toggle('hidden',approvedSession);$('compass').classList.remove('hidden');$('mobileControls').classList.remove('hidden');playerActive=true;updateHud();syncAccess();if(engine)engine.resize();}
   function progress(){return (mentorMet?1:0)+(sourcesReviewed.size===4?1:0)+(mapSeen?1:0)+(boardSeen?1:0);}
-  function updateHud(){const p=progress();$('progressFill').style.width=(25*p)+'%';$('progressText').textContent=p+' / 4';let objective='objectiveWinston';if(done)objective='objectiveComplete';else if(!mentorMet)objective='objectiveWinston';else if(sourcesReviewed.size!==4)objective='objectiveTerminal';else if(!mapSeen)objective='objectiveMap';else if(!boardSeen)objective='objectiveBoard';else objective='objectiveReport';$('objectiveText').textContent=t(objective);$('resumeButton').classList.toggle('hidden',approvedSession||(p===0&&!done));}
+  function updateHud(){const p=progress();if($('missionHud')){$('missionHud').querySelector('[data-t="missionTitle"]').textContent=t('missionTitle');$('missionHud').querySelector('[data-t="missionSubtitle"]').textContent=t('missionSubtitle');}$('progressFill').style.width=(25*p)+'%';$('progressText').textContent=p+' / 4';let objective='objectiveWinston';if(done)objective='objectiveComplete';else if(!mentorMet)objective='objectiveWinston';else if(sourcesReviewed.size!==4)objective='objectiveTerminal';else if(!mapSeen)objective='objectiveMap';else if(!boardSeen)objective='objectiveBoard';else objective='objectiveReport';$('objectiveText').textContent=t(objective);$('resumeButton').classList.toggle('hidden',approvedSession||(p===0&&!done));}
   function markMentor(){mentorMet=true;save();updateHud();}
   function showDialog(){dialogIndex=0;if(winston?.setTalking)winston.setTalking(true);enterPanel('dialogScreen');renderDialog();}
   function renderDialog(){$('dialogBody').textContent=t('mentorLines')[dialogIndex];$('dialogNext').querySelector('span').textContent=t('dialogNext');}
@@ -164,12 +208,12 @@
   function showRestricted(){enterPanel('restrictedScreen');if(window.AYLARestricted)window.AYLARestricted.open(lang);else $('restrictedStatus').textContent={pt:'Conectando ao Firebase...',en:'Connecting to Firebase...',es:'Conectando a Firebase...'}[lang];}
   function renderSources(){const s=t('sources');$('sourceCount').textContent=sourcesReviewed.size+'/4';$('sourceList').innerHTML=s.map((d,i)=>'<button type="button" class="source-button '+(i===selectedSource?'active':'')+'" data-source="'+i+'"><span class="src-id">'+safe(d.id)+' '+(sourcesReviewed.has(i)?'<span class="reviewed">✓</span>':'')+'</span><strong>'+safe(d.title)+'</strong><small>'+safe(d.cat)+'</small></button>').join('');$('sourceList').querySelectorAll('[data-source]').forEach(btn=>btn.onclick=()=>{selectedSource=Number(btn.dataset.source);renderSources();});if(selectedSource===-1){$('sourceDetail').innerHTML='<div class="empty-state">'+safe(t('selectSource'))+'</div>';return;}const d=s[selectedSource];$('sourceDetail').innerHTML='<div class="doc-meta"><span>'+safe(d.id)+'</span><span>'+safe(d.cat)+'</span><span>'+safe(d.date)+'</span></div><h3 class="doc-title">'+safe(d.title)+'</h3><p class="doc-body">'+safe(d.body)+'</p><div class="doc-note"><strong>'+safe(t('docAlert'))+'</strong><br>'+safe(d.note)+'</div><div class="doc-meta">'+safe(t('docClassification'))+'</div><div class="doc-actions"><button type="button" id="reviewSourceButton" class="primary-button"><span>'+(sourcesReviewed.has(selectedSource)?safe(t('viewed'))+' ✓':safe(t('markReviewed')))+' </span>→</button></div>';$('reviewSourceButton').onclick=()=>{sourcesReviewed.add(selectedSource);save();updateHud();notify(sourcesReviewed.size===4?t('readyToast'):t('sourceToast'));renderSources();};}
   function showMap(){mapSeen=true;save();updateHud();enterPanel('mapScreen');renderMap();}
-  function renderMap(){$('mapLegend').innerHTML='<div class="legend-item"><strong>● '+safe(t('legendConfirmed'))+'</strong>'+safe(t('legendConfirmedText'))+'</div><div class="legend-item warn"><strong>◌ '+safe(t('legendSuspected'))+'</strong>'+safe(t('legendSuspectedText'))+'</div>';}
+  function renderMap(){document.querySelector('#mapScreen .map-svg-wrap')?.classList.toggle('mission-two-map',activeMission==='AY-002');$('mapLegend').innerHTML='<div class="legend-item"><strong>● '+safe(t('legendConfirmed'))+'</strong>'+safe(t('legendConfirmedText'))+'</div><div class="legend-item warn"><strong>◌ '+safe(t('legendSuspected'))+'</strong>'+safe(t('legendSuspectedText'))+'</div>';}
   function showBoard(){boardSeen=true;save();updateHud();enterPanel('boardScreen');renderBoard();}
   function renderBoard(){const all=[{key:'evidenceConfirmed',body:'evidenceObserved',warn:false,source:0},{key:'evidenceOpen',body:'evidenceLead',warn:true,source:1},{key:'evidenceRoute',body:'evidenceRouteText',warn:true,source:3},{key:'evidenceGap',body:'evidenceGapText',warn:true,source:3}];$('boardContent').innerHTML=all.map((c)=>'<div class="board-card '+(c.warn?'warn ':'')+(sourcesReviewed.has(c.source)?'':'locked')+'"><div class="tag">'+(c.warn?'[N] / ?':'[O] / ✓')+'</div><h3>'+safe(t(c.key))+'</h3><p>'+safe(t(c.body))+'</p></div>').join('');}
   function showReport(){enterPanel('reportScreen');renderReport();}
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4;const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
-  function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if(choices[0]===0&&choices[1]===1&&choices[2]===2){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');updateHud();}else{feedback.textContent=t('answerError');}}
+  function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if(choices.every((choice,i)=>choice===(missions?.correct(activeMission)||[0,1,2])[i])){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');showMissionComplete();updateHud();}else{feedback.textContent=t('answerError');}}
   function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted'||nearby.id==='wall');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],wall:{pt:'Telão do Observatório',en:'Observatory display',es:'Pantalla del Observatorio'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
   function interact(id){
     if(!playerActive||activePanel||cinematicPending)return;
@@ -198,9 +242,29 @@
     cinematicTimer=setTimeout(open,3000);
   }
 
+
+  $('missionMenuButton').onclick=openMissionArchive;
+  $('missionSelectClose').onclick=()=>{playerActive=false;$('topbar').classList.add('hidden');show('startScreen');};
+  $('missionPlay1').onclick=()=>selectMission('AY-001');
+  $('missionPlay2').onclick=()=>selectMission('AY-002');
+  $('missionReplay1').onclick=()=>selectMission('AY-001',true);
+  $('missionReplay2').onclick=()=>selectMission('AY-002',true);
+  $('missionNextButton').onclick=()=>selectMission('AY-002');
+  $('missionReturnButton').onclick=openMissionArchive;
+  $('missionExport').onclick=async()=>{
+    const code=missions.copyCode();
+    try{await navigator.clipboard.writeText(code);notify(mi('backupSuccess'));}
+    catch(e){window.prompt(mi('backupFallback'),code);}
+  };
+  $('missionImport').onclick=()=>{
+    const code=window.prompt(mi('importPrompt'));if(!code)return;
+    if(missions.importCode(code)){notify(mi('importSuccess'));renderMissionArchive();}
+    else notify(mi('importFailure'));
+  };
+
   $('langButton').onclick=()=> $('langDrop').classList.toggle('hidden');
   document.querySelectorAll('[data-lang],[data-language]').forEach(el=>el.addEventListener('click',()=>setLanguage(el.dataset.lang||el.dataset.language)));
-  $('startButton').onclick=()=>approvedSession?launch():intro();
+  $('startButton').onclick=()=>approvedSession?launch():(missions?.introSeen()?openMissionArchive():intro());
   $('aylaGuestMode').onclick=async()=>{
     const button=$('aylaGuestMode');
     if(button.disabled)return;
@@ -217,16 +281,16 @@
       }
     }finally{button.disabled=false;}
   };
-  $('resumeButton').onclick=launch;
-  $('nextIntro').onclick=launch;
-  $('skipIntro').onclick=launch;
+  $('resumeButton').onclick=openMissionArchive;
+  $('nextIntro').onclick=()=>{missions?.markIntro();openMissionArchive();};
+  $('skipIntro').onclick=()=>{missions?.markIntro();openMissionArchive();};
   $('dialogNext').onclick=nextDialog;
   $('reportForm').onsubmit=evaluateReport;
   $('closeReport').onclick=closePanels;
   $('helpButton').onclick=()=>enterPanel('helpScreen');
   window.addEventListener('ayla:wall-close',()=>{if(activePanel==='wallScreen')closePanels()});
   window.addEventListener('ayla:wall-open',()=>{if(playerActive&&!activePanel&&approvedSession)interact('wall')});
-  $('restartButton').onclick=()=>{resetMission();if(ayla)ayla.root.position.set(0,0,1.2);launch();};
+  $('restartButton').onclick=()=>{resetMission();if(ayla)ayla.root.position.set(0,0,1.2);localize();launch();};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closePanels);
   $('mobileInteract').onclick=()=>{if(nearby)interact(nearby.id);};
   // A visible in-game demonstration for verifying the character actions and camera.
