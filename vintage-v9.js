@@ -35,7 +35,7 @@ function install(B,scene){
  bookshelf(-9.95,6.9,false,1);bookshelf(-9.95,3.85,false,2);bookshelf(9.95,6.9,false,3);bookshelf(9.95,3.85,false,4);
  for(const x of [-9.95,9.95])for(const z of [3.85,6.9])obstacles.push({x,z,w:2.8,d:.75,tag:'v9-library-'+x+'-'+z});
  // Classical desk finish and period objects on existing working desks.
- for(const [x,z,w,d] of [[4.7,-3.3,3.5,1.7],[8.0,-8.05,3.8,1.9],[5.4,4,3.4,1.8],[-6,5.6,3.5,1.7]]){
+ for(const [x,z,w,d] of [[4.7,-3.3,3.5,1.7],[-8.0,-8.05,3.8,1.9],[5.4,4,3.4,1.8],[-6,5.6,3.5,1.7]]){
   box('desk-leather',w-.23,.012,d-.19,x,1.115,z,mat('leather-'+x,'#39463a',0,.83));
   for(const side of [-1,1])box('desk-edge',.08,.09,d,x+side*w*.48,1.052,z,brass);
   box('desk-front',w-.05,.23,.08,x,.77,z+d*.49,wood);
@@ -45,10 +45,10 @@ function install(B,scene){
   let shade=box('lamp-shade',.62,.17,.28,0,1.83,0,mat('enamel','#557266',.12,.48),root);shade.rotation.x=-.12;
   let glow=new B.PointLight('v9-lamp-warm',new B.Vector3(x,1.74,z),scene);glow.diffuse=B.Color3.FromHexString('#ffdbab');glow.intensity=.35;glow.range=3.2;
  }
- lamp(5.92,-3.05);lamp(6.75,-7.89);lamp(-5.15,5.25);
+ lamp(5.92,-3.05);lamp(-9.25,-7.89);lamp(-5.15,5.25);
  // Vintage desk research objects: telephone, notebooks, microscope, brass globe, camera.
- for(const [x,z] of [[7.3,-7.75],[5.75,4.3]]){box('document-stack',.48,.12,.70,x,1.22,z,paper);box('folio',.61,.025,.80,x,1.30,z,wood2);}
- const phone=new B.TransformNode('v9-rotary-phone',scene);phone.position.set(6.75,1.1,-8.53);
+ for(const [x,z] of [[-8.7,-7.75],[5.75,4.3]]){box('document-stack',.48,.12,.70,x,1.22,z,paper);box('folio',.61,.025,.80,x,1.30,z,wood2);}
+ const phone=new B.TransformNode('v9-rotary-phone',scene);phone.position.set(-9.25,1.1,-8.53);
  box('phone-base',.40,.17,.31,0,.08,0,dark,phone);cylinder('dial',.19,.015,0,.18,-.015,brass,phone);
  let hand=box('phone-handset',.46,.095,.14,0,.26,0,dark,phone);hand.rotation.z=.07;
  const field=new B.TransformNode('v9-field-optics',scene);field.position.set(5.3,1.19,4.3);
@@ -59,48 +59,64 @@ function install(B,scene){
  const clock=B.MeshBuilder.CreatePlane('v9-antique-clock',{width:.9,height:.9},scene);clock.position.set(6.1,4.15,9.37);clock.material=new B.StandardMaterial('v9-clockmaterial',scene);clock.material.diffuseTexture=face;clock.material.backFaceCulling=false;
  // Warm wall-mounted lights (non-neon, not over-exposed).
  for(const x of [-8,-2,4,9]){let l=new B.PointLight('v9-candle-wall-light',new B.Vector3(x,3.5,8.65),scene);l.diffuse=B.Color3.FromHexString('#f1c99a');l.intensity=.48;l.range=5.5;box('sconce-base',.26,.36,.12,x,3.62,9.20,brass);sphere('opal-lamp',.24,x,3.65,9.11,cloth);}
- // Proper wooden frames and mounted archival prints replace mirrored canvas cartoons.
- const old=scene.meshes.filter(m=>/^v8-poster-|^v8-poster-frame-/.test(m.name));old.forEach(m=>m.setEnabled(false));
- const imgSources=[
-  {title:'ARA MACAO',subtitle:'Field reference / Arara-vermelha',category:'wildlife',file:'Ara_macao_408004141.jpg',license:'CC0 1.0 · Adam Jackson',z:-7.2},
-  {title:'PANTHERA ONCA',subtitle:'Field reference / Onça-pintada',category:'wildlife',file:'Jaguar,_Panthera_Onca.jpg',license:'CC BY-SA 3.0 · Eduardo Estrada',z:-3.55},
-  {title:'OPERATIONS / 04',subtitle:'Evidence chain and travel corridors',category:'dossier',z:0},
-  {title:'LEADS UNDER REVIEW',subtitle:'Sources, identities and verification',category:'dossier',z:3.56}
+ // Approved AYLA gallery. These four wall prints come directly from the
+ // original user-approved posters, stored in a single optimized local atlas.
+ // The archive's previous diagrams and remote Wikimedia photo requests are
+ // replaced entirely, so the game has no external-image dependency.
+ const old=scene.meshes.filter(m=>/^v8-poster-|^v8-poster-frame-/.test(m.name));
+ old.forEach(m=>m.setEnabled(false));
+ const gallery=[
+  {title:'ARA MACAO',z:-7.2},
+  {title:'PANTHERA ONCA',z:-3.55},
+  {title:'PODOCNEMIS EXPANSA',z:0},
+  {title:'PERSON OF INTEREST',z:3.56}
  ];
- function posterTex(info,i){const t=new B.DynamicTexture('v9-poster-art-'+i,{width:880,height:1140},scene,true);const q=t.getContext();
-  q.fillStyle='#d8c7a9';q.fillRect(0,0,880,1140);q.fillStyle='#40352b';q.fillRect(28,28,824,1084);q.fillStyle='#d9caad';q.fillRect(42,42,796,1056);
-  q.fillStyle='#63513f';q.font='bold 26px Georgia';q.textAlign='left';q.fillText('AYLA  /  FIELD ARCHIVE  /  2026',79,109);
-  q.strokeStyle='#9b8a70';q.lineWidth=4;q.strokeRect(73,142,734,746);
-  q.fillStyle='#827765';q.fillRect(76,146,728,738);
-  if(info.category==='dossier'){
-    q.fillStyle='#b7a98b';q.fillRect(88,155,704,705);
-    for(let j=0;j<20;j++){q.strokeStyle=j%2?'#847766':'#978871';q.lineWidth=1.5;q.beginPath();q.moveTo(125+j*31,194);q.lineTo(125+j*31,820);q.stroke();}
-    for(let j=0;j<10;j++){q.strokeStyle='#ac9c81';q.beginPath();q.moveTo(102,235+j*59);q.lineTo(765,235+j*59);q.stroke();}
-    const dots=[[190,300],[590,350],[420,580],[625,720],[240,735]];
-    q.strokeStyle='#794b3a';q.lineWidth=6;q.beginPath();dots.forEach((p,k)=>k?q.lineTo(...p):q.moveTo(...p));q.stroke();
-    dots.forEach(p=>{q.fillStyle='#633e32';q.beginPath();q.arc(...p,14,0,Math.PI*2);q.fill();});
-    q.fillStyle='#6b5c49';q.font='bold 32px Georgia';q.fillText(i===2?'ROUTE ASSESSMENT':'IDENTIFICATION MATRIX',122,210);
-  }else{
-    q.fillStyle='#a39a87';q.fillRect(88,155,704,704);
-    q.fillStyle='#42372d';q.font='italic 39px Georgia';q.fillText(info.title,118,800);
-    // Render a photo overlay asynchronously; the local archival layout remains
-    // readable if an image provider is unavailable.
-    const img=new Image();img.crossOrigin='anonymous';img.onload=function(){try{q.save();q.filter='sepia(.38) contrast(1.08) saturate(.85)';const aspect=img.width/img.height,areaW=704,areaH=670;let w=areaW,h=areaH,sx=0,sy=0,sw=img.width,sh=img.height;if(aspect>areaW/areaH){sw=img.height*areaW/areaH;sx=(img.width-sw)/2}else{sh=img.width*areaH/areaW;sy=(img.height-sh)/2}q.drawImage(img,sx,sy,sw,sh,88,155,w,h);q.restore();t.update()}catch(e){q.restore()}};
-    img.src='https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(info.file)+'?width=640';
-  }
-  q.fillStyle='#3f372b';q.font='bold 45px Georgia';q.fillText(info.title,80,949);
-  q.font='italic 27px Georgia';q.fillText(info.subtitle,82,1002);
-  q.font='20px Georgia';q.fillText(info.license||'Interpretive case diagram · no identities established',83,1052);
-  t.update();
-  // The old west-wall poster had reversed lettering. Flip UVs for front-facing
-  // rendering in this room orientation, then rely on single-sided planes.
-  t.uScale=-1;t.uOffset=1;return t;
- }
- imgSources.forEach((info,i)=>{
-  const z=info.z;box('frame-'+i,.15,2.92,2.27,-11.53,2.72,z,wood);box('frame-gold-'+i,.02,2.72,2.10,-11.42,2.72,z,brass);
-  let plane=B.MeshBuilder.CreatePlane('v9-archive-poster-'+i,{width:2.02,height:2.65},scene);plane.position.set(-11.385,2.72,z);plane.rotation.y=Math.PI/2;
-  const m=new B.StandardMaterial('v9-archive-mat-'+i,scene);m.diffuseTexture=posterTex(info,i);m.emissiveColor=B.Color3.FromHexString('#3f382e');m.backFaceCulling=false;plane.material=m;
+ const artTextures=gallery.map((info,i)=>{
+  const texture=new B.DynamicTexture('ayla-gallery-dossier-'+i,{width:480,height:640},scene,true);
+  const ctx=texture.getContext();
+  ctx.fillStyle='#151713';ctx.fillRect(0,0,480,640);
+  ctx.strokeStyle='#9b8863';ctx.lineWidth=8;ctx.strokeRect(16,16,448,608);
+  ctx.fillStyle='#dfceaf';ctx.textAlign='center';ctx.font='bold 26px Georgia';
+  ctx.fillText(info.title,240,315);
+  texture.update();
+  // The west-wall planes are turned to face east. Preserve their proven
+  // horizontal UV correction so all typography reads normally.
+  texture.uScale=-1;texture.uOffset=1;
+  texture.wrapU=B.Texture.CLAMP_ADDRESSMODE;
+  texture.wrapV=B.Texture.CLAMP_ADDRESSMODE;
+  return texture;
  });
+ gallery.forEach((info,i)=>{
+  const z=info.z;
+  box('frame-'+i,.15,2.92,2.27,-11.53,2.72,z,wood);
+  box('frame-gold-'+i,.02,2.72,2.10,-11.42,2.72,z,brass);
+  const plane=B.MeshBuilder.CreatePlane('v9-archive-poster-'+i,{width:2.02,height:2.65},scene);
+  plane.position.set(-11.385,2.72,z);
+  plane.rotation.y=Math.PI/2;
+  const mat=new B.StandardMaterial('ayla-gallery-mat-'+i,scene);
+  mat.diffuseTexture=artTextures[i];
+  mat.diffuseColor=new B.Color3(1,1,1);
+  mat.disableLighting=true;
+  mat.backFaceCulling=false;
+  plane.material=mat;
+ });
+ const dossierAtlas=new Image();
+ dossierAtlas.onload=()=>{
+  // Canvas coordinates use top-left origin; the atlas was composed with
+  // Ara/Jaguar on the upper row, Turtle/Person on the lower row.
+  if(dossierAtlas.naturalWidth!==480||dossierAtlas.naturalHeight!==640){
+   console.warn('[AYLA] Gallery atlas dimensions were unexpected.');return;
+  }
+  artTextures.forEach((texture,i)=>{
+   const ctx=texture.getContext();
+   const srcX=(i%2)*240,srcY=Math.floor(i/2)*320;
+   ctx.clearRect(0,0,480,640);
+   ctx.drawImage(dossierAtlas,srcX,srcY,240,320,0,0,480,640);
+   texture.update();
+  });
+ };
+ dossierAtlas.onerror=()=>console.warn('[AYLA] Dossier gallery image could not be loaded.');
+ dossierAtlas.src='assets/posters/dossiers-atlas.webp?v=1.3.8';
  // Fix logo reflection seen in the previous version.
  const rug=scene.getMeshByName('v8-observatory-rug');if(rug?.material?.diffuseTexture){rug.material.diffuseTexture.uScale=-1;rug.material.diffuseTexture.uOffset=1;}
  // Subtle antique workroom ventilation/hum: lighting only, no flashing effects.
