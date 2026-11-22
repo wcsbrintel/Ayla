@@ -13,7 +13,7 @@
    d.sources=Array.isArray(s.sources)?[...new Set(s.sources.filter(v=>Number.isInteger(v)&&v>=0&&v<4))]:[];
    return d;
  }
- const defaults=()=>({version:2,active:'AY-001',introSeen:false,missions:{'AY-001':empty(),'AY-002':empty(),'AY-003':empty(),'AY-004':empty()}});
+ const defaults=()=>({version:2,active:'AY-001',introSeen:false,newsSeen:false,debriefPending:false,level2:false,missions:{'AY-001':empty(),'AY-002':empty(),'AY-003':empty(),'AY-004':empty()}});
  let store=defaults();
  try{
    const saved=JSON.parse(localStorage.getItem(KEY)||'null');
@@ -24,6 +24,7 @@
      store.missions['AY-004']=sanitizeState(saved.missions['AY-004']);
      store.active=ids.includes(saved.active)?saved.active:'AY-001';
      store.introSeen=!!saved.introSeen;
+     store.newsSeen=!!saved.newsSeen;store.debriefPending=!!saved.debriefPending;store.level2=!!saved.level2;
    }else{
      const legacy=JSON.parse(localStorage.getItem(LEGACY)||'null');
      if(legacy){
@@ -131,8 +132,12 @@
  function choose(id){if(!unlocked(id))return false;store.active=id;return persist()}
  function reset(id){if(!ids.includes(id))return false;const wasCompleted=completed(id);store.missions[id]={...empty(),completed:wasCompleted};return persist()}
  function markIntro(){store.introSeen=true;persist()}
+ function markNews(){if(!completed('AY-004'))return false;store.newsSeen=true;store.debriefPending=!store.level2;return persist()}
+ function promote(){if(!completed('AY-004')||!store.newsSeen)return false;store.level2=true;store.debriefPending=false;return persist()}
+ function aftermath(){return {unlocked:completed('AY-004'),newsSeen:store.newsSeen,pending:store.debriefPending,level2:store.level2,level:store.level2?2:1}}
+
  function encode(){
-   const json=JSON.stringify({version:2,missions:store.missions,active:store.active,introSeen:store.introSeen});
+   const json=JSON.stringify({version:2,missions:store.missions,active:store.active,introSeen:store.introSeen,newsSeen:store.newsSeen,debriefPending:store.debriefPending,level2:store.level2});
    return btoa(unescape(encodeURIComponent(json)));
  }
  function decode(code){
@@ -147,11 +152,12 @@
      }
      if(unlocked(parsed.active))store.active=parsed.active;
      store.introSeen=store.introSeen||!!parsed.introSeen;
+     if(completed('AY-004')){store.newsSeen=store.newsSeen||!!parsed.newsSeen;store.level2=store.level2||!!parsed.level2;store.debriefPending=!store.level2&&(store.debriefPending||!!parsed.debriefPending);}
      return persist();
    }catch(e){return false}
  }
  window.AYLAMissionsV2={ids,load,save,reset,choose,completed,unlocked,
-   current:()=>store.active,introSeen:()=>store.introSeen,markIntro,
+   current:()=>store.active,introSeen:()=>store.introSeen,markIntro,aftermath,markNews,promote,
    copyCode:encode,importCode:decode,text:(lang,key)=>(title[lang]||title.en)[key],
    override:(id,lang,key)=>id==='AY-004'?window.AYLAMissionFour?.locales?.[lang]?.[key]:id==='AY-003'?window.AYLAMissionThree?.locales?.[lang]?.[key]:id==='AY-002'?(second[lang]||second.en)[key]:undefined,
    correct:(id)=>id==='AY-004'?(window.AYLAMissionFour?.answer||[0,1,2]):id==='AY-003'?(window.AYLAMissionThree?.answer||[1,0,2]):id==='AY-002'?[1,0,2]:[0,1,2]
