@@ -1,3 +1,12 @@
+## AYLA 4.2 — Post-AY-004 case development and promotion
+
+- After completing the **AY-004** dossier, a new **AY-003 case-development bulletin** becomes accessible both from the mission-completion screen and the mission archive; it is not a fifth mission.
+- Narrative supplied for the game: Brazilian Federal Revenue (Customs) intercepts a man identified as **Ovir Mukalbahr** at Guarulhos, São Paulo, attempting to board with **38 parrot eggs**, after arriving from **Foz do Iguaçu, Paraná**. He is linked within the story to the masked telephone contact ending **6142** examined in AY-003. No actual airport seizure or real person's identity was independently verified for this storyline.
+- The authorities' means of identification remain **undisclosed**. The story never claims AYLA's OSINT report led to the interception.
+- The player must review the bulletin, return to the 3D operations center, interact with **Winston**, and complete a three-part debrief. Only then is Ayla promoted to **Level 2 — Intelligence Analyst**. The rank is visible in the HUD.
+- The promotion, bulletin-seen flag, and pending-debrief status persist in the existing `ayla-missions-v2` browser save; export/import also transfers rank, and replay never revokes a previously awarded promotion.
+- PT/EN/ES strings in `postmission.js`; new display screens are in `index.html` and `missions-v2.css`. Syntax, unlocking, bulletin, three dialogue steps, rank promotion, replay persistence and progress transfer were validated with JavaScript state and UI simulations. Full browser render remains unverified.
+
 ## AYLA 4.0 — The Six Crossings / Shark Fins
 
 - **AY-004 — The Six Crossings** becomes available after AY-003 and preserves its own progress, replay status, and backup/export code within the existing local save.
