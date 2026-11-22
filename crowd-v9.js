@@ -222,10 +222,7 @@ function create(B,scene,nav,ayla,winston,canAct,language){
       c.actor.setTalking?.(speaking);
       c.actor.setDialogue?.(speaking);
       c.actor.animate(dt,false,false,now);
-      if(speaking && Array.isArray(c.actor.arms)&&c.actor.arms[0]){
-        // Light, timed hand gesture without changing rig structure.
-        c.actor.arms[0].rotation.x+=.10+.07*Math.sin(now*.003);
-      }
+      // Existing talking animation controls arm and head gestures safely.
     }
     if(lastLanguage!==language()||bubble.classList.contains('hidden'))showLine(lineIndex);
     lineClock+=dt;
