@@ -107,14 +107,15 @@ function install(B,scene){
    m.diffuseTexture=backup;
    m.emissiveTexture=backup;
    plane.material=m;
-   const url='assets/posters/'+info.file+'?v=1.5.1';
-   const tex=new B.Texture(url,scene,false,false,B.Texture.TRILINEAR_SAMPLINGMODE,
+   const url='assets/posters/'+info.file+'?v=1.5.2';
+   const tex=new B.Texture(url,scene,false,true,B.Texture.TRILINEAR_SAMPLINGMODE,
      ()=>{
        if(plane.isDisposed())return;
        tex.wrapU=B.Texture.CLAMP_ADDRESSMODE;
        tex.wrapV=B.Texture.CLAMP_ADDRESSMODE;
-       // Prevent mirror reversal of portrait text on the inward-facing wall.
-       tex.uScale=-1;tex.uOffset=1;
+       // Keep the photograph's original left-to-right orientation.
+       tex.uScale=1;tex.uOffset=0;
+       tex.vScale=1;tex.vOffset=0;
        tex.hasAlpha=false;
        m.diffuseTexture=tex;
        m.emissiveTexture=tex;
