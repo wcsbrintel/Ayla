@@ -1,0 +1,45 @@
+/* PEC MAN 1.0 — independent arcade modal, responsive and accessible. */
+.pecman-screen{position:absolute;inset:0;z-index:35;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 35% 12%,rgba(47,110,80,.18),transparent 55%),rgba(2,10,11,.94);backdrop-filter:blur(13px);color:#ebf3df;font-family:'Space Grotesk','DM Sans',Arial,sans-serif}
+.pecman-screen *{box-sizing:border-box}
+.pecman-shell{width:min(1170px,100%);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;overflow:auto;border:1px solid #416c58;background:linear-gradient(135deg,#101e1c,#061311 75%);box-shadow:0 20px 90px #000c}
+.pecman-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 27px;border-bottom:1px solid #2e5343}
+.pecman-brand{display:flex;align-items:center;gap:14px}
+.pecman-brand small,.pecman-stats small{display:block;color:#9db4a4;font-size:10px;font-weight:700;letter-spacing:.16em}
+.pecman-brand h2{font-size:clamp(22px,3vw,36px);letter-spacing:.025em;margin:1px 0 0;color:#fff}
+.pecman-brand h2 span{color:#afe876}
+.pecman-symbol{width:50px;height:50px;border:2px solid #a5df73;border-radius:50%;display:grid;place-items:center;font-size:28px;color:#b5f078}
+.pecman-exit{background:none;color:#d7e8d5;border:1px solid #57856b;padding:11px 13px;font:700 11px 'Space Grotesk',sans-serif;letter-spacing:.06em;cursor:pointer}
+.pecman-exit:hover,.pecman-actions button:hover{border-color:#b5e57d;color:#d8ffb6}
+.pecman-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;background:#10211d;border-bottom:1px solid #345d4a}
+.pecman-stats>div{padding:15px 18px;background:#091917}
+.pecman-stats strong{display:block;margin-top:6px;font-weight:700;font-size:clamp(16px,2vw,26px);font-variant-numeric:tabular-nums;color:#c7f48c}
+#pecManLives{color:#f4bc97;font-size:20px;white-space:nowrap}
+.pecman-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:24px;padding:23px;align-items:start}
+.pecman-stage{position:relative;min-width:0;width:100%;max-width:750px;justify-self:center;box-shadow:0 0 0 2px #497d62,0 18px 40px #0007;aspect-ratio:25/19;background:#071917}
+#pecManCanvas{display:block;width:100%;height:auto;aspect-ratio:25/19;image-rendering:auto}
+.pecman-curtain{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,13,14,.81);backdrop-filter:blur(3px)}
+.pecman-curtain-card{width:min(430px,100%);padding:23px 22px;text-align:center;border:1px solid #5e996f;background:rgba(8,29,23,.96)}
+.pecman-mini{font:700 10px 'Space Grotesk',sans-serif;letter-spacing:.2em;color:#a5cf9a}
+.pecman-curtain h3{font:700 clamp(18px,2.4vw,30px) 'Space Grotesk',sans-serif;letter-spacing:.035em;margin:13px 0;color:#c1ef7d}
+.pecman-curtain p{font-size:13px;line-height:1.65;color:#d4e8d8;max-width:360px;margin:0 auto 20px}
+.pecman-curtain .primary-button{justify-content:center;margin:auto;min-width:180px}
+.pecman-sidebar{align-self:stretch;display:flex;flex-direction:column;gap:18px;padding:8px 0}
+.pecman-sidebar>p{margin:0;color:#b5ccb9;font-size:13px;line-height:1.7;border-left:3px solid #b2e97d;padding:2px 0 2px 15px}
+.pecman-power{border:1px solid #58886a;padding:14px;color:#cfebaa;font-size:11px;letter-spacing:.08em}
+.pecman-power-track{height:6px;background:#2a443e;margin-top:10px}
+.pecman-power-track i{display:block;height:100%;width:100%;background:#a9df78;transition:width .12s linear}
+.pecman-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pecman-actions button{padding:12px 9px;background:#153429;color:#ddedd4;border:1px solid #507a60;font:700 11px 'Space Grotesk',sans-serif;cursor:pointer}
+.pecman-actions button:disabled{opacity:.5;cursor:not-allowed}
+#pecManControls{font-size:10px;color:#879f90;line-height:1.6;letter-spacing:.07em}
+.pecman-touch{margin:auto 0 0;display:flex;flex-direction:column;align-items:center;gap:4px;user-select:none;touch-action:manipulation}
+.pecman-touch>div{display:flex;gap:5px}
+.pecman-touch button{border:1px solid #6b9279;background:#183b2d;color:#c8f5a2;min-width:49px;min-height:44px;font-size:20px;touch-action:manipulation}
+.pecman-touch button:active{background:#9bdf73;color:#092117}
+.pecman-live:empty{display:none}
+.pecman-live{font:700 10px 'Space Grotesk',sans-serif;letter-spacing:.07em;text-align:center;color:#b0db90;padding:7px 15px;border-top:1px solid #254836}
+@media(min-width:970px) and (min-height:790px){.pecman-body{gap:31px;padding:29px}.pecman-header{padding:22px 30px}}
+@media(max-width:820px){.pecman-screen{padding:6px}.pecman-shell{max-height:calc(100dvh - 12px)}.pecman-header{padding:10px 14px}.pecman-symbol{width:36px;height:36px;font-size:21px}.pecman-brand h2{font-size:21px}.pecman-brand small{font-size:8px}.pecman-stats>div{padding:9px}.pecman-stats small{font-size:8px;letter-spacing:.03em}.pecman-stats strong{font-size:18px}.pecman-body{grid-template-columns:minmax(0,1fr) 145px;gap:11px;padding:10px}.pecman-sidebar{gap:9px;padding:1px 0}.pecman-sidebar>p{font-size:10px;line-height:1.45}.pecman-actions{grid-template-columns:1fr}.pecman-actions button{padding:8px}.pecman-touch button{min-width:37px;min-height:35px;font-size:16px}.pecman-curtain-card{padding:14px}.pecman-curtain p{font-size:11px;margin-bottom:12px}#pecManControls{font-size:8px}}
+@media(max-width:600px) and (orientation:portrait){.pecman-body{grid-template-columns:1fr;gap:14px}.pecman-sidebar{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}.pecman-touch{grid-row:span 2;margin:auto}.pecman-actions{grid-column:2}.pecman-power{grid-column:1}.pecman-sidebar>p{grid-column:1}#pecManControls{grid-column:1/-1}.pecman-stats{grid-template-columns:repeat(5,minmax(0,1fr))}.pecman-stats>div{padding:8px 5px}.pecman-stats strong{font-size:15px}#pecManLives{font-size:14px}.pecman-curtain{padding:8px}.pecman-curtain-card{padding:10px}.pecman-curtain h3{font-size:18px;margin:6px 0}.pecman-curtain p{font-size:10px;line-height:1.35;margin-bottom:9px}}
+@media(max-height:520px) and (orientation:landscape){.pecman-screen{padding:2px}.pecman-shell{max-height:calc(100dvh - 4px)}.pecman-header{padding:5px 10px}.pecman-brand small{display:none}.pecman-symbol{width:27px;height:27px;font-size:16px}.pecman-brand h2{font-size:18px}.pecman-exit{padding:6px;font-size:9px}.pecman-stats>div{padding:5px 12px}.pecman-stats strong{margin-top:0;font-size:15px}.pecman-body{padding:6px 10px;grid-template-columns:minmax(0,1fr) 195px;gap:9px}.pecman-stage{width:min(100%,calc((100dvh - 104px)*25/19))}.pecman-sidebar{gap:5px}.pecman-sidebar>p{font-size:9px;line-height:1.2}.pecman-touch button{min-height:28px;min-width:42px}.pecman-actions{display:flex}.pecman-actions button{flex:1;font-size:9px;padding:6px}.pecman-curtain-card{padding:7px}.pecman-curtain h3{font-size:16px;margin:4px 0}.pecman-curtain p{font-size:10px;line-height:1.2;margin-bottom:6px}.pecman-curtain .primary-button{padding:7px;min-width:0;font-size:10px}#pecManControls{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.pecman-power-track i{transition:none}}
