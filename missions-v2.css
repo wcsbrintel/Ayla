@@ -175,3 +175,47 @@
 .level-up-card .primary-button:disabled{opacity:.6;filter:grayscale(.5);cursor:not-allowed}
 @media(max-width:850px){.mission-select-main>.level-up-card{flex-wrap:wrap;gap:14px}.level-up-card .primary-button{width:100%}}
 @media(max-width:520px){.mission-select-main>.level-up-card{padding:16px;align-items:flex-start}.level-up-seal{flex-basis:44px;height:44px;font-size:25px}.level-up-main{flex:1 1 calc(100% - 65px)}.level-up-heading{display:block}.level-up-heading #aylaMissionLevel{display:block;margin-top:7px}.level-up-card h2{font-size:22px}}
+
+
+/* AYLA v5.0 — SOCMINT workbench, visual clues and fictional in-game grid */
+.mission-choice-art-five{background-image:linear-gradient(0deg,#0a1f17eb,transparent 83%),url('assets/mission5-social-1.webp');background-position:center 48%;background-size:cover}
+.mission-select-grid:has(#missionCard5){grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.mission-select-grid:has(#missionCard5) .mission-choice-art{height:clamp(150px,18vh,230px)}
+.mission-select-grid:has(#missionCard5) .mission-choice h2{font-size:clamp(20px,2vw,28px)}
+.m5-image{background:#0c211b;border:1px solid #8ec2a37a;border-radius:10px;overflow:hidden;margin:15px 0 22px;max-width:640px;box-shadow:0 12px 30px #0004}
+.m5-image-header{font:800 10px 'Space Grotesk';padding:11px 14px;letter-spacing:.12em;color:#b2dfab;background:#102b24}
+.m5-image img{display:block;width:100%;height:auto;max-height:350px;object-fit:cover}
+.m5-image figcaption{padding:11px 14px;color:#c0d6c9;font:700 11px 'Space Grotesk'}
+.m5-toolbox{margin:15px 0 23px;padding:15px 17px;border:1px solid #93c6aa67;border-radius:10px;background:#102b26;max-width:680px;color:#d6e9dc}
+.m5-toolbox>strong{font:800 12px 'Space Grotesk';letter-spacing:.09em;color:#b9edab}
+.m5-toolbox p,.m5-toolbox small{font:500 12px/1.55 'DM Sans';color:#b8d1c3;display:block;margin:8px 0}
+.m5-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.m5-tools a{color:#071b0d;text-decoration:none;background:#b3e58b;font:800 12px 'Space Grotesk';border-radius:5px;padding:11px 13px;display:inline-flex;align-items:center}
+.m5-tools a:hover,.m5-tools a:focus-visible{background:#d1f6ad;outline:2px solid #e4f8d3;outline-offset:2px}
+.m5-comparison{max-width:750px;margin:8px 0 20px;color:#e3f2e3}
+.m5-comparison h3,.m5-geo-workbench h3,.m5-register h3{font:800 23px 'Space Grotesk';color:#e9f7e6;margin:10px 0 17px}
+.m5-photo-pair,.m5-map-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.m5-photo-pair .m5-image,.m5-map-photos .m5-image{min-width:0;max-width:100%;margin:0}
+.m5-photo-pair .m5-image img,.m5-map-photos .m5-image img{height:185px;object-fit:cover}
+.m5-comparison h4{font:700 14px 'Space Grotesk';margin:20px 0 11px;color:#cbe5c1}
+.m5-feature-grid,.m5-map-features{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0 20px}
+.m5-feature-grid span,.m5-map-features span{background:#234939;border:1px solid #a1d38e80;color:#d0efc6;border-radius:5px;padding:9px 11px;font:700 12px 'Space Grotesk'}
+.m5-register{background:#122c25;border:1px solid #93c7a378;border-radius:10px;padding:17px;max-width:650px;margin:15px 0;color:#d8eadd}
+.m5-register>div{display:grid;grid-template-columns:1fr auto auto;gap:12px;border-top:1px solid #b4d5aa42;padding:13px 0;align-items:center}
+.m5-register b,.m5-register strong{font:700 13px 'Space Grotesk'}
+.m5-register span{font-size:11px;color:#b3d6be}.m5-register p{font-size:12px;color:#b3c8b8}
+#mapScreen .map-svg-wrap.mission-five-map{display:none!important}
+#mapScreen .map-space:has(#m5-workspace){display:block;overflow-y:auto;max-height:min(72vh,820px);padding:10px}
+#m5-workspace{width:100%;max-width:940px;margin:auto}
+.m5-geo-workbench{color:#e1efe3;padding:14px 15px 22px;background:#0b2521;border:1px solid #77b99a73;border-radius:10px}
+.m5-geo-workbench>p{font:500 13px/1.6 'DM Sans';color:#b6d1bf;max-width:730px}
+.m5-geo-workbench .m5-toolbox{max-width:100%}
+.m5-geo-workbench .m5-image figcaption{font-size:10px}
+.m5-map-select{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin:22px 0 12px}
+.m5-map-select label{font:700 11px 'Space Grotesk';letter-spacing:.04em;display:flex;flex-direction:column;gap:8px;color:#cbe4c8}
+.m5-map-select select{width:100%;min-height:44px;background:#122d28;color:#e8f7e5;border:1px solid #80bb9f;border-radius:6px;padding:10px 11px;font:600 13px 'DM Sans'}
+.m5-map-select button{min-height:44px;padding:10px 14px;justify-content:center;white-space:nowrap}
+#m5-result{min-height:22px;margin-top:11px;color:#efdf9b;font:700 13px/1.5 'DM Sans'}
+.m5-correct #m5-result{color:#aeeda4}
+@media(max-width:1080px){.mission-select-grid:has(#missionCard5){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.mission-select-grid:has(#missionCard5){grid-template-columns:1fr}.m5-photo-pair,.m5-map-photos{grid-template-columns:1fr}.m5-map-select{grid-template-columns:1fr}.m5-register>div{grid-template-columns:1fr auto}.m5-register span{grid-column:1/-1}}
