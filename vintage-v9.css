@@ -5,3 +5,27 @@
 .npc-dialogue strong{color:#e5c48b;font-family:'Space Grotesk',sans-serif;letter-spacing:.07em}
 .npc-dialogue.hidden{display:none}
 @media(max-width:760px){.ambience-volume{display:none}.ambience-button{min-width:46px!important;padding:8px!important;font-size:9px!important}.npc-dialogue{bottom:19%;font-size:11px;gap:8px;min-width:0;width:85vw}}
+/* AYLA · Clara and Theo natural ambient conversation captions */
+.npc-dialogue{
+  max-width:min(620px,86vw);
+  min-width:260px;
+  bottom:14%;
+  align-items:flex-start;
+  padding:15px 20px;
+  font-size:13px;
+  line-height:1.55;
+  overflow-wrap:anywhere;
+  box-shadow:0 14px 40px #0008;
+  transition:opacity .2s ease;
+}
+.npc-dialogue strong{flex:0 0 56px}
+.npc-dialogue span{flex:1}
+@media(max-width:760px){
+  .npc-dialogue{
+    bottom:17%;
+    width:90vw;min-width:0;max-width:90vw;
+    padding:12px 14px;
+    font-size:12px;gap:10px;
+  }
+  .npc-dialogue strong{flex-basis:43px}
+}
