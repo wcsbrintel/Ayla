@@ -219,3 +219,37 @@
 .m5-correct #m5-result{color:#aeeda4}
 @media(max-width:1080px){.mission-select-grid:has(#missionCard5){grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.mission-select-grid:has(#missionCard5){grid-template-columns:1fr}.m5-photo-pair,.m5-map-photos{grid-template-columns:1fr}.m5-map-select{grid-template-columns:1fr}.m5-register>div{grid-template-columns:1fr auto}.m5-register span{grid-column:1/-1}}
+
+/* AYLA 5.1 — Observatory mark and reversible navigation */
+#startScreen .observatory-corner-mark{
+  position:absolute;
+  z-index:8;
+  top:clamp(18px,3.2vh,38px);
+  left:clamp(17px,2.7vw,50px);
+  width:clamp(34px,4.3vw,67px);
+  height:clamp(37px,4.8vw,73px);
+  display:block;
+  object-fit:contain;
+  opacity:.95; /* 5% transparency, no plate or backdrop */
+  background:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  pointer-events:none;
+}
+#startScreen .start-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#startScreen #replayIntroduction,#startScreen #resetFromStart{font-size:clamp(10px,.85vw,12px);padding:12px 13px}
+.mission-navigation-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}
+#homeFromCentral{white-space:nowrap;border-color:#9acf87a0}
+.reset-progress{border:1px solid #bd98767d!important;color:#e8cdb0!important;background:rgba(60,32,25,.35)!important}
+.reset-progress:hover,.reset-progress:focus-visible{border-color:#edc296!important;color:#ffe5cc!important;background:rgba(92,41,31,.5)!important}
+@media(max-width:970px){
+ #topbar #homeFromCentral{padding:9px 8px;font-size:10px}
+ #startScreen .observatory-corner-mark{width:42px;height:46px}
+}
+@media(max-width:600px){
+ #startScreen .observatory-corner-mark{top:13px;left:14px;width:35px;height:39px}
+ #startScreen .start-actions{gap:7px}
+ #startScreen .start-actions>button{flex:1 1 auto}
+ .mission-navigation-actions{gap:6px}
+ .mission-navigation-actions button{padding:9px!important;font-size:10px}
+}
