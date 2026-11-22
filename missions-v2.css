@@ -93,3 +93,8 @@
 #mapScreen .map-svg-wrap.mission-four-map:before{content:'SC  ┄ ┄ ┄  ⑥  ┄ ┄ ┄  ASIA / HK';position:absolute;top:29%;left:0;right:0;text-align:center;color:#b1e8a1;font:700 clamp(16px,2.5vw,31px)/1.5 'Space Grotesk'}
 #mapScreen .map-svg-wrap.mission-four-map:after{content:attr(data-case-label);position:absolute;left:8%;right:8%;bottom:14%;text-align:center;color:#e6f5e2;font:700 clamp(12px,1.5vw,19px)/1.5 'Space Grotesk'}
 @media(max-width:700px){.mission-select-grid:has(#missionCard4){grid-template-columns:1fr}.ayla-shark-facility{flex-direction:column;align-items:stretch}.ayla-shark-warehouse{width:100%}.ayla-container-voyages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* AYLA 4.1 — photograph in shark-fin dossier */
+.ayla-shark-photo{margin:0 0 17px;border:1px solid #a8bb9f77;border-radius:8px;overflow:hidden;background:#102e2d}
+.ayla-shark-photo img{display:block;width:100%;max-height:340px;object-fit:cover;object-position:center 48%}
+.ayla-shark-photo figcaption{padding:8px 12px;color:#bad9c1;font:700 10px 'Space Grotesk';letter-spacing:.08em}
