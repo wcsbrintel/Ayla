@@ -339,11 +339,7 @@
       bx('fieldcaseLatch',.1,.07,.03,x,1.41,z-.3,brass);
     }
     fieldKit(5.8,4.13);
-    for(let k=0;k<4;k++){
-      let xx= -9.4+k*6.2;
-      bx('lobbyFloorMarker',.55,.01,.08,xx,-.06,-7.9,greenStrip);
-      bx('lobbyFloorMarker',.08,.01,.55,xx,-.06,-7.9,greenStrip);
-    }
+    // Decorative plus-sign floor markers intentionally removed.
     // Glowing interactive pylons above existing interaction rings, without new collision zones.
     function labelBeacon(x,z,txt){
       const pillar=cylinder('interactionPillar',.08,.77,x,.62,z,cyan);
