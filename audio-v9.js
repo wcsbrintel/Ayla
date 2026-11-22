@@ -1,20 +1,20 @@
-/* AYLA 5.2 — Creative Commons Zero ambient music.
-   Primary: "Space Graveyard", TinyWorlds (CC0 1.0)
-   https://opengameart.org/content/space-graveyard-ambient-track
-   https://opengameart.org/sites/default/files/space_graveyard_4.mp3
-   Original sound-effects/noise generator replaced entirely.
-   If the external file is unavailable, play an original soft chord-based
-   ambient composition synthesized locally (no third-party samples). */
+/* AYLA 5.3 — Quiet piano soundtrack licensed CC0.
+   Primary: "Mystical Piano", Indieteur (CC0 1.0)
+   https://opengameart.org/content/mystical-piano
+   Source author recommends cutting the loop at 1m35s (95 seconds).
+   Fallback: original gentle melodic piano-like composition synthesized in browser.
+   No previous Space Graveyard / sci-fi soundscape is used. */
 (function () {
   'use strict';
-  const TRACK = 'https://opengameart.org/sites/default/files/space_graveyard_4.mp3';
+  const TRACK = 'https://opengameart.org/sites/default/files/Mystical%20Piano.mp3';
+  const LOOP_END_SECONDS = 95;
   const ENABLED_KEY = 'ayla-music-enabled';
   const VOLUME_KEY = 'ayla-music-volume';
-  const defaultVolume = 16;
+  const defaultVolume = 12;
   const language = {
-    pt: {name:'Música ambiente: Space Graveyard (CC0)', on:'LIG.',off:'DESL.',volume:'Volume da música'},
-    en: {name:'Ambient music: Space Graveyard (CC0)', on:'ON',off:'OFF',volume:'Music volume'},
-    es: {name:'Música ambiental: Space Graveyard (CC0)', on:'ACT.',off:'DES.',volume:'Volumen de la música'}
+    pt: {name:'Música ambiente: Piano discreto (CC0)', on:'LIG.',off:'DESL.',volume:'Volume da música'},
+    en: {name:'Ambient music: Quiet piano (CC0)', on:'ON',off:'OFF',volume:'Music volume'},
+    es: {name:'Música ambiental: Piano suave (CC0)', on:'ACT.',off:'DES.',volume:'Volumen de la música'}
   };
   let wanted = true, volume = defaultVolume, playing = false, mode = 'none';
   try {
@@ -25,7 +25,7 @@
   }catch(e){}
   const music=new Audio();
   music.src=TRACK;
-  music.loop=true;
+  music.loop=false;
   music.preload='none';
   music.volume=volume/100;
   music.setAttribute('aria-hidden','true');
@@ -60,46 +60,41 @@
     try{localStorage.setItem(ENABLED_KEY,String(wanted));localStorage.setItem(VOLUME_KEY,String(volume));}catch(e){}
   }
 
-  // Local original ambient soundtrack as offline/CORS/network fallback:
-  // gentle chord progression and bell motifs, never synthetic chatter/clicking.
+  // Gentle locally authored melodic piano substitute for network outages.
+  // Short envelopes and sparse voicing replace the previous synth-pad ambience.
   const progression=[
-    [130.81,155.56,196.00,293.66],
-    [103.83,130.81,155.56,196.00],
-    [155.56,196.00,233.08,311.13],
-    [116.54,146.83,174.61,261.63]
+    [146.83,174.61,220.00,293.66],
+    [130.81,164.81,196.00,261.63],
+    [116.54,146.83,174.61,233.08],
+    [130.81,174.61,196.00,261.63]
   ];
   let ctx=null,output=null,clock=null,nextChord=0,bar=0;
-  function tone(freq,t,dur,amp,kind){
-    const o=ctx.createOscillator();
-    const g=ctx.createGain();
+  function piano(freq,t,length,amp){
+    const osc=ctx.createOscillator(),harmonic=ctx.createOscillator(),gain=ctx.createGain(),treble=ctx.createGain();
     const filter=ctx.createBiquadFilter();
-    o.type=kind||'sine';
-    o.frequency.value=freq;
-    filter.type='lowpass';filter.frequency.value=1150;
-    g.gain.setValueAtTime(.00001,t);
-    g.gain.exponentialRampToValueAtTime(Math.max(.0001,amp),t+.55);
-    g.gain.setValueAtTime(Math.max(.0001,amp),t+dur-.8);
-    g.gain.exponentialRampToValueAtTime(.00001,t+dur);
-    o.connect(filter);filter.connect(g);g.connect(output);
-    o.start(t);o.stop(t+dur+.03);
-  }
-  function bell(freq,t){
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type='sine';o.frequency.value=freq*2;
-    g.gain.setValueAtTime(.00001,t);
-    g.gain.exponentialRampToValueAtTime(.024,t+.06);
-    g.gain.exponentialRampToValueAtTime(.00001,t+2.9);
-    o.connect(g);g.connect(output);
-    o.start(t);o.stop(t+3.0);
+    osc.type='sine';osc.frequency.value=freq;
+    harmonic.type='sine';harmonic.frequency.value=freq*2.003;
+    filter.type='lowpass';filter.frequency.value=1600;
+    treble.gain.value=.075;
+    gain.gain.setValueAtTime(.00001,t);
+    gain.gain.exponentialRampToValueAtTime(Math.max(.0001,amp),t+.025);
+    gain.gain.exponentialRampToValueAtTime(Math.max(.00001,amp*.17),t+Math.max(.35,length*.7));
+    gain.gain.exponentialRampToValueAtTime(.00001,t+length);
+    osc.connect(filter);harmonic.connect(treble);treble.connect(filter);
+    filter.connect(gain);gain.connect(output);
+    osc.start(t);harmonic.start(t);
+    osc.stop(t+length+.04);harmonic.stop(t+length+.04);
   }
   function schedule(){
     if(!ctx||!output)return;
     const now=ctx.currentTime;
     while(nextChord<now+2){
       const chord=progression[bar%progression.length];
-      chord.forEach((hz,i)=>tone(hz,nextChord,8.6,i===0?.045:.025,i%2===0?'triangle':'sine'));
-      if(bar%2===0){bell(chord[2],nextChord+2.5);bell(chord[3],nextChord+5.7);}
-      else{bell(chord[1],nextChord+3.2);}
+      piano(chord[0]/2,nextChord,7.8,.055);
+      piano(chord[0],nextChord+.1,5.9,.025);
+      piano(chord[2],nextChord+2.1,4.7,.026);
+      piano(chord[1],nextChord+4.1,3.7,.020);
+      piano(chord[3],nextChord+6.3,1.5,.016);
       nextChord+=8;
       bar++;
     }
@@ -117,7 +112,7 @@
     try{
       ctx=new AudioContext();
       output=ctx.createGain();
-      output.gain.value=volume/100*.85;
+      output.gain.value=volume/100*.72;
       output.connect(ctx.destination);
       mode='fallback';
       nextChord=ctx.currentTime+.08;bar=0;
@@ -157,9 +152,20 @@
   function setVolume(value){
     volume=Math.max(0,Math.min(100,Number(value)||0));
     music.volume=volume/100;
-    if(ctx&&output)output.gain.setTargetAtTime(volume/100*.85,ctx.currentTime,.09);
+    if(ctx&&output)output.gain.setTargetAtTime(volume/100*.72,ctx.currentTime,.09);
     persist();paint();
   }
+  music.addEventListener('timeupdate',()=>{
+    if(mode==='remote'&&music.currentTime>=LOOP_END_SECONDS){
+      music.currentTime=0; // CC0 composer's recommended seamless loop point.
+    }
+  });
+  music.addEventListener('ended',()=>{
+    if(wanted&&playing&&mode==='remote'){
+      music.currentTime=0;
+      music.play().catch(()=>startFallback());
+    }
+  });
   music.addEventListener('error',()=>{if(wanted&&playing&&mode==='remote')startFallback();});
   button.addEventListener('click',toggle);
   slider.addEventListener('input',()=>setVolume(slider.value));
@@ -177,6 +183,6 @@
     start:()=>{wanted=true;persist();start();},
     stop,enabled:()=>playing,setVolume,
     source:()=>mode==='fallback'?'original-ambient-fallback':TRACK,
-    title:'Space Graveyard — TinyWorlds (CC0 1.0)'
+    title:'Mystical Piano — Indieteur (CC0 1.0)'
   };
 })();
