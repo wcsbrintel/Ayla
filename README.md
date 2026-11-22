@@ -1,3 +1,12 @@
+## AYLA 5.2 — CC0 ambient soundtrack
+
+- Replaces the previous generated office clicks and synthetic chatter with **Space Graveyard**, an ambient science-fiction track by **TinyWorlds**, made available under **CC0 1.0** on OpenGameArt: https://opengameart.org/content/space-graveyard-ambient-track .
+- Original track is streamed from https://opengameart.org/sites/default/files/space_graveyard_4.mp3 . Availability depends on the external host and browser network policy. If loading fails, a quiet **original** evolving chord-and-bell ambient composition runs locally using Web Audio, without speech/noise effects.
+- The existing music toggle and volume slider remain, now titled Ambient Music / Música Ambiente / Música Ambiental, with a default volume of 16%. Mute and volume choices persist locally.
+- Browsers require user interaction to start audio; the control starts when the player begins, continues or selects a mission, or manually toggles the music. There is no forced unsolicited autoplay.
+- License attribution: TinyWorlds — Space Graveyard, CC0 1.0. CC0 does not require attribution; the project credits the artist voluntarily.
+- Verified JavaScript syntax and GitHub assets/references; network playback on the deployed browser is not guaranteed and uses the local musical fallback.
+
 ## AYLA 5.1 — Observatory mark, replay introduction, full progress reset
 
 - The game start screen displays a **background-free Observatory mark**, cropped from the existing Central rug SVG (`assets/observatory-rug.svg`) into `assets/observatory-mark-transparent.svg`. The mark is shown at 95% opacity (5% transparency), in the top-left corner.
