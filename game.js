@@ -15,6 +15,54 @@
       hudLocation:'CENTRO DE INTELIGENCIA',hudMission:'INVESTIGACIÓN EN CURSO',missionTitle:'El Manifiesto Inconsistente',missionSubtitle:'Identifica lo que realmente demuestran las pruebas.',heroSub:'Cada pista tiene una historia. No todas las historias son verdad.',heroDescription:'Entra en el centro de inteligencia. Conoce a Ayla y Winston. Explora, investiga y aprende a diferenciar hechos de hipótesis.',begin:'INICIAR INVESTIGACIÓN',resume:'CONTINUAR MISIÓN',missionCount:'MISIÓN DEMOSTRATIVA',language:'IDIOMA',prologue:'PRÓLOGO',skip:'SALTAR INTRODUCCIÓN ↗',story:'LA HISTORIA DE AYLA',next:'CONTINUAR',enter:'ENTRAR AL CENTRO',mentor:'TU MENTOR',continue:'CONTINUAR',terminal:'TERMINAL DE FUENTES ABIERTAS',selectSource:'ELIGE UNA FUENTE PARA REVISAR',terminalFoot:'Examina la procedencia de cada registro y compara las pruebas disponibles.',mapTitle:'HIPÓTESIS DE RUTA',routeWarning:'Las líneas discontinuas son hipótesis, no rutas de tráfico comprobadas.',boardTitle:'TABLERO DE PRUEBAS',boardFoot:'La semejanza entre incidentes no demuestra por sí sola una red criminal.',reportTitle:'INFORME DE INTELIGENCIA',reportIntro:'Revisa las pruebas y elige la conclusión más defendible para cada tema.',backToScene:'VOLVER AL CENTRO',submitReport:'ENTREGAR EXPEDIENTE',caseComplete:'EXPEDIENTE FINALIZADO',finalHeading:'La verdad requiere pruebas.',finalBody:'Documentaste una inconsistencia, separaste lugares confirmados de destinos alegados y remitiste el expediente para revisión autorizada. Nadie fue acusado sin pruebas verificadas.',sourcesReviewed:'FUENTES REVISADAS',findings:'CONCLUSIONES',case:'EXPEDIENTE',playAgain:'REINICIAR MISIÓN',controls:'CONTROLES',move:'Mover a Ayla',camera:'Arrastra para girar la cámara',interact:'Interactuar con objetos y personajes',close:'Cerrar paneles',understood:'ENTENDIDO',beginLabel:'INICIANDO CENTRO DE INTELIGENCIA',hint:'INTERACTUAR',hintSub:'Pulsa E o haz clic',objectiveWinston:'Habla con Winston.',objectiveTerminal:'Revisa las cuatro fuentes de la terminal OSINT.',objectiveMap:'Analiza el mapa y distingue rutas confirmadas e hipótesis.',objectiveBoard:'Compara las pruebas en el tablero.',objectiveReport:'Ve a la mesa de informes y completa el expediente.',objectiveComplete:'Misión completada.',sourceReviewed:'FUENTE REVISADA',markReviewed:'AÑADIR AL EXPEDIENTE',viewed:'Fuente revisada',docAlert:'EVALUACIÓN DE CONFIABILIDAD',docClassification:'EVALUACIÓN DE PRUEBAS / AY-001',dialogNext:'CONTINUAR',legendConfirmed:'CONFIRMADO',legendConfirmedText:'Inspección en el puesto Río Claro; 18 aves documentadas en el registro.',legendSuspected:'NO VERIFICADO',legendSuspectedText:'Destinos y vínculos sugeridos en publicaciones online; sin confirmación independiente.',evidenceConfirmed:'Hechos observados',evidenceObserved:'Registro administrativo: 18 aves vivas; documentación incompatible con la carga.',evidenceOpen:'Pista de fuente abierta',evidenceLead:'Una publicación menciona 30 aves y Porto Azul sin una fuente original verificable.',evidenceRoute:'Límites geográficos',evidenceRouteText:'Se conoce el lugar de incautación, pero no se confirmó el destino final.',evidenceGap:'Vacíos importantes',evidenceGapText:'Sin identificación comprobada de organizadores, documentos posteriores de transporte o receptor confirmado.',locked:'Antes de terminar, habla con Winston, revisa las cuatro fuentes, examina el mapa y consulta el tablero.',question1:'1. ¿Qué cantidad documenta la incautación?',question2:'2. ¿Qué interpretación de la ruta está sustentada?',question3:'3. ¿Qué respuesta respeta las pruebas?',answers1:['18 aves vivas.','30 aves vendidas en el exterior.','No hubo incautación.'],answers2:['La carga llegó a otro país.','Se sugirió un destino, pero no fue verificado.','La publicación demuestra toda la ruta.'],answers3:['Acusar públicamente a alguien por una publicación.','Cerrar la investigación por falta de datos.','Preservar pruebas, identificar vacíos y remitir pistas a las autoridades competentes.'],answerError:'Revisa las respuestas: una hipótesis no es una prueba. Vuelve a analizar los documentos e inténtalo otra vez.',incomplete:'Responde las tres preguntas antes de terminar.',successToast:'Evaluación fundamentada completada. ¡Buen trabajo!',sourceToast:'Fuente añadida al expediente.',readyToast:'Las cuatro fuentes fueron revisadas.',mentorLines:['Ayla, antes de concluir, comprueba qué muestran realmente los documentos. Nuestro trabajo no es buscar a alguien a quien culpar, sino establecer los hechos.','En la terminal te esperan cuatro fuentes. Algunas se contradicen. Compáralas con el mapa y después elabora tu expediente. Una pista no es una prueba.'],storyFrames:[['El río fue su primer mapa','Ayla creció escuchando la selva. Conocía el canto de las aves antes de conocer el nombre de muchas ciudades.','01 / THE BEGINNING'],['El silencio lo cambió todo','De adolescente, vio aves rescatadas de un transporte ilegal. Casi nada se sabía sobre quién había organizado su captura. Esa pregunta la acompañó.','02 / THE TURNING POINT'],['Las preguntas se volvieron vocación','Años de estudio de conservación, geografía e inteligencia de fuentes abiertas le enseñaron que la información solo sirve cuando se conocen su origen y sus límites.','03 / THE PATH'],['Winston tenía una regla','Winston, investigador veterano, se convirtió en su mentor. «La intuición puede iniciar una investigación. Solo las pruebas pueden concluirla». Hoy la espera su primer caso.','04 / THE MENTOR']],sources:[{id:'SR-047',cat:'[O] REGISTRO OFICIAL',title:'Acta de inspección',date:'14 NOV · CASO AY-001',body:'Una inspección en Río Claro encontró 18 aves vivas en contenedores. Los documentos del vehículo indicaban «materiales decorativos». El acta no identifica ningún destinatario.',note:'OBSERVADO [O]: lugar, fecha, cantidad y declaración de carga. No demuestra destino ni autoría.'},{id:'OS-047',cat:'[N] FUENTE ABIERTA',title:'Publicación sobre Porto Azul',date:'FECHA NO VERIFICADA',body:'Una publicación de autoría no verificable afirma que «30 aves raras fueron enviadas a Porto Azul». No incluye imagen original fechada, documento ni segunda fuente independiente.',note:'PISTA [N]: la publicación no confirma 30 aves, Porto Azul ni un vínculo con la incautación.'},{id:'VT-047',cat:'[O] REGISTRO TÉCNICO',title:'Informe veterinario',date:'15 NOV · CASO AY-001',body:'El registro veterinario documenta la recepción de 18 aves vivas procedentes de la inspección. Los animales necesitan atención. En ese documento no se verificaron individualmente especies ni orígenes.',note:'OBSERVADO [O]: 18 aves recibidas. No extrapolar a especies, rutas o redes.'},{id:'AN-047',cat:'[N] NOTA ANALÍTICA',title:'Comparación de fuentes',date:'NOTA ANALÍTICA / AY-001',body:'El acta y el registro veterinario coinciden en 18 aves. La publicación habla de 30 aves y de un puerto, pero carece de corroboración. Ningún vínculo documentado conecta a quien publicó con un delito.',note:'VACÍO: cantidad divergente; destinos e implicados sin confirmar.'}]}
   };
 
+  const introNarrative = {
+  "pt": {
+    "captions": [
+      "Desde criança, Ayla se sentia parte da natureza. Os rios, as florestas e os animais eram seu lugar no mundo.",
+      "Aos 17 anos, Ayla presenciou o resgate de aves retiradas de uma rota de tráfico. Algumas estavam feridas. Muitas perguntas ficaram sem resposta.",
+      "A experiência mudou seu caminho. Ela estudou conservação, legislação ambiental, análise de dados e investigação com fontes abertas.",
+      "Anos depois, Winston, um investigador experiente, convidou Ayla a integrar uma unidade de inteligência contra crimes ambientais.",
+      "Hoje, Ayla investiga o tráfico de animais silvestres, cruzando registros, fontes públicas e evidências documentais.",
+      "Cada investigação pode proteger animais e revelar conexões. Mas suspeitas não são provas: conclusões exigem verificação."
+    ],
+    "title": "AGORA, UMA NOVA MISSÃO COMEÇA.",
+    "body": "Uma possível rede de tráfico está em atividade. Novas evidências acabam de surgir.\n\nWinston espera por Ayla na central. É hora de analisar fontes, comparar registros e descobrir o que as provas realmente sustentam.",
+    "kicker": "NOVA MISSÃO",
+    "patch": "INTELIGÊNCIA AMBIENTAL",
+    "role": "INVESTIGADORA DE CRIMES CONTRA A VIDA SILVESTRE"
+  },
+  "en": {
+    "captions": [
+      "Since childhood, Ayla felt at home in nature. Rivers, forests and wildlife were her world.",
+      "At 17, Ayla witnessed birds being rescued from illegal transport. Some were injured. Many questions remained unanswered.",
+      "The experience changed her path. She studied conservation, environmental law, data analysis and open-source investigation.",
+      "Years later, Winston, an experienced investigator, invited Ayla to join an environmental crime intelligence unit.",
+      "Today, Ayla investigates wildlife trafficking, connecting records, open sources and documented evidence.",
+      "Every investigation can protect wildlife and reveal connections. But suspicion is not proof: conclusions require verification."
+    ],
+    "title": "NOW, A NEW MISSION BEGINS.",
+    "body": "A possible trafficking network is active. New evidence has just emerged.\n\nWinston is waiting for Ayla at the operations center. It is time to examine sources, compare records and establish what the evidence actually supports.",
+    "kicker": "NEW MISSION",
+    "patch": "ENVIRONMENTAL INTELLIGENCE",
+    "role": "WILDLIFE CRIME INVESTIGATOR"
+  },
+  "es": {
+    "captions": [
+      "Desde niña, Ayla se sentía parte de la naturaleza. Los ríos, los bosques y los animales eran su mundo.",
+      "A los 17 años, Ayla presenció el rescate de aves transportadas ilegalmente. Algunas estaban heridas. Muchas preguntas quedaron sin respuesta.",
+      "La experiencia cambió su rumbo. Estudió conservación, legislación ambiental, análisis de datos e investigación de fuentes abiertas.",
+      "Años después, Winston, investigador experimentado, invitó a Ayla a unirse a una unidad de inteligencia contra delitos ambientales.",
+      "Hoy, Ayla investiga el tráfico de fauna silvestre, conectando registros, fuentes abiertas y pruebas documentadas.",
+      "Cada investigación puede proteger la fauna y revelar conexiones. Pero una sospecha no es una prueba: hay que verificar las conclusiones."
+    ],
+    "title": "AHORA COMIENZA UNA NUEVA MISIÓN.",
+    "body": "Una posible red de tráfico está activa. Acaban de surgir nuevas pruebas.\n\nWinston espera a Ayla en el centro de operaciones. Es hora de analizar fuentes, comparar registros y establecer qué demuestran realmente las pruebas.",
+    "kicker": "NUEVA MISIÓN",
+    "patch": "INTELIGENCIA AMBIENTAL",
+    "role": "INVESTIGADORA DE DELITOS CONTRA LA FAUNA SILVESTRE"
+  }
+};
+
   let lang = 'en';
   try { const saved=localStorage.getItem('ayla-language'); if(ui[saved])lang=saved; } catch(e){}
   let introIndex=0,dialogIndex=0,playerActive=false,mentorMet=false,mapSeen=false,boardSeen=false,done=false;
@@ -89,9 +137,21 @@
   function save(){try{localStorage.setItem(stateKey,JSON.stringify({mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]}));}catch(e){}}
   function restore(){try{const data=JSON.parse(localStorage.getItem(stateKey)||'null');if(data){mentorMet=!!data.mentorMet;mapSeen=!!data.mapSeen;boardSeen=!!data.boardSeen;done=!!data.done;sourcesReviewed=new Set((data.sources||[]).filter(n=>n>=0&&n<4));}}catch(e){}}
   function resetMission(){mentorMet=mapSeen=boardSeen=done=false;sourcesReviewed.clear();selectedSource=-1;save();updateHud();}
-  function localize(){document.documentElement.lang=lang;updateAccountIndicator();if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=introIndex>=3?t('enter'):t('next');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;updateAccountIndicator();if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');}
-  function renderIntro(){const frame=t('storyFrames')[introIndex];$('introHeading').textContent=frame[0];$('introBody').textContent=frame[1];$('artLabel').textContent=frame[2];$('introCounter').textContent=String(introIndex+1).padStart(2,'0')+' / 04';$('introDots').innerHTML=[0,1,2,3].map(i=>'<i class="'+(i===introIndex?'active':'')+'"></i>').join('');$('introArt').style.backgroundImage='linear-gradient(to bottom, transparent, rgba(2,15,12,.26)), url("assets/intro-'+(introIndex+1)+'.svg")';$('nextIntroLabel').textContent=introIndex===3?t('enter'):t('next');}
+  function renderIntro(){
+    const story=introNarrative[lang]||introNarrative.en;
+    document.querySelectorAll('[data-intro-caption]').forEach((node)=>{
+      const index=Number(node.dataset.introCaption);
+      node.textContent=story.captions[index]||'';
+    });
+    $('introMissionTitle').textContent=story.title;
+    $('introMissionBody').textContent=story.body;
+    document.querySelector('[data-intro-kicker]').textContent=story.kicker;
+    document.querySelector('[data-intro-patch]').textContent=story.patch;
+    document.querySelector('[data-intro-role]').textContent=story.role;
+    $('nextIntroLabel').textContent=t('enter');
+  }
   function intro(){show('introScreen');introIndex=0;renderIntro();}
   function launch(){show('');screens.forEach(hide);$('topbar').classList.remove('hidden');$('missionHud').classList.toggle('hidden',approvedSession);$('compass').classList.remove('hidden');$('mobileControls').classList.remove('hidden');playerActive=true;updateHud();syncAccess();if(engine)engine.resize();}
   function progress(){return (mentorMet?1:0)+(sourcesReviewed.size===4?1:0)+(mapSeen?1:0)+(boardSeen?1:0);}
@@ -158,7 +218,7 @@
     }finally{button.disabled=false;}
   };
   $('resumeButton').onclick=launch;
-  $('nextIntro').onclick=()=>{if(introIndex<3){introIndex++;renderIntro();}else launch();};
+  $('nextIntro').onclick=launch;
   $('skipIntro').onclick=launch;
   $('dialogNext').onclick=nextDialog;
   $('reportForm').onsubmit=evaluateReport;
