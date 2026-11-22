@@ -1,3 +1,13 @@
+## AYLA 5.5 — More active Clara and Theo behavior
+
+- Corrected Clara's initial position from a collision-blocked point near the right side of the room to a navigable coordinate (x=6.25, z=-1.10).
+- Added **five Clara patrol/work destinations** and **four Theo destinations**, all checked against the current scene collision map, and three alternating clear meeting locations.
+- Characters walk around the operations center between conversations, replan when mobile obstacles interfere, turn toward their interlocutor and use the existing talking animation.
+- The first meeting begins after roughly 9–13 seconds of activity; subsequent encounters are scheduled after about 8–15 seconds of roaming/work, with mixed shorter and longer dialogue packs, rather than extended silent idle periods.
+- A deterministic simulation with the actual navigation logic over 600 seconds recorded **10 conversations, approximately 110 meters of Clara movement**, and no stalled NPC meeting states; actual runtime varies because conversation order and destinations are random.
+- Keeps the eight PT/EN/ES dialogue topics in `clara-theo-dialogues.js`. NPC conversation timing pauses when a mission panel or a Winston interaction is active.
+- Sources: `crowd-v9.js` (version 2.2.0), loaded through `index.html`. 3D WebGL visual verification in a browser is still pending.
+
 ## AYLA 5.4 — Clara & Theo ambient intelligence conversations
 
 - Replaced the old three-line dialogue loop with **eight randomized, fully localized conversation topics** in `clara-theo-dialogues.js`. PT, EN and ES each contain 67 dialogue turns distributed across 8 scenes; the long-form topics run roughly 40–75 seconds.
