@@ -35,7 +35,7 @@ function install(B,scene){
  bookshelf(-9.95,6.9,false,1);bookshelf(-9.95,3.85,false,2);bookshelf(9.95,6.9,false,3);bookshelf(9.95,3.85,false,4);
  for(const x of [-9.95,9.95])for(const z of [3.85,6.9])obstacles.push({x,z,w:2.8,d:.75,tag:'v9-library-'+x+'-'+z});
  // Classical desk finish and period objects on existing working desks.
- for(const [x,z,w,d] of [[4.7,-3.3,3.5,1.7],[4.0,-6.4,3.8,1.9],[5.4,4,3.4,1.8],[-6,5.6,3.5,1.7]]){
+ for(const [x,z,w,d] of [[4.7,-3.3,3.5,1.7],[8.0,-8.05,3.8,1.9],[5.4,4,3.4,1.8],[-6,5.6,3.5,1.7]]){
   box('desk-leather',w-.23,.012,d-.19,x,1.115,z,mat('leather-'+x,'#39463a',0,.83));
   for(const side of [-1,1])box('desk-edge',.08,.09,d,x+side*w*.48,1.052,z,brass);
   box('desk-front',w-.05,.23,.08,x,.77,z+d*.49,wood);
@@ -45,10 +45,10 @@ function install(B,scene){
   let shade=box('lamp-shade',.62,.17,.28,0,1.83,0,mat('enamel','#557266',.12,.48),root);shade.rotation.x=-.12;
   let glow=new B.PointLight('v9-lamp-warm',new B.Vector3(x,1.74,z),scene);glow.diffuse=B.Color3.FromHexString('#ffdbab');glow.intensity=.35;glow.range=3.2;
  }
- lamp(5.92,-3.05);lamp(2.75,-6.24);lamp(-5.15,5.25);
+ lamp(5.92,-3.05);lamp(6.75,-7.89);lamp(-5.15,5.25);
  // Vintage desk research objects: telephone, notebooks, microscope, brass globe, camera.
- for(const [x,z] of [[3.3,-6.1],[5.75,4.3]]){box('document-stack',.48,.12,.70,x,1.22,z,paper);box('folio',.61,.025,.80,x,1.30,z,wood2);}
- const phone=new B.TransformNode('v9-rotary-phone',scene);phone.position.set(2.75,1.1,-6.88);
+ for(const [x,z] of [[7.3,-7.75],[5.75,4.3]]){box('document-stack',.48,.12,.70,x,1.22,z,paper);box('folio',.61,.025,.80,x,1.30,z,wood2);}
+ const phone=new B.TransformNode('v9-rotary-phone',scene);phone.position.set(6.75,1.1,-8.53);
  box('phone-base',.40,.17,.31,0,.08,0,dark,phone);cylinder('dial',.19,.015,0,.18,-.015,brass,phone);
  let hand=box('phone-handset',.46,.095,.14,0,.26,0,dark,phone);hand.rotation.z=.07;
  const field=new B.TransformNode('v9-field-optics',scene);field.position.set(5.3,1.19,4.3);
