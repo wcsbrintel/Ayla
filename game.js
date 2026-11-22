@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
-  const screens = ['aftermathScreen','promotionScreen','missionSelectScreen','startScreen','introScreen','dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','finalScreen','helpScreen','restrictedScreen'];
+  const screens = ['aftermathScreen','promotionScreen','missionSelectScreen','startScreen','introScreen','dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','finalScreen','helpScreen','restrictedScreen','pecManScreen'];
   const ui = {
     pt: {
       hudLocation:'CENTRAL DE INTELIGÊNCIA',hudMission:'MISSÃO EM ANDAMENTO',missionTitle:'O Manifesto Inconsistente',missionSubtitle:'Identifique o que as evidências realmente demonstram.',heroSub:'Toda evidência tem uma história. Nem toda história é verdade.',heroDescription:'Entre na central de inteligência. Conheça Ayla e Winston. Explore, investigue e aprenda a distinguir fatos de hipóteses.',begin:'INICIAR INVESTIGAÇÃO',resume:'CONTINUAR MISSÃO',missionCount:'MISSÃO DEMONSTRATIVA',language:'IDIOMA',prologue:'PRÓLOGO',skip:'PULAR INTRODUÇÃO ↗',story:'A HISTÓRIA DE AYLA',next:'CONTINUAR',enter:'ENTRAR NA CENTRAL',mentor:'SEU MENTOR',continue:'CONTINUAR',terminal:'TERMINAL DE FONTES ABERTAS',selectSource:'SELECIONE UMA FONTE PARA ANALISAR',terminalFoot:'Analise a procedência de cada registro e compare as evidências disponíveis.',mapTitle:'HIPÓTESES DE ROTA',routeWarning:'Linhas tracejadas indicam hipóteses, não rotas criminosas comprovadas.',boardTitle:'QUADRO DE EVIDÊNCIAS',boardFoot:'A semelhança entre ocorrências não demonstra, por si só, uma rede comum.',reportTitle:'RELATÓRIO DE INTELIGÊNCIA',reportIntro:'Revise as evidências e selecione a conclusão mais defensável para cada tópico.',backToScene:'VOLTAR À CENTRAL',submitReport:'ENTREGAR DOSSIÊ',caseComplete:'DOSSIÊ CONCLUÍDO',finalHeading:'A verdade exige evidências.',finalBody:'Você documentou uma inconsistência, separou locais confirmados de destinos alegados e encaminhou o dossiê para análise por autoridades competentes. Ninguém foi acusado sem provas verificadas.',sourcesReviewed:'FONTES REVISADAS',findings:'CONCLUSÕES',case:'DOSSIÊ',playAgain:'REINICIAR MISSÃO',controls:'CONTROLES',move:'Mover Ayla',camera:'Arraste para girar a câmera',interact:'Interagir com objetos e personagens',close:'Fechar painéis',understood:'ENTENDI',beginLabel:'INICIANDO CENTRAL DE INTELIGÊNCIA',hint:'INTERAGIR',hintSub:'Pressione E ou clique',objectiveWinston:'Converse com Winston.',objectiveTerminal:'Examine as quatro fontes no terminal OSINT.',objectiveMap:'Analise o mapa e diferencie rotas comprovadas de hipóteses.',objectiveBoard:'Compare evidências no quadro.',objectiveReport:'Acesse a mesa de relatórios e conclua o dossiê.',objectiveComplete:'Missão concluída.',sourceReviewed:'FONTE REVISADA',markReviewed:'ADICIONAR À ANÁLISE',viewed:'Fonte revisada',docAlert:'AVALIAÇÃO DE CONFIABILIDADE',docClassification:'ANÁLISE DE EVIDÊNCIAS / AY-001',dialogNext:'CONTINUAR',legendConfirmed:'CONFIRMADO',legendConfirmedText:'Fiscalização no Posto Rio Claro; 18 aves apreendidas conforme o registro.',legendSuspected:'NÃO VERIFICADO',legendSuspectedText:'Destinos e vínculos sugeridos por publicações online; não há confirmação independente.',evidenceConfirmed:'Fatos observados',evidenceObserved:'Registro administrativo: 18 aves vivas; documentação incompatível com o conteúdo.',evidenceOpen:'Pista de fonte aberta',evidenceLead:'Postagem menciona 30 aves e suposto destino no Porto Azul, sem fonte original verificável.',evidenceRoute:'Limites geográficos',evidenceRouteText:'O ponto de apreensão é conhecido, mas o destino final não foi comprovado.',evidenceGap:'Lacunas relevantes',evidenceGapText:'Não há identidade confirmada de articuladores, registros de transporte adicionais nem destinatário verificado.',locked:'Antes de finalizar, converse com Winston, examine as quatro fontes, analise o mapa e consulte o quadro.',question1:'1. Qual quantidade está documentada na apreensão?',question2:'2. Qual interpretação da rota está sustentada?',question3:'3. Qual encaminhamento respeita os limites das evidências?',answers1:['18 aves vivas.','30 aves vendidas no exterior.','Nenhuma apreensão foi realizada.'],answers2:['O carregamento chegou ao exterior.','O destino foi sugerido, mas não confirmado.','A postagem comprova a rota completa.'],answers3:['Acusar publicamente alguém com base na postagem.','Encerrar a investigação por falta de dados.','Preservar provas, apontar lacunas e encaminhar pistas às autoridades competentes.'],answerError:'Revise suas respostas: uma hipótese não substitui prova. Reavalie os documentos e tente novamente.',incomplete:'Responda às três perguntas antes de concluir.',successToast:'Avaliação concluída com rigor. Bom trabalho!',sourceToast:'Fonte adicionada ao dossiê.',readyToast:'As quatro fontes foram analisadas.',mentorLines:['Ayla, antes de concluir qualquer coisa, verifique o que os documentos realmente mostram. Nosso trabalho não é encontrar alguém para culpar. É esclarecer os fatos.','Há quatro fontes no terminal. Algumas se contradizem. Compare-as com o mapa e depois prepare seu dossiê. Uma pista não é prova.'],storyFrames:[['O rio foi seu primeiro mapa','Ayla cresceu ouvindo a floresta. Sabia reconhecer os sons das aves muito antes de conhecer o nome de todas as cidades.','01 / THE BEGINNING'],['O silêncio mudou tudo','Na adolescência, viu aves resgatadas de um transporte clandestino. Quase nada se sabia sobre quem organizou a captura. Aquela dúvida ficou com ela.','02 / THE TURNING POINT'],['Perguntas viraram vocação','Anos de estudo em conservação, geografia e fontes abertas lhe ensinaram algo fundamental: uma informação só é útil quando sua origem e seus limites são conhecidos.','03 / THE PATH'],['Winston tinha uma regra','Winston, investigador veterano, tornou-se seu mentor. “A intuição pode iniciar uma investigação. Mas só a evidência pode concluí-la.” Hoje, o primeiro caso está esperando.','04 / THE MENTOR']],sources:[{id:'SR-047',cat:'[O] REGISTRO OFICIAL',title:'Auto de fiscalização',date:'14 NOV · CASO AY-001',body:'Uma fiscalização no Posto Rio Claro identificou 18 aves vivas em recipientes de transporte. Os documentos do veículo indicavam “material decorativo” como conteúdo. Não há identificação de destinatário neste registro.',note:'FATO OBSERVADO [O]: local, data, quantidade e declaração documental. Não demonstra destino nem autoria.'},{id:'OS-047',cat:'[N] FONTE ABERTA',title:'Postagem sobre Porto Azul',date:'DATA NÃO VERIFICADA',body:'Uma postagem pública sem autoria verificável alega que “30 aves raras foram enviadas ao Porto Azul”. Não inclui imagem original datada, documento ou segunda fonte independente.',note:'PISTA [N]: a postagem não confirma 30 aves, Porto Azul, nem conexão com a apreensão.'},{id:'VT-047',cat:'[O] VERIFICAÇÃO TÉCNICA',title:'Registro veterinário',date:'15 NOV · CASO AY-001',body:'O registro veterinário documenta o recebimento de 18 aves vivas procedentes da fiscalização. O estado sanitário exige cuidados. Nenhuma espécie ou origem geográfica foi individualmente validada nesse documento.',note:'FATO OBSERVADO [O]: 18 aves recebidas. Não extrapolar para espécies, rotas ou redes.'},{id:'AN-047',cat:'[N] NOTA DE ANÁLISE',title:'Comparação de fontes',date:'NOTA TÉCNICA / AY-001',body:'O auto e o registro veterinário coincidem quanto às 18 aves. A postagem fala em 30 aves e em um porto, mas carece de corroboração. Não existe, por ora, vínculo documentado entre a pessoa que postou e qualquer delito.',note:'LACUNA: divergência de quantidade; destino e envolvidos sem confirmação.'}]},
@@ -75,7 +75,7 @@
   let aftermathDebrief=false;
   let activeMission=missions?.current()||'AY-001';
   const stateKey='ayla-alpha-v01';
-  const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen','restrictedScreen'];
+  const gameplayPanels=['dialogScreen','terminalScreen','mapScreen','boardScreen','reportScreen','helpScreen','restrictedScreen','pecManScreen'];
   // Missions remain available before login. A verified, approved Firebase
   // account switches the same scene to free roaming, without signing out when
   // the restricted communication window is closed.
@@ -103,6 +103,7 @@
   }
   function syncAccess(){
     $('missionMenuButton')?.classList.toggle('hidden',approvedSession||!playerActive);
+    $('pecManLaunch')?.classList.toggle('hidden',!playerActive);
     renderRank();
     if(!$('missionHud'))return;
     const inRoom=playerActive&&!visible('startScreen')&&!visible('introScreen');
@@ -137,7 +138,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();if(activePanel==='pecManScreen')window.AYLAPecMan?.close();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){missions?.save(activeMission,{mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]});}
@@ -249,7 +250,7 @@
     aftermathDebrief=false;
     playerActive=false;
     held={};
-    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank'])$(id)?.classList.add('hidden');
+    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank','pecManLaunch'])$(id)?.classList.add('hidden');
     $('toast').classList.add('hidden');
     $('langDrop').classList.add('hidden');
     intro(); // Read-only replay; saved mission state and promotion remain intact.
@@ -272,7 +273,7 @@
     notify(navigationText().resetDone);
   }
 
-  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');window.AYLAPecMan?.setLanguage(lang);if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');if(visible('missionSelectScreen'))renderMissionArchive();}
   function renderIntro(){
     const story=introNarrative[lang]||introNarrative.en;
@@ -346,11 +347,18 @@
   function showReport(){enterPanel('reportScreen');renderReport();}
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4&&(activeMission!=='AY-005'||missions.load('AY-005').m5Solved);const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
   function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if((activeMission!=='AY-005'||missions.load('AY-005').m5Solved)&&choices.every((choice,i)=>choice===(missions?.correct(activeMission)||[0,1,2])[i])){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');showMissionComplete();updateHud();}else{feedback.textContent=t('answerError');}}
-  function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted'||nearby.id==='wall');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],wall:{pt:'Telão do Observatório',en:'Observatory display',es:'Pantalla del Observatorio'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle')}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
+  function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted'||nearby.id==='wall'||nearby.id==='pecman');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],wall:{pt:'Telão do Observatório',en:'Observatory display',es:'Pantalla del Observatorio'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle'),pecman:'PEC MAN'}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
+  function openPecMan(){
+    if(!playerActive||activePanel||cinematicPending||!window.AYLAPecMan)return;
+    held={};
+    cinematicMode='idle';
+    enterPanel('pecManScreen');
+    window.AYLAPecMan.open(lang,closePanels);
+  }
   function interact(id){
     if(!playerActive||activePanel||cinematicPending)return;
-    if(!['winston','terminal','restricted','wall','map','board','report'].includes(id))return;
-    if(approvedSession&&id!=='restricted'&&id!=='wall')return;
+    if(!['winston','terminal','restricted','wall','map','board','report','pecman'].includes(id))return;
+    if(approvedSession&&id!=='restricted'&&id!=='wall'&&id!=='pecman')return;
     if(id==='wall'){
       if(!approvedSession)return;
       cinematicMode='wall';activePanel='wallScreen';
@@ -360,6 +368,7 @@
       return;
     }
     if(id==='restricted'){cinematicMode='restricted';showRestricted();return;}
+    if(id==='pecman'){openPecMan();return;}
     cinematicPending=true;cinematicMode=id;patrolPaused=(id==='winston');
     const cue=$('cinematicCue');
     cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
@@ -376,6 +385,7 @@
 
 
   $('missionMenuButton').onclick=openMissionArchive;
+  $('pecManLaunch').onclick=openPecMan;
   $('homeFromCentral').onclick=returnToIntroduction;
   $('replayIntroduction').onclick=returnToIntroduction;
   $('resetFromStart').onclick=resetAllProgress;
@@ -644,7 +654,7 @@
     ayla=window.AYLACharacterFactory.create(B,scene,{name:'Ayla',x:0,z:1.2,isWinston:false});
     winston=window.AYLACharacterFactory.create(B,scene,{name:'Winston',x:-5.7,z:-2.3,isWinston:true});
     winston.root.rotation.y=1.3;
-    const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'restricted',x:5.65,z:-3.18},{id:'wall',x:-1.55,z:-8.40},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:-8.0,z:-8.05}];
+    const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'restricted',x:5.65,z:-3.18},{id:'wall',x:-1.55,z:-8.40},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:-8.0,z:-8.05},{id:'pecman',x:8.6,z:.6}];
     // Patrol stays within the open west corridor, away from desks and workstations.
     const patrol=[[-5.7,-2.3],[-7.6,-2.3],[-8.6,-.6],[-7.4,1.0],[-5.8,.7]];
     let patrolIndex=1,patrolRest=0;
@@ -678,7 +688,32 @@
     window.AYLAWall?.setLanguage(lang);
     window.AYLAWall?.setAuthorized(approvedSession);
     const historic=window.AYLAVintageV9.install(B,scene);
-    navigation=window.AYLANavigationV8.create([...room.obstacles,...historic.obstacles]);
+
+    // PEC MAN: compact arcade cabinet beside the east corridor.
+    const pecRoot=new B.TransformNode('pec-man-arcade-cabinet',scene);
+    pecRoot.position.set(9.45,0,.6);
+    const pecBody=material('pec-man-cabinet','#172b29');
+    const pecTrim=material('pec-man-trim','#83bd70','#325533');
+    bx('pec-man-cabinet-body',.70,1.58,1.05,0,.79,0,pecBody,pecRoot).isPickable=false;
+    bx('pec-man-cabinet-plinth',.77,.16,1.12,0,.08,0,M.metal,pecRoot).isPickable=false;
+    bx('pec-man-cabinet-marquee',.20,.34,.98,-.39,1.65,0,pecTrim,pecRoot).isPickable=false;
+    bx('pec-man-cabinet-display-frame',.09,.70,.82,-.39,1.15,0,M.metal,pecRoot).isPickable=false;
+    bx('pec-man-cabinet-console',.18,.12,.76,-.43,.73,0,pecTrim,pecRoot).isPickable=false;
+    const pmTex=new B.DynamicTexture('pec-man-arcade-picture',{width:512,height:512},scene,true);
+    const pmCtx=pmTex.getContext();
+    pmCtx.fillStyle='#071a18';pmCtx.fillRect(0,0,512,512);
+    pmCtx.strokeStyle='#73d39e';pmCtx.lineWidth=12;pmCtx.strokeRect(22,22,468,468);
+    pmCtx.textAlign='center';pmCtx.font='bold 64px Arial';pmCtx.fillStyle='#c0f18c';pmCtx.fillText('PEC MAN',256,108);
+    pmCtx.fillStyle='#87b9a8';
+    for(let line=0;line<5;line++)pmCtx.fillRect(75,154+line*53,363,7);
+    for(let dot=0;dot<9;dot++){pmCtx.fillStyle=dot%3===0?'#f5d783':'#b6ee9e';pmCtx.beginPath();pmCtx.arc(90+dot*41,355,7,0,Math.PI*2);pmCtx.fill();}
+    pmCtx.fillStyle='#c2eb6b';pmCtx.beginPath();pmCtx.moveTo(256,276);pmCtx.arc(256,276,42,.48,Math.PI*2-.48);pmCtx.closePath();pmCtx.fill();
+    pmTex.update();
+    const pmMaterial=new B.StandardMaterial('pec-man-arcade-illustrated-screen',scene);
+    pmMaterial.diffuseTexture=pmTex;pmMaterial.emissiveColor=new B.Color3(.5,.67,.42);pmMaterial.disableLighting=true;pmMaterial.backFaceCulling=false;
+    const pmPlane=B.MeshBuilder.CreatePlane('pec-man-arcade-display',{width:.77,height:.77},scene);
+    pmPlane.parent=pecRoot;pmPlane.position.set(-.47,1.15,0);pmPlane.rotation.y=-Math.PI/2;pmPlane.material=pmMaterial;pmPlane.metadata={interaction:'pecman'};
+        navigation=window.AYLANavigationV8.create([...room.obstacles,...historic.obstacles,{x:9.45,z:.6,w:.82,d:1.19,tag:'pec-man-arcade'}]);
     crowd=window.AYLACrowdV9.create(B,scene,navigation,ayla,winston,()=>playerActive&&!activePanel&&!cinematicPending,()=>lang);
     function othersFor(actor){
       return [ayla,winston,...(crowd?.actors||[]).map(c=>c.actor)].filter(a=>a&&a!==actor)
@@ -723,7 +758,7 @@
       if(!shot&&cinematicMode==='idle'){camera.radius+=((closeCamera?5.3:9.8)-camera.radius)*Math.min(1,dt*2.4);camera.beta+=(1.15-camera.beta)*Math.min(1,dt*1.8);}
       const winstonMarker=interactables.find(p=>p.id==='winston');
       if(winstonMarker){winstonMarker.x=winston.root.position.x;winstonMarker.z=winston.root.position.z;winstonMarker.ring.position.x=winstonMarker.x;winstonMarker.ring.position.z=winstonMarker.z;if(winstonMarker.proxy){winstonMarker.proxy.position.x=winstonMarker.x;winstonMarker.proxy.position.z=winstonMarker.z;}if(winstonBeacon){winstonBeacon.pillar.position.x=winstonMarker.x;winstonBeacon.pillar.position.z=winstonMarker.z;winstonBeacon.bulb.position.x=winstonMarker.x;winstonBeacon.bulb.position.z=winstonMarker.z;winstonBeacon.plane.position.x=winstonMarker.x;winstonBeacon.plane.position.z=winstonMarker.z;}}
-      winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{if(approvedSession&&p.id!=='restricted'&&p.id!=='wall')return;const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}
+      winston.root.position.y=0;interactables.forEach((p,i)=>{p.ring.position.y=.22+Math.sin(performance.now()*.003+i)*.06;const k=1+.07*Math.sin(performance.now()*.003+i);p.ring.scaling.set(k,k,k);});let next=null,best=3.2;interactables.forEach(p=>{if(approvedSession&&p.id!=='restricted'&&p.id!=='wall'&&p.id!=='pecman')return;const d=Math.hypot(ayla.root.position.x-p.x,ayla.root.position.z-p.z);if(d<best){best=d;next=p;}});if(next!==nearby){nearby=next;updateHint();}
       const wallButton=$('aylaWallButton');if(wallButton)wallButton.classList.toggle('hidden',!(approvedSession&&next?.id==='wall'&&!activePanel));
       scene.render();});
     addEventListener('resize',()=>engine.resize());hide('loading');show('startScreen');localize();
