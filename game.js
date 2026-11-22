@@ -230,7 +230,49 @@
     $('aftermathFinalButton').textContent=postMission.forLang(lang).finalButton;
   }
 
-  function localize(){document.documentElement.lang=lang;updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
+
+  const navigationCopy={
+    pt:{home:'← Voltar ao Início',review:'Rever introdução',reset:'Resetar progresso',resetPrompt:'Deseja realmente apagar TODO o progresso do AYLA? As cinco missões, o Nível 2, os desbloqueios e o desdobramento com Winston serão zerados. Essa ação não pode ser desfeita.',resetDone:'Todo o progresso foi zerado. Ayla voltou ao Nível 1.',resetFailed:'Não foi possível salvar o reset neste navegador.'},
+    en:{home:'← Back to Home',review:'Replay introduction',reset:'Reset progress',resetPrompt:'Erase ALL AYLA progress? This resets all five missions, Level 2, all unlocks and the Winston follow-up. This cannot be undone.',resetDone:'All progress was reset. Ayla is back at Level 1.',resetFailed:'Unable to save the reset in this browser.'},
+    es:{home:'← Volver al Inicio',review:'Volver a ver la introducción',reset:'Reiniciar progreso',resetPrompt:'¿Eliminar TODO el progreso de AYLA? Se reiniciarán las cinco misiones, el Nivel 2, los desbloqueos y la conversación con Winston. No se puede deshacer.',resetDone:'Progreso reiniciado. Ayla volvió al Nivel 1.',resetFailed:'No se pudo guardar el reinicio en este navegador.'}
+  };
+  function navigationText(){return navigationCopy[lang]||navigationCopy.en}
+  function localizeNavigation(){
+    const c=navigationText();
+    for(const id of ['missionSelectClose','homeFromCentral'])$(id).textContent=c.home;
+    $('replayIntroduction').textContent=c.review;
+    for(const id of ['resetFromStart','resetFromArchive'])$(id).textContent=c.reset;
+  }
+  function returnToIntroduction(){
+    if(activePanel)closePanels();
+    if(activePanel==='wallScreen')window.AYLAWall?.unfocus?.();
+    aftermathDebrief=false;
+    playerActive=false;
+    held={};
+    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank'])$(id)?.classList.add('hidden');
+    $('toast').classList.add('hidden');
+    $('langDrop').classList.add('hidden');
+    intro(); // Read-only replay; saved mission state and promotion remain intact.
+  }
+  function resetAllProgress(){
+    if(!window.confirm(navigationText().resetPrompt))return;
+    if(activePanel)closePanels();
+    if(!missions.resetAll()){notify(navigationText().resetFailed);return;}
+    activeMission='AY-001';
+    restore();
+    selectedSource=-1;
+    dialogIndex=0;
+    aftermathDebrief=false;
+    held={};
+    playerActive=false;
+    if(ayla)ayla.root.position.set(0,0,1.2);
+    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank'])$(id)?.classList.add('hidden');
+    localize();
+    openMissionArchive();
+    notify(navigationText().resetDone);
+  }
+
+  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');if(visible('missionSelectScreen'))renderMissionArchive();}
   function renderIntro(){
     const story=introNarrative[lang]||introNarrative.en;
@@ -334,7 +376,11 @@
 
 
   $('missionMenuButton').onclick=openMissionArchive;
-  $('missionSelectClose').onclick=()=>{playerActive=false;$('topbar').classList.add('hidden');show('startScreen');};
+  $('homeFromCentral').onclick=returnToIntroduction;
+  $('replayIntroduction').onclick=returnToIntroduction;
+  $('resetFromStart').onclick=resetAllProgress;
+  $('resetFromArchive').onclick=resetAllProgress;
+  $('missionSelectClose').onclick=returnToIntroduction;
   $('missionPlay1').onclick=()=>selectMission('AY-001');
   $('missionPlay2').onclick=()=>selectMission('AY-002');
   $('missionPlay3').onclick=()=>selectMission('AY-003');
