@@ -135,6 +135,13 @@
  function unlocked(id){return id==='AY-001'||(id==='AY-002'&&completed('AY-001'))||(id==='AY-003'&&completed('AY-002'))||(id==='AY-004'&&completed('AY-003'))||(id==='AY-005'&&store.level2&&completed('AY-004'))}
  function choose(id){if(!unlocked(id))return false;store.active=id;return persist()}
  function reset(id){if(!ids.includes(id))return false;const wasCompleted=completed(id);store.missions[id]={...empty(),completed:wasCompleted};return persist()}
+ function resetAll(){
+   // Deliberately discard all completed missions, the promotion and the follow-up.
+   // Do not reset language preferences or restricted Observatory authentication.
+   store=defaults();
+   try{localStorage.removeItem(LEGACY)}catch(e){}
+   return persist();
+ }
  function markIntro(){store.introSeen=true;persist()}
  function markNews(){if(!completed('AY-004'))return false;store.newsSeen=true;store.debriefPending=!store.level2;return persist()}
  function promote(){if(!completed('AY-004')||!store.newsSeen)return false;store.level2=true;store.debriefPending=false;return persist()}
@@ -161,7 +168,7 @@
    }catch(e){return false}
  }
  window.AYLAMissionsV2={ids,load,save,reset,choose,completed,unlocked,
-   current:()=>store.active,introSeen:()=>store.introSeen,markIntro,aftermath,markNews,promote,
+   current:()=>store.active,introSeen:()=>store.introSeen,markIntro,resetAll,aftermath,markNews,promote,
    copyCode:encode,importCode:decode,text:(lang,key)=>(title[lang]||title.en)[key],
    override:(id,lang,key)=>id==='AY-005'?window.AYLAMissionFive?.locales?.[lang]?.[key]:id==='AY-004'?window.AYLAMissionFour?.locales?.[lang]?.[key]:id==='AY-003'?window.AYLAMissionThree?.locales?.[lang]?.[key]:id==='AY-002'?(second[lang]||second.en)[key]:undefined,
    correct:(id)=>id==='AY-005'?(window.AYLAMissionFive?.answer||[1,0,2]):id==='AY-004'?(window.AYLAMissionFour?.answer||[0,1,2]):id==='AY-003'?(window.AYLAMissionThree?.answer||[1,0,2]):id==='AY-002'?[1,0,2]:[0,1,2]
