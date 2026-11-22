@@ -29,6 +29,6 @@
 #mapScreen .map-svg-wrap.mission-two-map svg{opacity:0;visibility:hidden}
 #mapScreen .map-svg-wrap.mission-two-map{position:relative;min-height:300px;background:radial-gradient(ellipse at 40% 55%,#204c42,#081c20 70%);border:1px solid #9bdd8c44}
 #mapScreen .map-svg-wrap.mission-two-map:before{content:'⌖';position:absolute;left:45%;top:27%;font-size:75px;color:#bbef89;text-shadow:0 0 30px #78d66a77}
-#mapScreen .map-svg-wrap.mission-two-map:after{content:'SERRA CLARA / DOCUMENTED INSPECTION POINT\\a AX-2047 — ORIGIN AND DESTINATION UNVERIFIED';white-space:pre-line;position:absolute;left:8%;right:8%;bottom:15%;font:700 clamp(13px,1.7vw,20px)/1.5 'Space Grotesk';color:#e6f5e2;letter-spacing:.06em;text-align:center}
+#mapScreen .map-svg-wrap.mission-two-map:after{content:attr(data-case-label);white-space:normal;position:absolute;left:8%;right:8%;bottom:15%;font:700 clamp(13px,1.7vw,20px)/1.5 'Space Grotesk';color:#e6f5e2;letter-spacing:.06em;text-align:center}
 @media(max-width:780px){.mission-select-grid{grid-template-columns:1fr}.mission-select-top #missionSelectBadge{display:none}.mission-select-main{padding:30px 17px}.mission-choice-art{height:160px}}
 @media(max-width:650px){.mission-select-top{height:70px;padding:13px 16px}.mission-choice-content{padding:18px}.mission-final-buttons{flex-direction:column}.mission-final-buttons button{width:100%}}
