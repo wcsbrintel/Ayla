@@ -149,13 +149,23 @@
   function rankText(){const c=postMission.forLang(lang);return missions.aftermath().level2?c.rankTwo:c.rankOne;}
   function renderRank(){const el=$('aylaRank');if(!el)return;el.textContent=rankText();el.classList.toggle('hidden',approvedSession||!playerActive);}
   function renderAftermathArchive(){
-    const st=missions.aftermath(),panel=$('aftermathArchive'),c=postMission.forLang(lang);
-    panel.classList.toggle('hidden',!st.unlocked);
-    if(!st.unlocked)return;
-    $('aftermathArchiveTitle').textContent=c.archiveTitle;
-    $('aftermathArchiveDescription').textContent=c.archiveDescription;
-    $('aftermathArchiveStatus').textContent=st.level2?c.archiveCompleted:st.pending?c.archivePending:c.archiveFresh;
-    $('aftermathArchiveButton').textContent=st.level2?c.archiveReview:c.archiveOpen;
+    const st=missions.aftermath(),c=postMission.forLang(lang),panel=$('aftermathArchive');
+    const completed=missions.ids.reduce((n,id)=>n+(missions.completed(id)?1:0),0);
+    const bar=$('aylaLevelProgressFill');
+    bar.style.width=(completed/4*100)+'%';
+    panel.querySelector('.level-up-meter').setAttribute('aria-valuenow',String(completed));
+    $('aylaMissionLevel').textContent=st.level2?c.rankTwo:c.rankOne;
+    $('aylaLevelProgressText').textContent=completed+' / 4 '+c.levelUpProgress;
+    $('aftermathArchiveTitle').textContent=st.level2?c.levelUpDone:c.levelUpTitle;
+    $('aftermathArchiveDescription').textContent=st.level2?c.promotionBody:c.levelUpDescription;
+    $('aftermathArchiveStatus').textContent=st.level2?c.archiveCompleted:st.pending?c.levelUpPending:st.unlocked?c.levelUpReady:c.levelUpLocked;
+    const btn=$('aftermathArchiveButton');
+    btn.disabled=!st.unlocked;
+    btn.textContent=st.level2?c.levelUpReview:st.pending?c.levelUpTalk:st.unlocked?c.levelUpSee:mi('locked');
+    panel.classList.toggle('is-locked',!st.unlocked);
+    panel.classList.toggle('is-ready',st.unlocked&&!st.level2);
+    panel.classList.toggle('is-promoted',st.level2);
+    panel.classList.remove('hidden');
   }
   function renderAftermath(){
     const c=postMission.forLang(lang);
@@ -297,7 +307,14 @@
   $('missionPlay2').onclick=()=>selectMission('AY-002');
   $('missionPlay3').onclick=()=>selectMission('AY-003');
   $('missionPlay4').onclick=()=>selectMission('AY-004');
-  $('aftermathArchiveButton').onclick=openAftermath;
+  $('aftermathArchiveButton').onclick=()=>{
+    const st=missions.aftermath();
+    if(!st.unlocked)return;
+    if(st.pending){
+      activeMission='AY-004';missions.choose('AY-004');restore();localize();launch();
+      notify(postMission.forLang(lang).objective);
+    }else openAftermath();
+  };
   $('aftermathFinalButton').onclick=openAftermath;
   $('aftermathClose').onclick=openMissionArchive;
   $('aftermathBack').onclick=openMissionArchive;
