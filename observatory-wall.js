@@ -20,9 +20,12 @@
  const center=()=>point(-1.55,2.93,-9.045);
  // The face covers the original framed globe monitor; no geometry or
  // walkable floor positions are moved.
+ // The Babylon projection of the south wall is opposite the screen's
+ // native orientation. Map the viewport corners in a 180-degree corrected
+ // order: both longitude labels and HTML controls must be upright.
  const corners=()=>[
-  point(-4.27,4.70,-9.045),point(1.17,4.70,-9.045),
-  point(1.17,.88,-9.045),point(-4.27,.88,-9.045)
+  point(1.17,.88,-9.045),point(-4.27,.88,-9.045),
+  point(-4.27,4.70,-9.045),point(1.17,4.70,-9.045)
  ];
  function solve(matrix,values){
   const a=matrix.map((row,i)=>[...row,values[i]]);
