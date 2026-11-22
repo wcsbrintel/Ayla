@@ -679,7 +679,7 @@
     window.AYLAWall?.setAuthorized(approvedSession);
     const historic=window.AYLAVintageV9.install(B,scene);
     navigation=window.AYLANavigationV8.create([...room.obstacles,...historic.obstacles]);
-    crowd=window.AYLACrowdV9.create(B,scene,navigation,ayla,winston,()=>playerActive,()=>lang);
+    crowd=window.AYLACrowdV9.create(B,scene,navigation,ayla,winston,()=>playerActive&&!activePanel&&!cinematicPending,()=>lang);
     function othersFor(actor){
       return [ayla,winston,...(crowd?.actors||[]).map(c=>c.actor)].filter(a=>a&&a!==actor)
         .map(a=>({x:a.root.position.x,z:a.root.position.z,r:.37}));
