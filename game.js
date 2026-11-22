@@ -258,7 +258,7 @@
     restrictedDisplay.material=restrictedMat;
     restrictedDisplay.metadata={interaction:'restricted'};
 
-    const reportDesk=desk(8.0,-8.05,3.8,1.9);bx('paperReport',.86,.025,1.2,-.35,1.14,-.04,M.paper,reportDesk);bx('fileBand',.87,.035,.12,-.35,1.18,.18,M.green,reportDesk);
+    const reportDesk=desk(-8.0,-8.05,3.8,1.9);bx('paperReport',.86,.025,1.2,-.35,1.14,-.04,M.paper,reportDesk);bx('fileBand',.87,.035,.12,-.35,1.18,.18,M.green,reportDesk);
     const fileDesk=desk(5.4,4.0,3.4,1.8);for(let i=0;i<4;i++)bx('documents',.75,.03,.95,-1+i*.52,1.13,i*.12-.28,M.paper,fileDesk);bx('evidenceBox',.95,.6,.73,.85,1.41,-.03,M.frame,fileDesk);
     const boardDesk=desk(-6,5.6,3.5,1.7);bx('folders',1,.13,.74,0,1.17,0,M.paper,boardDesk);
     bx('mapDisplay',4.7,2.7,.15,2.5,3.15,9.25,M.screen);for(let i=0;i<5;i++)bx('mapLine',.045,.17+i*.09,.018,.6+i*.75,2.7+Math.sin(i)*.3,9.16,M.green);ball('mapPoint',.11,1.0,3.2,9.11,M.green);ball('mapPoint',.11,3.5,3.6,9.11,M.paper);
@@ -364,7 +364,7 @@
     ayla=window.AYLACharacterFactory.create(B,scene,{name:'Ayla',x:0,z:1.2,isWinston:false});
     winston=window.AYLACharacterFactory.create(B,scene,{name:'Winston',x:-5.7,z:-2.3,isWinston:true});
     winston.root.rotation.y=1.3;
-    const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'restricted',x:5.65,z:-3.18},{id:'wall',x:-1.55,z:-8.40},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:8.0,z:-8.05}];
+    const points=[{id:'winston',x:-5.7,z:-2.3},{id:'terminal',x:4.7,z:-3.3},{id:'restricted',x:5.65,z:-3.18},{id:'wall',x:-1.55,z:-8.40},{id:'map',x:2.2,z:7.3},{id:'board',x:-6.0,z:7.3},{id:'report',x:-8.0,z:-8.05}];
     // Patrol stays within the open west corridor, away from desks and workstations.
     const patrol=[[-5.7,-2.3],[-7.6,-2.3],[-8.6,-.6],[-7.4,1.0],[-5.8,.7]];
     let patrolIndex=1,patrolRest=0;
@@ -429,7 +429,7 @@
       }
       if(!approvedSession)room.tick(dt);
       // Cinematic focus when engaging a workstation or speaking with Winston.
-      const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:8.0,y:1.45,z:-7.65,radius:5.4,beta:1.14,alpha:-1.25}};
+      const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-8.0,y:1.45,z:-7.65,radius:5.4,beta:1.14,alpha:-1.25}};
       const shot=activePanel==='wallScreen'&&approvedSession
         ?{x:-1.55,y:2.95,z:-9.1,radius:6.6,beta:1.43,alpha:1.5708}
         :activePanel==='restrictedScreen'&&approvedSession
