@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#102f38"/><stop offset="1" stop-color="#153832"/></linearGradient><linearGradient id="sea" x2="0" y2="1"><stop stop-color="#15575a"/><stop offset="1" stop-color="#061c23"/></linearGradient><linearGradient id="container"><stop stop-color="#305846"/><stop offset="1" stop-color="#1d342c"/></linearGradient></defs>
+<rect width="960" height="480" fill="url(#sky)"/><rect y="318" width="960" height="162" fill="url(#sea)"/>
+<circle cx="755" cy="82" r="48" fill="#a2bc8d" opacity=".2"/>
+<path d="M0 300H960" stroke="#8ea495" stroke-width="2" opacity=".3"/>
+<path d="M0 330L960 330M0 370L960 370M0 415L960 415" stroke="#81a99a" stroke-width="1" opacity=".17"/>
+<path d="M110 135h14v185h-14zm0 5 298 40 5 5-301-24zm187 36h8v144h-8z" fill="#789487" opacity=".72"/>
+<path d="M440 182h13v135h-13zm7 2 250 27 0 9-250-19" fill="#8da894" opacity=".65"/>
+<rect x="67" y="250" width="410" height="125" fill="url(#container)" stroke="#71958a" stroke-width="3"/><rect x="510" y="208" width="350" height="167" fill="#293f38" stroke="#729a87" stroke-width="3"/>
+<path d="M94 258v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109m29-109v109" stroke="#649085" stroke-width="2" opacity=".65"/>
+<path d="M538 216v152m31-152v152m31-152v152m31-152v152m31-152v152m31-152v152m31-152v152m31-152v152m31-152v152m31-152v152" stroke="#617f6b" stroke-width="3" opacity=".64"/>
+<path d="M0 394h960" stroke="#6e8f7d" stroke-width="8"/>
+<path d="M477 110l30-58 26 54 49 22-49 14-25 57-32-55-44-17z" fill="#abd4b6" opacity=".68"/>
+<path d="M28 460C188 417 295 447 419 455s310-28 513-18" stroke="#8bc3b1" stroke-width="3" fill="none" opacity=".35"/>
+<text x="54" y="66" fill="#d4efdb" font-size="25" font-weight="700" font-family="Arial,sans-serif" letter-spacing="4">AY-004 / SANTA CATARINA</text>
+<text x="57" y="105" fill="#a4c9b3" font-size="16" font-weight="700" font-family="Arial,sans-serif" letter-spacing="3">6 VOYAGES  •  2025  •  HONG KONG</text></svg>
