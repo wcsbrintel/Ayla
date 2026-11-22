@@ -1,3 +1,12 @@
+## AYLA 3.0 — Online international wildlife trafficking
+
+- **AY-003 — The International Offer** unlocks on completion of AY-002. The three-mission archive now supports independently saved progress, mission-by-mission replay and backup-code transfer across browsers.
+- Ayla and Winston review **two original photographic illustrations** presented as social account posts; a masked contact identifier in the listing; an informant-supplied conversation referencing the same identifier; and an analytical note concerning a proposed airport movement of eggs. These visual assets are creative game characters, **not photographs or allegations involving an identifiable real person**.
+- Four distinct evidence sources, four reviewed checkpoints, an international route-hypothesis panel, evidence board and three-question dossier are available in **Portuguese, English and Spanish**.
+- The gameplay explicitly distinguishes the observed posts and recorded attempted recruitment from unverified ownership, identity, itinerary, actual boarding or international delivery. An informant's identifying details are not displayed.
+- Assets: `assets/mission3-social-1.webp`, `assets/mission3-social-2.webp`, and `mission3.js`. The originals are stored locally in this GitHub repository and do not rely on external image hosting.
+- Release logic was checked for syntax, mission unlocking, preserved achievements, existing save migration, exported progress import, and display of photos and message excerpts. Live browser rendering has **not** been visually verified here.
+
 ## AYLA 2.0.1 — Missions, unlocks, and saved progress
 
 - **AY-001 — The Inconsistent Manifest** retains the original fictional OSINT evidence workflow.
