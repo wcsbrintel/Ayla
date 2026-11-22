@@ -107,14 +107,14 @@ function install(B,scene){
    m.diffuseTexture=backup;
    m.emissiveTexture=backup;
    plane.material=m;
-   const url='assets/posters/'+info.file+'?v=1.5.2';
+   const url='assets/posters/'+info.file+'?v=1.5.3';
    const tex=new B.Texture(url,scene,false,true,B.Texture.TRILINEAR_SAMPLINGMODE,
      ()=>{
        if(plane.isDisposed())return;
        tex.wrapU=B.Texture.CLAMP_ADDRESSMODE;
        tex.wrapV=B.Texture.CLAMP_ADDRESSMODE;
-       // Keep the photograph's original left-to-right orientation.
-       tex.uScale=1;tex.uOffset=0;
+       // Mirror U on west-facing panels to correct the reversed text in the rendered room.
+       tex.uScale=-1;tex.uOffset=1;
        tex.vScale=1;tex.vOffset=0;
        tex.hasAlpha=false;
        m.diffuseTexture=tex;
