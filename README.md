@@ -1,11 +1,11 @@
-## AYLA 5.2 — CC0 ambient soundtrack
+## AYLA 5.3 — Soft piano soundtrack
 
-- Replaces the previous generated office clicks and synthetic chatter with **Space Graveyard**, an ambient science-fiction track by **TinyWorlds**, made available under **CC0 1.0** on OpenGameArt: https://opengameart.org/content/space-graveyard-ambient-track .
-- Original track is streamed from https://opengameart.org/sites/default/files/space_graveyard_4.mp3 . Availability depends on the external host and browser network policy. If loading fails, a quiet **original** evolving chord-and-bell ambient composition runs locally using Web Audio, without speech/noise effects.
-- The existing music toggle and volume slider remain, now titled Ambient Music / Música Ambiente / Música Ambiental, with a default volume of 16%. Mute and volume choices persist locally.
-- Browsers require user interaction to start audio; the control starts when the player begins, continues or selects a mission, or manually toggles the music. There is no forced unsolicited autoplay.
-- License attribution: TinyWorlds — Space Graveyard, CC0 1.0. CC0 does not require attribution; the project credits the artist voluntarily.
-- Verified JavaScript syntax and GitHub assets/references; network playback on the deployed browser is not guaranteed and uses the local musical fallback.
+- Switched to **Mystical Piano**, by **Indieteur**, CC0, from OpenGameArt: https://opengameart.org/content/mystical-piano .
+- The artist recommends replaying at **95 seconds** to make the music loop; the controller now follows this cue.
+- Volume default is 12%; enable/mute and volume controls are unchanged, with saved user preferences.
+- If the external track cannot load, AYLA plays a quiet original, synthesized piano-melody fallback (no space drones or office clicks). Playback is started by a user gesture.
+- The previous Space Graveyard track is no longer used. The third-party MP3 source URL may be subject to host availability; full audio playback on GitHub Pages has not been verified.
+
 
 ## AYLA 5.1 — Observatory mark, replay introduction, full progress reset
 
