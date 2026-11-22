@@ -1,3 +1,13 @@
+## AYLA 4.0 — The Six Crossings / Shark Fins
+
+- **AY-004 — The Six Crossings** becomes available after AY-003 and preserves its own progress, replay status, and backup/export code within the existing local save.
+- Scenario: field intelligence points to a Santa Catarina shipyard as a possible receipt, processing and storage site for shark fins awaiting Asian shipment. A retrospective check of an associated container shows **six voyages to Asia during 2025 and a port call at Hong Kong**. Hong Kong was also mentioned as a *probable* fin destination.
+- **Important evidentiary distinction:** the container's travel record does not independently establish that any of the voyages carried shark fins, that Hong Kong was the final destination, or that an offense was committed at the site. This case is a fictionalized game narrative based on supplied scenario details, not an independently verified public accusation against an identifiable business or person.
+- Four interactive records: shipyard lead, six-voyage container history, Hong Kong destination hypothesis, and urgent facility verification recommendation. The visual timeline intentionally uses six voyage slots **without inventing voyage dates, shipment weights, companies, IDs, or ports**.
+- Completion requires Winston briefing, review of all four sources, geographic and evidence boards, and a three-question intelligence dossier. Priority response is a prompt **lawful referral to competent authorities** for facility checks and evidence preservation, not independent intervention.
+- Available in PT/EN/ES. Assets: `mission4.js` and `assets/mission4-shipyard.svg`.
+- Verified programmatically: JavaScript syntax, locked/unlocked state, progress retention, 6-slot exhibit, case evidence and urgency panel, and localization. Full visual browser render has not been independently verified.
+
 ## AYLA 3.0 — Online international wildlife trafficking
 
 - **AY-003 — The International Offer** unlocks on completion of AY-002. The three-mission archive now supports independently saved progress, mission-by-mission replay and backup-code transfer across browsers.
