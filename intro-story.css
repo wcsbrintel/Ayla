@@ -117,3 +117,72 @@
   #introScreen .intro-mission{background:linear-gradient(140deg,#091c1d,#031014)!important}
   #introScreen .intro-caption{font-size:15px;max-width:88%;padding:0 0 0 9px}
 }
+
+
+/* AYLA 1.5: explicit photographic frames, each aligned to its storyboard crop.
+   The photograph now renders as a real <img> in every panel, not as a
+   CSS background shared behind separate transparent panels. */
+#introScreen .intro-storyboard{
+  --intro-stage-height:calc(100dvh - clamp(62px,8.3vh,86px));
+  background:#06110e!important;
+}
+#introScreen .intro-story-row--first{grid-template-columns:36% 33% 31%}
+#introScreen .intro-story-row--second{grid-template-columns:35% 35% 30%}
+#introScreen .intro-story-row--last{grid-template-columns:71% 29%}
+#introScreen .intro-panel{position:relative;background-color:#10221e!important;overflow:hidden}
+#introScreen .intro-frame-photo{
+  position:absolute!important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:none;
+  z-index:0;
+  width:100vw!important;
+  min-width:100vw!important;
+  max-width:none!important;
+  height:var(--intro-stage-height)!important;
+  max-height:none!important;
+  object-fit:fill;
+  top:0;
+  left:0;
+  transform:none!important;
+  filter:none!important;
+}
+#introScreen .intro-story-row--first .intro-panel--rescue .intro-frame-photo{left:-36vw}
+#introScreen .intro-story-row--first .intro-panel--study .intro-frame-photo{left:-69vw}
+#introScreen .intro-story-row--second .intro-frame-photo{top:calc(var(--intro-stage-height) * -.29)}
+#introScreen .intro-story-row--second .intro-panel--insignia .intro-frame-photo{left:-35vw}
+#introScreen .intro-story-row--second .intro-panel--amazon .intro-frame-photo{left:-70vw}
+#introScreen .intro-story-row--last .intro-frame-photo{top:calc(var(--intro-stage-height) * -.56)}
+#introScreen .intro-story-row--last .intro-panel--operations .intro-frame-photo{left:0}
+#introScreen .intro-story-row--last .intro-mission{background:#071414!important}
+#introScreen .intro-panel:before{z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(0,8,7,.89),rgba(0,8,7,.52) 20%,transparent 66%)!important}
+#introScreen .intro-caption{z-index:4;line-height:1.26;max-width:92%;font-weight:600}
+#introScreen .intro-mission h2,#introScreen .intro-mission p{color:#fff!important}
+@media (max-width:800px) and (min-width:561px){
+ #introScreen .intro-storyboard{--intro-stage-height:1000px}
+ #introScreen .intro-frame-photo{width:100vw!important;min-width:100vw!important}
+}
+@media (max-width:560px){
+ #introScreen .intro-storyboard{--intro-stage-height:705px;background:#071210!important}
+ #introScreen .intro-story-row--first,#introScreen .intro-story-row--second{grid-template-rows:repeat(3,235px)}
+ #introScreen .intro-story-row--last{grid-template-rows:290px auto}
+ #introScreen .intro-panel{background-color:#0b211d!important;background-image:none!important}
+ #introScreen .intro-frame-photo{
+   width:300vw!important;
+   min-width:300vw!important;
+   height:705px!important;
+   max-width:none!important;
+   object-fit:fill;
+   background:transparent;
+ }
+ #introScreen .intro-story-row--first .intro-panel--forest .intro-frame-photo{top:0;left:0}
+ #introScreen .intro-story-row--first .intro-panel--rescue .intro-frame-photo{top:0;left:-100vw}
+ #introScreen .intro-story-row--first .intro-panel--study .intro-frame-photo{top:0;left:-200vw}
+ #introScreen .intro-story-row--second .intro-panel .intro-frame-photo{top:-235px}
+ #introScreen .intro-story-row--second .intro-panel--winston .intro-frame-photo{left:0}
+ #introScreen .intro-story-row--second .intro-panel--insignia .intro-frame-photo{left:-100vw}
+ #introScreen .intro-story-row--second .intro-panel--amazon .intro-frame-photo{left:-200vw}
+ #introScreen .intro-story-row--last .intro-panel--operations .intro-frame-photo{width:150vw!important;min-width:150vw!important;height:530px!important;top:-300px;left:0}
+ #introScreen .intro-mission{background:#071414!important}
+}
