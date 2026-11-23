@@ -117,17 +117,27 @@ function renderEvidence(index,lang,state){
  const t=copy(lang);
  if(index===0)return '<figure class="m6-evidence-art"><img src="assets/mission6-art.svg" alt="'+safe(t.missionTitle)+'"><figcaption>'+safe(t.training)+'</figcaption></figure>';
  if(index===1)return '<div class="m6-sample"><strong>Ursus tibetanus</strong><span>LAB / AY-006 · '+safe(t.training)+'</span><div class="m6-vials"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
- if(index===2)return '<div class="m6-passport"><span>R-17 · PASSPORT EXTRACT</span><strong>RU •••• 7042</strong><span>MOSCOW → MADRID · 4 / 3 YEARS</span><small>'+safe(t.training)+'</small></div>';
+ if(index===2)return '<div class="m6-passport"><span>R-17 · PASSPORT EXTRACT</span><strong>RU •••• 7042</strong><span>MOSCOW → MADRID · 4 / 3 YEARS</span><small>'+safe(t.training)+'</small></div>'+renderNetwork(lang);
  if(index===3)return '<div class="m6-story-workspace '+(state?.m6StoryCaptured?'is-captured':'')+'"><img class="m6-story-shot" src="'+storyImage(lang)+'" alt="'+safe(t.storyTag)+'"><p>'+safe(t.storyInfo)+'</p><button type="button" id="m6CaptureStory" class="primary-button" '+(state?.m6StoryCaptured?'disabled':'')+'>'+(state?.m6StoryCaptured?safe(t.captured):safe(t.capture))+'</button></div>';
  return '';
 }
 function renderMap(lang){
  const t=copy(lang);
- return '<div class="m6-map-workspace"><span class="m6-label">'+safe(t.training)+'</span><h3>'+safe(t.mapHeading)+'</h3><div class="m6-route"><div><b>МОСКВА</b><strong>MOSCOW / SVO</strong><small>RUSSIA</small></div><span class="m6-flight">✈</span><div><b>MADRID</b><strong>ADOLFO SUÁREZ MADRID-BARAJAS</strong><small>SPAIN</small></div></div><div class="m6-flight-history"><b>4 ×</b><span>MOSCOW → MADRID<br>3 YEARS · SIMULATED DOCUMENTS</span></div><p>'+safe(t.mapFoot)+'</p></div>';
+ return '<div class="m6-map-workspace"><span class="m6-label">'+safe(t.training)+'</span><h3>'+safe(t.mapHeading)+'</h3><div class="m6-route"><div><b>МОСКВА</b><strong>MOSCOW · AIRPORT UNVERIFIED</strong><small>RUSSIA</small></div><span class="m6-flight">✈</span><div><b>MADRID</b><strong>ADOLFO SUÁREZ MADRID-BARAJAS</strong><small>SPAIN</small></div></div><div class="m6-flight-history"><b>4 ×</b><span>MOSCOW → MADRID<br>3 YEARS · SIMULATED DOCUMENTS</span></div><p>'+safe(t.mapFoot)+'</p></div>';
+}
+function renderNetwork(lang){
+ const t=copy(lang);
+ const labels={
+  pt:{center:'PASSAGEIRA R-17',home:'RESIDÊNCIA · SETOR INVENTADO / MADRID',business:'NEGÓCIO · LOJA FICTÍCIA / MADRID',instagram:'INSTAGRAM · PERFIL SIMULADO',facebook:'FACEBOOK · RELAÇÕES SIMULADAS',contact:'OPERADOR X-09 · VÍNCULO SOCIAL',limit:'Conexões de fontes fictícias. A existência de uma ligação social não prova crime.'},
+  en:{center:'PASSENGER R-17',home:'RESIDENCE · INVENTED DISTRICT / MADRID',business:'BUSINESS · FICTIONAL SHOP / MADRID',instagram:'INSTAGRAM · SIMULATED PROFILE',facebook:'FACEBOOK · SIMULATED CONTACTS',contact:'OPERATOR X-09 · SOCIAL LINK',limit:'Fictional sources only. A social connection does not establish an offense.'},
+  es:{center:'PASAJERA R-17',home:'VIVIENDA · BARRIO INVENTADO / MADRID',business:'NEGOCIO · TIENDA FICTICIA / MADRID',instagram:'INSTAGRAM · PERFIL SIMULADO',facebook:'FACEBOOK · CONTACTOS SIMULADOS',contact:'OPERADOR X-09 · VÍNCULO SOCIAL',limit:'Fuentes ficticias. Una relación social no demuestra un delito.'}
+ }[lang]||null;
+ const x=labels||{center:'PASSENGER R-17',home:'RESIDENCE / MADRID',business:'BUSINESS / MADRID',instagram:'INSTAGRAM',facebook:'FACEBOOK',contact:'OPERATOR X-09',limit:'Fictional links'};
+ return '<div class="m6-network"><div class="m6-network-root">'+safe(x.center)+'</div><div class="m6-network-grid">'+[x.home,x.business,x.instagram,x.facebook,x.contact].map(n=>'<div class="m6-network-node">'+safe(n)+'</div>').join('')+'</div><small>'+safe(x.limit)+'</small></div>';
 }
 function storyAttachment(lang){
  const t=copy(lang);
  return '<div class="m6-report-attachment"><img src="'+storyImage(lang)+'" alt="'+safe(t.storyTag)+'"><div><strong>'+safe(t.dossierAttachment)+'</strong><p>AY6-STORY-001 / R-17 / X-09</p><small>'+safe(t.storyInfo)+'</small></div></div>';
 }
-window.AYLAMissionSix={locales,copy,answer:[1,0,2],renderEvidence,renderMap,storyAttachment,storyImage};
+window.AYLAMissionSix={locales,copy,answer:[1,0,2],renderEvidence,renderMap,renderNetwork,storyAttachment,storyImage};
 })();
