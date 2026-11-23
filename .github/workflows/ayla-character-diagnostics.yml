@@ -5,6 +5,8 @@ on:
       - '.github/workflows/ayla-character-diagnostics.yml'
       - 'realistic-actors-v7.js'
       - 'index.html'
+      - 'tests/animation-browser.html'
+      - 'tests/animation-browser-runner.cjs'
 jobs:
   inspect-original-glb:
     runs-on: ubuntu-latest
