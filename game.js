@@ -1,5 +1,5 @@
 /* AYLA — Wildlife Crime Investigation | Investigation experience 0.2
- * Mission AY-001 is a playable investigative scenario. Claims are assessed on source strength.
+ * Mission AY-001 is a playable investigation. Claims are assessed on source strength.
  * Babylon.js provides the 3D runtime; no account, analytics, or server is required.
  */
 (function () {
