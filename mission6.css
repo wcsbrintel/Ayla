@@ -34,3 +34,12 @@
 .pecman-arcade-base{background:#0b2226;min-height:19px;border-top:2px solid #408666;text-align:center;padding:4px;font:700 10px monospace;letter-spacing:.18em;color:#aad6ab}
 .pecman-arcade-base span{color:#f8c66c}
 @media(max-width:720px){.m6-story-workspace{display:flex;flex-direction:column;align-items:stretch}.m6-story-workspace .m6-story-shot{max-width:260px;margin:auto}.m6-story-workspace button{align-self:center}.m6-route{flex-wrap:wrap}.m6-flight{min-width:70px;font-size:30px}.m6-route b{font-size:19px}}
+
+.m6-network{max-width:860px;margin:14px 0;padding:17px;border:1px solid #4d927b;background:radial-gradient(ellipse at top,#123e35,#091d25 75%);color:#d1ebd7}
+.m6-network-root{width:max-content;max-width:100%;margin:0 auto 14px;padding:11px 18px;text-align:center;background:#355747;border:2px solid #a5e9a2;font-weight:700;letter-spacing:.13em}
+.m6-network-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:0 0 12px}
+.m6-network-node{min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;border:1px dashed #71ad8f;font:700 11px/1.55 monospace;color:#c7f0d5;background:#0c2826}
+.m6-network small{color:#a1b6a5;font-size:11px;line-height:1.5}
+#mapScreen .map-space:has(#m6-workspace){position:relative}
+#m6-workspace{position:absolute;inset:0;z-index:4;overflow:auto;display:grid;place-items:center;background:#081b23;padding:12px}
+#m6-workspace .m6-map-workspace{width:100%;min-height:min(380px,100%);margin:auto}
