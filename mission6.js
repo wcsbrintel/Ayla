@@ -63,7 +63,7 @@ en:{
  successToast:'Story preserved and investigative dossier referred for Spanish police review.',
  finalHeading:'A social link is a lead, not a conviction.',
  finalBody:'Ayla captured the temporary story and added its provenance to the AY-006 dossier. The flight and lab result are documented as case findings; earlier journeys and social ties remain leads for authorized Spanish investigators.',
- capture:'CAPTURE STORY AND ATTACH TO DOSSIER',captured:'STORY CAPTURED AND ATTACHED',captureRequired:'Capture the story at the OSINT terminal before filing the dossier.',storyTag:'ARCHIVED STORY · CASE SOURCE',storyInfo:'Open-source screenshot stored in the police referral dossier; no real person identified.',case:'CASE SCENARIO · MASKED DATA',
+ capture:'CAPTURE STORY AND ATTACH TO DOSSIER',captured:'STORY CAPTURED AND ATTACHED',captureRequired:'Capture the story at the OSINT terminal before filing the dossier.',storyTag:'ARCHIVED STORY · CASE SOURCE',storyInfo:'Open-source screenshot stored in the police referral dossier; no real person identified.',training:'CASE INVESTIGATION RECORDS',
  mapHeading:'AIR TRAVEL RECORD / MOSCOW → MADRID',mapFoot:'The investigative ampoules were retained at Madrid-Barajas. Four earlier flights have no verified luggage contents.',
  dossierAttachment:'VISUAL ATTACHMENT · PRESERVED STORY',
  sources:[
@@ -96,7 +96,7 @@ es:{
  successToast:'Historia archivada y expediente registrado remitido para revisión policial.',
  finalHeading:'Una relación social es una pista, no una condena.',
  finalBody:'Ayla conservó la imagen de la historia y registró su procedencia en el expediente AY-006. La ruta y el peritaje son hechos ; los demás vínculos siguen sujetos a verificación policial.',
- capture:'CAPTURAR HISTORIA Y ADJUNTAR',captured:'HISTORIA CAPTURADA Y ADJUNTADA',captureRequired:'Captura la historia en el terminal antes de entregar el expediente.',storyTag:'HISTORIA ARCHIVADA · FUENTE REGISTRADA',storyInfo:'Captura de fuente abierta conservada sin identificar personas reales.',case:' · DATOS ',
+ capture:'CAPTURAR HISTORIA Y ADJUNTAR',captured:'HISTORIA CAPTURADA Y ADJUNTADA',captureRequired:'Captura la historia en el terminal antes de entregar el expediente.',storyTag:'HISTORIA ARCHIVADA · FUENTE REGISTRADA',storyInfo:'Captura de fuente abierta conservada sin identificar personas reales.',training:'REGISTROS DE INVESTIGACIÓN',
  mapHeading:'HISTORIAL AÉREO / MOSCÚ → MADRID',mapFoot:'Las ampollas del juego se detectaron en Madrid-Barajas; se desconoce la carga de los vuelos anteriores.',
  dossierAttachment:'ANEXO VISUAL · HISTORIA CONSERVADA',
  sources:[
