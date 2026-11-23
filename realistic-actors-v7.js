@@ -1,4 +1,4 @@
-/* AYLA 0.7.4 — fix Babylon 9 scene-disposed compatibility during rig load.
+/* AYLA 0.7.5 — same-origin realistic models to resolve Windows CDN failures.
  * Models: Microsoft Rocketbox Avatar Library (MIT), via memoriesrohit/avatar-studio.
  * Local simplified meshes are NEVER displayed automatically; they are optional
  * for users who explicitly select compatibility mode. Multiple model sources
@@ -9,7 +9,9 @@
   const previous = window.AYLACharacterFactory;
   if (!previous || typeof previous.create !== 'function') return;
   const rev='2fd9ec82fbe1613d40ae38aadcca3f410725f740';
+  // Prefer models stored with AYLA: same origin, no cross-site CDN dependency.
   const libraries=[
+    new URL('assets/characters/', document.baseURI).href,
     'https://cdn.jsdelivr.net/gh/memoriesrohit/avatar-studio@'+rev+'/models/',
     'https://raw.githubusercontent.com/memoriesrohit/avatar-studio/'+rev+'/models/'
   ];
@@ -256,5 +258,5 @@
     actor.ready = load();
     return actor;
   }
-  window.AYLACharacterFactory={...previous,create,version:'0.7.4',kind:'MIT-rigged-native-animation'};
+  window.AYLACharacterFactory={...previous,create,version:'0.7.5',kind:'MIT-rigged-native-animation'};
 })();
