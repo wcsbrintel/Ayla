@@ -1,3 +1,11 @@
+## AYLA 5.6.2 — Original character walking animations
+
+- Fixed a motion issue affecting original realistic Rocketbox avatars (Ayla, Winston, Clara and Theo): the old transition code started the new Walk animation group at zero weight and gradually faded it in, which could leave the character visually sliding on some browsers.
+- The new loader uses each GLB's authored **Idle**, **Walk**, **Talk**, **Confident**, and **Think** animation groups directly, at full weight. It also normalizes clip names with namespace prefixes and numeric suffixes.
+- The loader checks for a native Walk clip with animation tracks before marking a realistic avatar ready. It does not create new skeleton poses or change any character's appearance, rig, scene navigation, collision, or saved mission state.
+- Script cache version changed in `index.html` to ensure the updated loader is fetched by Windows browsers.
+- Validation: JavaScript syntax and simulated transitions `Idle → Walk → Idle` passed for plain and namespaced clip identifiers. Actual visual rendering in Windows browsers still requires user verification.
+
 ## AYLA 5.6.1 — Correção de personagens ausentes em Windows
 
 - **Causa confirmada no código:** o carregador escondia os personagens locais assim que começava a baixar modelos GLB externos do jsDelivr. Em redes lentas, bloqueios corporativos ou falhas de carregamento, Ayla, Winston, Clara e Theo podiam permanecer invisíveis.
