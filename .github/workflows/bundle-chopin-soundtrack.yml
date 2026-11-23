@@ -1,0 +1,50 @@
+name: Bundle licensed Chopin recordings for AYLA
+on:
+  push:
+    paths:
+      - '.github/workflows/bundle-chopin-soundtrack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install audio conversion tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Build rights-audited Chopin recording catalog and local audio files
+        run: |
+          python3 -u tools/build_chopin_playlist.py
+      - name: Verify catalog, copyrights and same-origin file paths
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,sys
+          root=pathlib.Path('.')
+          obj=json.loads((root/'assets/music/chopin-playlist.json').read_text())
+          assert obj['trackCount']>=15
+          assert obj['totalSeconds']>=3600
+          assert all(t['license']=='CC0 1.0' for t in obj['tracks'])
+          for t in obj['tracks']:
+              path=root/t['src']
+              assert path.is_file() and path.stat().st_size>100000, t['src']
+          print('VERIFIED LICENSED PLAYLIST',obj['trackCount'],'tracks',round(obj['totalSeconds']/3600,2),'hours')
+          PY
+      - name: Commit original recordings and license manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/music/chopin assets/music/chopin-playlist.json assets/music/CHOPIN-LICENSES.md
+          if git diff --cached --quiet; then
+            echo "All Chopin tracks already bundled"
+          else
+            git commit -m "Bundle independently verified CC0 Chopin piano recordings and credits"
+            git push origin HEAD:main
+          fi
