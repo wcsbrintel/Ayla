@@ -21,7 +21,7 @@
   const $=id=>document.getElementById(id);
   const lang=()=>text[(document.documentElement.lang||'en').slice(0,2)]||text.en;
   let wanted=true,volume=START_VOLUME,playing=false,mode='none',manifest=null,fetching=null,index=0;
-  let requestSerial=0,consecutiveFailures=0;
+  let requestSerial=0,consecutiveFailures=0,suspendedForArcade=false;
   try{
     if(localStorage.getItem(ENABLED_KEY)==='false')wanted=false;
     const saved=localStorage.getItem(VOLUME_KEY);
@@ -127,7 +127,20 @@
     playCurrent(serial);
     paint();
   }
+  function suspendForGame(){
+    const shouldResume=wanted&&playing;
+    if(!shouldResume)return false;
+    suspendedForArcade=true;
+    requestSerial++;music.pause();playing=false;mode='arcade';paint();
+    return true;
+  }
+  function resumeAfterGame(){
+    if(!suspendedForArcade)return;
+    suspendedForArcade=false;
+    if(wanted){playing=false;mode='none';start();}
+  }
   function stop(){
+    suspendedForArcade=false;
     wanted=false;playing=false;mode='none';requestSerial++;
     music.pause();persist();paint();
   }
@@ -182,6 +195,8 @@
     stop,
     enabled:()=>playing,
     setVolume,
+    getVolume:()=>volume,
+    suspendForGame,resumeAfterGame,
     next,
     source:()=>mode==='chopin'?currentTrack()?.src:mode==='fallback'?ORIGINAL:null,
     title:()=>mode==='chopin'?currentTrack()?.title:'Mystical Piano — Indieteur (CC0)',
