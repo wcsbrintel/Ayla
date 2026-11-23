@@ -493,12 +493,12 @@
   function syncCharacterCompatibility(){
     if(!compatButton)return;
     const isLocal=!!window.AYLACharacterCompatibility?.isEnabled?.();
-    compatButton.textContent=isLocal?'3D: LOCAL':'3D: AUTO';
+    compatButton.textContent=isLocal?'3D: LOCAL':'3D: ORIGINAL';
     compatButton.setAttribute('aria-pressed',String(isLocal));
     const help={
-      pt:isLocal?'Modelos locais: pressione para tentar os modelos externos.':'Modelos automáticos: pressione para usar os modelos locais se os personagens sumirem.',
-      en:isLocal?'Local characters: click to try external avatars.':'Automatic avatars: click to use local characters if any are missing.',
-      es:isLocal?'Modelos locales: pulse para probar modelos externos.':'Modelos automáticos: pulse para usar modelos locales si faltan personajes.'
+      pt:isLocal?'Modelos locais: clique para restaurar os personagens realistas originais.':'Personagens realistas originais (padrão). Clique somente se quiser usar o visual simplificado.',
+      en:isLocal?'Local simplified models: click to restore the original realistic characters.':'Original realistic characters (default). Click only if you want simplified models.',
+      es:isLocal?'Modelos simplificados: pulsa para restaurar los personajes realistas originales.':'Personajes realistas originales (predeterminados). Pulsa solo si deseas modelos simplificados.'
     };
     compatButton.title=help[lang]||help.en;
     compatButton.setAttribute('aria-label',compatButton.title);
