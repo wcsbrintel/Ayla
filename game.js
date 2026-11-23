@@ -136,7 +136,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){reportCameraPose=null;if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();if(activePanel==='pecManScreen')window.AYLAPecMan?.close();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){restoreReportCamera();if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();if(activePanel==='pecManScreen')window.AYLAPecMan?.close();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){missions?.save(activeMission,{mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]});}
@@ -343,43 +343,64 @@
   function showBoard(){boardSeen=true;save();updateHud();enterPanel('boardScreen');renderBoard();}
   function renderBoard(){const all=[{key:'evidenceConfirmed',body:'evidenceObserved',warn:false,source:0},{key:'evidenceOpen',body:'evidenceLead',warn:true,source:1},{key:'evidenceRoute',body:'evidenceRouteText',warn:true,source:3},{key:'evidenceGap',body:'evidenceGapText',warn:true,source:3}];$('boardContent').innerHTML=all.map((c)=>'<div class="board-card '+(c.warn?'warn ':'')+(sourcesReviewed.has(c.source)?'':'locked')+'"><div class="tag">'+(c.warn?'[N] / ?':'[O] / ✓')+'</div><h3>'+safe(t(c.key))+'</h3><p>'+safe(t(c.body))+'</p></div>').join('');}
 
-  // "Entregar dossie": frame the scene from behind Ayla, on the room side
-  // of the report desk, never from behind the exterior wall.
-  let reportCameraPose=null;
+
+  // Dossier camera is presentation-only. Never modify Ayla's yaw, position,
+  // locomotion state or rig: her original walking and turning belong to navigation.
+  let reportCameraPose=null,reportCameraRestore=null;
   function chooseReportCameraPose(){
     if(!ayla||!camera||!navigation)return null;
     const p=ayla.root.position;
-    const dx=-8.0-p.x,dz=-8.05-p.z;
-    const distance=Math.hypot(dx,dz);
-    // Orient Ayla toward the delivery desk, so the camera is truly behind her.
-    if(distance>.25)ayla.root.rotation.y=Math.atan2(-dx,-dz);
-    const behind=distance>.25?Math.atan2(-dz,-dx):Math.PI/2;
-    const radius=5.0,beta=1.11,reach=radius*Math.sin(beta);
-    const offsets=[0,.32,-.32,.64,-.64,.96,-.96,1.28,-1.28,Math.PI];
-    let alpha=behind,bestClear=-1;
+    // Babylon ArcRotateCamera alpha: camera behind current character yaw.
+    const behind=Math.PI/2-ayla.root.rotation.y;
+    const beta=1.11,desiredRadius=5.0;
+    const reach=desiredRadius*Math.sin(beta);
+    const offsets=[0,.28,-.28,.56,-.56,.84,-.84,1.12,-1.12];
+    let bestAlpha=behind,bestClear=0;
     for(const offset of offsets){
-      const candidate=behind+offset;
+      const alpha=behind+offset;
       let clear=0;
-      // Keep the camera inside navigable bounds, avoiding walls and desks.
-      for(let d=.65;d<=reach;d+=.23){
-        const x=p.x+Math.cos(candidate)*d,z=p.z+Math.sin(candidate)*d;
-        if(navigation.blocked(x,z,.15,null,null))break;
+      // Keep the camera's XZ path inside the operations center and off desks.
+      for(let d=.35;d<=reach;d+=.18){
+        const x=p.x+Math.cos(alpha)*d,z=p.z+Math.sin(alpha)*d;
+        if(navigation.blocked(x,z,.12,null,null))break;
         clear=d;
       }
-      if(clear>bestClear){bestClear=clear;alpha=candidate;}
-      if(clear>=reach-.24)break;
+      if(clear>bestClear){bestClear=clear;bestAlpha=alpha;}
+      if(clear>=reach-.2)break;
     }
-    return {x:p.x,y:1.52,z:p.z,radius,beta,alpha};
+    // A fixed radius was the reason shots could cross the wall even when an
+    // unobstructed angle was selected. Use the actually verified distance.
+    const radius=Math.max(1.45,Math.min(desiredRadius,(bestClear-.15)/Math.sin(beta)));
+    return {x:p.x,y:1.52,z:p.z,radius,beta,alpha:bestAlpha};
   }
   function focusReportCamera(){
-    reportCameraPose=chooseReportCameraPose();
-    if(!reportCameraPose||!camera)return;
+    if(!camera)return;
+    // This function is called both on interaction and when the panel opens.
+    // Save the original view only once, before the cinematic changes it.
+    if(!reportCameraRestore){
+      reportCameraRestore={
+        alpha:camera.alpha,beta:camera.beta,radius:camera.radius,
+        lowerRadiusLimit:camera.lowerRadiusLimit,target:camera.target.clone()
+      };
+    }
+    if(!reportCameraPose)reportCameraPose=chooseReportCameraPose();
+    if(!reportCameraPose)return;
     const pose=reportCameraPose;
-    // Cut directly to a safe camera point: no fly-through across the wall.
-    camera.alpha=pose.alpha;
-    camera.beta=pose.beta;
-    camera.radius=pose.radius;
+    // Small radius is necessary when the desk is close to the wall.
+    camera.lowerRadiusLimit=1.4;
+    camera.alpha=pose.alpha;camera.beta=pose.beta;camera.radius=pose.radius;
+    camera.inertialAlphaOffset=0;camera.inertialBetaOffset=0;camera.inertialRadiusOffset=0;
     camera.setTarget(new window.BABYLON.Vector3(pose.x,pose.y,pose.z));
+  }
+  function restoreReportCamera(){
+    if(reportCameraRestore&&camera){
+      const prev=reportCameraRestore;
+      camera.alpha=prev.alpha;camera.beta=prev.beta;camera.radius=prev.radius;
+      camera.lowerRadiusLimit=prev.lowerRadiusLimit;
+      camera.inertialAlphaOffset=0;camera.inertialBetaOffset=0;camera.inertialRadiusOffset=0;
+      camera.setTarget(prev.target);
+    }
+    reportCameraPose=null;reportCameraRestore=null;
   }
   function showReport(){focusReportCamera();enterPanel('reportScreen');renderReport();}
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4&&(activeMission!=='AY-005'||missions.load('AY-005').m5Solved);const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
