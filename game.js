@@ -273,7 +273,7 @@
     notify(navigationText().resetDone);
   }
 
-  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');window.AYLAPecMan?.setLanguage(lang);if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');syncCharacterCompatibility();window.AYLAPecMan?.setLanguage(lang);if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');if(visible('missionSelectScreen'))renderMissionArchive();}
   function renderIntro(){
     const story=introNarrative[lang]||introNarrative.en;
@@ -489,6 +489,25 @@
     if(camera)camera.radius=closeCamera?5.3:9.8;
   }
   $('cameraButton').onclick=toggleCamera;
+  const compatButton=$('avatarCompatibility');
+  function syncCharacterCompatibility(){
+    if(!compatButton)return;
+    const isLocal=!!window.AYLACharacterCompatibility?.isEnabled?.();
+    compatButton.textContent=isLocal?'3D: LOCAL':'3D: AUTO';
+    compatButton.setAttribute('aria-pressed',String(isLocal));
+    const help={
+      pt:isLocal?'Modelos locais: pressione para tentar os modelos externos.':'Modelos automáticos: pressione para usar os modelos locais se os personagens sumirem.',
+      en:isLocal?'Local characters: click to try external avatars.':'Automatic avatars: click to use local characters if any are missing.',
+      es:isLocal?'Modelos locales: pulse para probar modelos externos.':'Modelos automáticos: pulse para usar modelos locales si faltan personajes.'
+    };
+    compatButton.title=help[lang]||help.en;
+    compatButton.setAttribute('aria-label',compatButton.title);
+  }
+  compatButton?.addEventListener('click',()=>{
+    const api=window.AYLACharacterCompatibility;
+    if(api?.setEnabled)api.setEnabled(!api.isEnabled());
+  });
+  syncCharacterCompatibility();
   let held={};
   addEventListener('keydown',(e)=>{const key=e.key.toLowerCase();if(playerActive&&(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','e','shift'].includes(key)))e.preventDefault();held[key]=true;if(key==='escape')closePanels();if(key==='c'&&!e.repeat&&playerActive&&!activePanel)toggleCamera();if(key==='e'&&!e.repeat&&nearby)interact(nearby.id);});
   addEventListener('keyup',(e)=>held[e.key.toLowerCase()]=false);
