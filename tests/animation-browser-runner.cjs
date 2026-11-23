@@ -11,7 +11,7 @@ const puppeteer=require('puppeteer-core');
   page.on('console',m=>console.log('BROWSER',m.type(),m.text().slice(0,2000)));
   page.on('pageerror',e=>console.log('PAGEERROR',e.stack));
   page.on('requestfailed',r=>console.log('REQUEST_FAILED',r.url(),r.failure()?.errorText));
-  page.on('response',r=>{if(/glb|babylon\.js/.test(r.url())&&r.status()>=400)console.log('BAD_ASSET',r.status(),r.url())});
+  page.on('response',r=>{if(r.url().includes('.glb'))assetResponses.push({url:r.url(),status:r.status()});if(/glb|babylon\.js/.test(r.url())&&r.status()>=400)console.log('BAD_ASSET',r.status(),r.url())});
   await page.goto('http://127.0.0.1:8765/tests/animation-browser.html',{waitUntil:'domcontentloaded',timeout:18000});
   console.log('PAGE_ENTERED');
   try{await page.waitForFunction('window.__aylaDiag?.result!=null',{timeout:65000});}
