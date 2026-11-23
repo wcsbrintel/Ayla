@@ -12,12 +12,11 @@
    return m;
   };
   const slate=neutral('slate','#29383c'), basalt=neutral('basalt','#12232a'), walnut=neutral('wood','#544e46');
-  const brass=neutral('brass','#8f8a6b'), nylon=neutral('nylon','#676454'), dark=neutral('dark','#18262a');
+  const dark=neutral('dark','#18262a');
   const lit=neutral('light','#b5cbb8','#263e3c');
   const accent=neutral('accent','#a3c18c','#12281c');
   function bx(name,w,h,d,x,y,z,mat,parent){let m=B.MeshBuilder.CreateBox('v8-'+name,{width:w,height:h,depth:d},scene);m.position.set(x,y,z);m.material=mat;if(parent)m.parent=parent;meshes.push(m);return m;}
   function sphere(name,diam,x,y,z,mat,parent){let m=B.MeshBuilder.CreateSphere('v8-'+name,{diameter:diam,segments:16},scene);m.position.set(x,y,z);m.material=mat;if(parent)m.parent=parent;meshes.push(m);return m;}
-  function tube(name,pts,r,mat,parent){let m=B.MeshBuilder.CreateTube('v8-'+name,{path:pts.map(p=>new B.Vector3(...p)),radius:r,tessellation:8},scene);m.material=mat;if(parent)m.parent=parent;meshes.push(m);return m;}
   // Enclose the previously open edges. This removes the infinite black void.
   bx('south-wall',23.8,5.65,.22,0,2.70,-9.65,basalt);
   bx('east-wall',.22,5.65,11.9,11.83,2.70,-3.75,basalt);
@@ -42,19 +41,6 @@
   const rug=B.MeshBuilder.CreateGround('v8-observatory-rug',{width:4.5,height:2.9,subdivisions:1},scene);
   rug.position.set(-1.05,-.045,1.65);rug.material=rugmat;
   bx('rug-underlay',4.56,.015,2.96,-1.05,-.056,1.65,neutral('rug-edge','#292f25'));
-  // Ayla's field pack rests on the floor beside the OSINT desk, not on her back.
-  const packRoot=new B.TransformNode('Ayla-field-pack-grounded',scene);
-  packRoot.position.set(7.5,0,-1.28);packRoot.rotation.y=-.20;
-  const packBody=bx('backpack-shell',.60,.86,.34,0,.48,0,nylon,packRoot);packBody.rotation.z=.06;
-  bx('backpack-pocket',.51,.35,.10,0,.34,-.22,walnut,packRoot);
-  bx('backpack-top',.62,.15,.39,0,.93,.02,nylon,packRoot);
-  bx('backpack-zipper',.49,.022,.012,0,.58,-.29,brass,packRoot);
-  bx('backpack-buckle',.09,.12,.036,0,.39,-.295,brass,packRoot);
-  for(const s of [-1,1]){
-    tube('pack-strap',[[s*.19,.85,.18],[s*.31,.65,.26],[s*.32,.29,.26],[s*.24,.18,.14]],.038,walnut,packRoot);
-    bx('pack-pocket-side',.09,.33,.25,s*.33,.39,-.04,nylon,packRoot);
-  }
-  bx('bottle-on-pack',.18,.31,.20,.36,.40,.13,slate,packRoot);
   // Wall posters: wildlife identification and anonymized investigative leads.
   function posterTexture(name,type,index){
     let t=new B.DynamicTexture('v8-poster-'+name,{width:768,height:1024},scene,true);
@@ -131,9 +117,9 @@
   const outline=neutral('globe-outline','#678c80');
   for(let sx of [-1,1]) bx('globe-side-trim',.055,4.75,.10,sx*2.85,0,-.15,outline,screenRoot);
   bx('globe-foot',5.73,.07,.10,0,-2.35,-.14,outline,screenRoot);
-  // Non-collidable wall displays and decals remain outside the player volume.
-  const obstacles=[{x:7.5,z:-1.28,w:.80,d:.62,tag:'backpack'}];
-  return {rug,backpack:packRoot,posters:postItems.length,globe:earthRoot,obstacles,
+  // Removing the field pack also restores free navigation beside the OSINT desk.
+  const obstacles=[];
+  return {rug,posters:postItems.length,globe:earthRoot,obstacles,
     tick(dt){earthRoot.rotation.y+=Math.min(.07,dt)*.12;}
   };
  }
