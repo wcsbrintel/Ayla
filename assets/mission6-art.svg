@@ -21,7 +21,7 @@
 <circle cx="80" cy="278" r="12" fill="#a1f2b4"/><circle cx="351" cy="258" r="12" fill="#a1f2b4"/>
 <text x="57" y="324" font-family="Arial" font-size="28" font-weight="700" fill="#eefcf3">MOSCOU</text><text x="275" y="305" font-family="Arial" font-size="28" font-weight="700" fill="#eefcf3">MADRID</text>
 <g transform="translate(206 209) rotate(15)"><path d="M-27 0H27L6 7L1 24H-4L-8 7L-27 4Z" fill="#dbf7c5"/></g>
-<text x="54" y="361" font-size="17" fill="#a5c6b8" font-family="Arial">4 viagens registradas em 3 anos · caso fictício</text>
+<text x="54" y="361" font-size="16" fill="#a5c6b8" font-family="Arial">4 viagens anteriores em 3 anos · caso fictício</text>
 <!-- seized box -->
 <path d="M430 392L976 392L1020 549L480 552Z" fill="#604933" stroke="#b79c74" stroke-width="5"/>
 <path d="M430 392L507 352H967L976 392Z" fill="#b99a72" stroke="#dfc39a" stroke-width="5"/>
