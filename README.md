@@ -1,3 +1,11 @@
+## AYLA 5.6.1 — Correção de personagens ausentes em Windows
+
+- **Causa confirmada no código:** o carregador escondia os personagens locais assim que começava a baixar modelos GLB externos do jsDelivr. Em redes lentas, bloqueios corporativos ou falhas de carregamento, Ayla, Winston, Clara e Theo podiam permanecer invisíveis.
+- **Correção:** os personagens procedurais locais continuam visíveis e animados durante o carregamento; os modelos externos só os substituem após importação, verificação de geometria e preparação do material. Falhas restauram a representação local.
+- **Compatibilidade manual:** o cabeçalho da Central tem agora o botão **3D: AUTO / 3D: LOCAL**. O modo LOCAL evita as tentativas de carregar os modelos externos e mantém os modelos locais. A escolha é persistida no navegador; a troca reinicia somente a página, sem apagar as missões.
+- **Cache:** o carregador e o arquivo `game.js` receberam uma nova versão na página de entrada.
+- **Validação:** sintaxe JavaScript e testes simulados de carregamento bloqueado e modo local passaram. Um teste visual em Windows/Edge/Chrome reais ainda é necessário.
+
 ## AYLA 5.6 — PEC MAN arcade
 
 - Added **PEC MAN**, an original maze-chase mini-game available from the **PEC MAN** button inside the 3D operations center and from a small interactive arcade cabinet on the east side of the room.
