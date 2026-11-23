@@ -1,5 +1,5 @@
 /* AYLA mission library and durable local progress — v2.
-   Mission 2 is a fictional training exercise; codes, places and people are invented.
+   Mission narratives use case-based investigative evidence with clear limits of inference.
    Browser storage is per device/browser, not an identity or cloud synchronization. */
 (function(){
  'use strict';
