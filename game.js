@@ -136,7 +136,7 @@
   function show(id){screens.forEach((s)=>$(s).classList.toggle('hidden',s!==id));}
   function hide(id){$(id).classList.add('hidden');}
   function enterPanel(id){activePanel=id;$('renderCanvas').classList.add('panel-active');$(id).classList.remove('hidden');$('hintBox').classList.add('hidden');}
-  function closePanels(){if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();if(activePanel==='pecManScreen')window.AYLAPecMan?.close();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
+  function closePanels(){reportCameraPose=null;if(activePanel==='restrictedScreen')window.AYLARestricted?.close();if(activePanel==='wallScreen')window.AYLAWall?.unfocus();if(activePanel==='pecManScreen')window.AYLAPecMan?.close();clearTimeout(cinematicTimer);demoTimers.forEach(clearTimeout);demoTimers=[];demoActive=false;cinematicPending=false;cinematicMode='idle';seatTarget=null;seatInProgress=false;seatApproachStarted=false;seatFinished=false;seatQueued=false;navigation?.cancelSeat?.();if(ayla?.setSeated)ayla.setSeated(false);$('cinematicCue').classList.add('hidden');$('renderCanvas').classList.remove('panel-active');gameplayPanels.forEach(hide);activePanel=null;patrolPaused=false;if(winston?.setTalking)winston.setTalking(false);if(winston?.setDialogue)winston.setDialogue(false);if(ayla?.setSeated)ayla.setSeated(false);if(ayla?.setCinematic)ayla.setCinematic('idle');if(ayla?.setInteraction)ayla.setInteraction('idle');updateHint();}
   function visible(id){return !$(id).classList.contains('hidden');}
   function notify(message){clearTimeout(toastTimeout);$('toast').textContent=message;$('toast').classList.remove('hidden');toastTimeout=setTimeout(()=>hide('toast'),2800);}
   function save(){missions?.save(activeMission,{mentorMet,mapSeen,boardSeen,done,sources:[...sourcesReviewed]});}
@@ -342,7 +342,46 @@
 
   function showBoard(){boardSeen=true;save();updateHud();enterPanel('boardScreen');renderBoard();}
   function renderBoard(){const all=[{key:'evidenceConfirmed',body:'evidenceObserved',warn:false,source:0},{key:'evidenceOpen',body:'evidenceLead',warn:true,source:1},{key:'evidenceRoute',body:'evidenceRouteText',warn:true,source:3},{key:'evidenceGap',body:'evidenceGapText',warn:true,source:3}];$('boardContent').innerHTML=all.map((c)=>'<div class="board-card '+(c.warn?'warn ':'')+(sourcesReviewed.has(c.source)?'':'locked')+'"><div class="tag">'+(c.warn?'[N] / ?':'[O] / ✓')+'</div><h3>'+safe(t(c.key))+'</h3><p>'+safe(t(c.body))+'</p></div>').join('');}
-  function showReport(){enterPanel('reportScreen');renderReport();}
+
+  // "Entregar dossie": frame the scene from behind Ayla, on the room side
+  // of the report desk, never from behind the exterior wall.
+  let reportCameraPose=null;
+  function chooseReportCameraPose(){
+    if(!ayla||!camera||!navigation)return null;
+    const p=ayla.root.position;
+    const dx=-8.0-p.x,dz=-8.05-p.z;
+    const distance=Math.hypot(dx,dz);
+    // Orient Ayla toward the delivery desk, so the camera is truly behind her.
+    if(distance>.25)ayla.root.rotation.y=Math.atan2(-dx,-dz);
+    const behind=distance>.25?Math.atan2(-dz,-dx):Math.PI/2;
+    const radius=5.0,beta=1.11,reach=radius*Math.sin(beta);
+    const offsets=[0,.32,-.32,.64,-.64,.96,-.96,1.28,-1.28,Math.PI];
+    let alpha=behind,bestClear=-1;
+    for(const offset of offsets){
+      const candidate=behind+offset;
+      let clear=0;
+      // Keep the camera inside navigable bounds, avoiding walls and desks.
+      for(let d=.65;d<=reach;d+=.23){
+        const x=p.x+Math.cos(candidate)*d,z=p.z+Math.sin(candidate)*d;
+        if(navigation.blocked(x,z,.15,null,null))break;
+        clear=d;
+      }
+      if(clear>bestClear){bestClear=clear;alpha=candidate;}
+      if(clear>=reach-.24)break;
+    }
+    return {x:p.x,y:1.52,z:p.z,radius,beta,alpha};
+  }
+  function focusReportCamera(){
+    reportCameraPose=chooseReportCameraPose();
+    if(!reportCameraPose||!camera)return;
+    const pose=reportCameraPose;
+    // Cut directly to a safe camera point: no fly-through across the wall.
+    camera.alpha=pose.alpha;
+    camera.beta=pose.beta;
+    camera.radius=pose.radius;
+    camera.setTarget(new window.BABYLON.Vector3(pose.x,pose.y,pose.z));
+  }
+  function showReport(){focusReportCamera();enterPanel('reportScreen');renderReport();}
   function renderReport(){const ready=mentorMet&&mapSeen&&boardSeen&&sourcesReviewed.size===4&&(activeMission!=='AY-005'||missions.load('AY-005').m5Solved);const form=$('reportForm');$('reportFeedback').classList.add('hidden');if(!ready){$('reportQuestions').innerHTML='<div class="question"><p>'+safe(t('locked'))+'</p></div>';form.querySelector('[type="submit"]').disabled=true;return;}form.querySelector('[type="submit"]').disabled=false;$('reportQuestions').innerHTML=[1,2,3].map((i)=>'<div class="question"><h3>'+safe(t('question'+i))+'</h3>'+t('answers'+i).map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+safe(a)+'</span></label>').join('')+'</div>').join('');}
   function evaluateReport(e){e.preventDefault();const choices=[1,2,3].map(i=>{const el=document.querySelector('input[name="q'+i+'"]:checked');return el?Number(el.value):-1;});const feedback=$('reportFeedback');feedback.classList.remove('hidden','ok');if(choices.includes(-1)){feedback.textContent=t('incomplete');return;}if((activeMission!=='AY-005'||missions.load('AY-005').m5Solved)&&choices.every((choice,i)=>choice===(missions?.correct(activeMission)||[0,1,2])[i])){done=true;save();feedback.classList.add('ok');feedback.textContent=t('successToast');closePanels();show('finalScreen');showMissionComplete();updateHud();}else{feedback.textContent=t('answerError');}}
   function updateHint(){const on=playerActive&&!activePanel&&nearby&&(!approvedSession||nearby.id==='restricted'||nearby.id==='wall'||nearby.id==='pecman');const hint=$('hintBox');hint.classList.toggle('hidden',!on);if(on){const name={winston:'Winston',terminal:t('terminal'),restricted:{pt:'Área restrita',en:'Restricted area',es:'Área restringida'}[lang],wall:{pt:'Telão do Observatório',en:'Observatory display',es:'Pantalla del Observatorio'}[lang],map:t('mapTitle'),board:t('boardTitle'),report:t('reportTitle'),pecman:'PEC MAN'}[nearby.id];$('hintTitle').textContent=name;}else $('hintTitle').textContent=t('hint');}
@@ -368,6 +407,7 @@
     if(id==='restricted'){cinematicMode='restricted';showRestricted();return;}
     if(id==='pecman'){openPecMan();return;}
     cinematicPending=true;cinematicMode=id;patrolPaused=(id==='winston');
+    if(id==='report')focusReportCamera();
     const cue=$('cinematicCue');
     cue.textContent=(sceneCue[lang]||sceneCue.en)[id];cue.classList.remove('hidden');
     if(ayla?.setInteraction)ayla.setInteraction(id);
@@ -740,7 +780,7 @@
       }
       if(!approvedSession)room.tick(dt);
       // Cinematic focus when engaging a workstation or speaking with Winston.
-      const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:{x:-8.0,y:1.45,z:-7.65,radius:5.4,beta:1.14,alpha:-1.25}};
+      const shots={winston:{x:winston.root.position.x+.1,y:1.8,z:winston.root.position.z,radius:5.15,beta:1.21,alpha:-1.45},terminal:{x:4.65,y:1.55,z:-2.73,radius:5.1,beta:1.20,alpha:-1.0},restricted:{x:5.55,y:1.65,z:-2.9,radius:5.0,beta:1.20,alpha:-1.1},map:{x:2.2,y:2.7,z:7.5,radius:6.2,beta:1.12,alpha:-1.9},board:{x:-6,y:2.7,z:7.5,radius:6.25,beta:1.12,alpha:-1.45},report:reportCameraPose||chooseReportCameraPose()};
       const shot=activePanel==='wallScreen'&&approvedSession
         ?{x:-1.55,y:2.95,z:-9.1,radius:6.6,beta:1.43,alpha:1.5708}
         :activePanel==='restrictedScreen'&&approvedSession
