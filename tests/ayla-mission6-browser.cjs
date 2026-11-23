@@ -37,8 +37,23 @@ const puppeteer=require('puppeteer-core');
    if(missions.current()!=='AY-006')throw Error('AY-006 was not activated');
    const old=missions.load('AY-006');
    if(old.m6StoryCaptured)throw Error('Story already captured');
-   missions.save('AY-006',{m6StoryCaptured:true});
-   if(!missions.load('AY-006').m6StoryCaptured)throw Error('Story capture not saved');
+   // Test the real clickable OSINT terminal / social-story capture, not merely
+   // a direct save-state call. Scene pointer interactions invoke the same
+   // handler as clicking a terminal in the 3D room.
+   const scene=window.BABYLON.EngineStore.LastCreatedScene;
+   if(!scene)throw Error('Babylon scene missing for AY-006');
+   scene.onPointerObservable.notifyObservers({type:window.BABYLON.PointerEventTypes.POINTERPICK,pickInfo:{pickedMesh:{metadata:{interaction:'terminal'}}}});
+   await new Promise(resolve=>setTimeout(resolve,3300));
+   const socialSource=document.querySelector('#sourceList [data-source="3"]');
+   if(!socialSource)throw Error('Fourth OSINT source did not open');
+   socialSource.click();
+   const capture=document.getElementById('m6CaptureStory');
+   if(!capture)throw Error('The screenshot capture button is missing');
+   capture.click();
+   if(!missions.load('AY-006').m6StoryCaptured)throw Error('Real UI story capture did not save');
+   const terminalClose=document.querySelector('#terminalScreen [data-close]');
+   if(!terminalClose)throw Error('Terminal close button missing');
+   terminalClose.click();
    if(!six.storyAttachment('pt').includes('m6-report-attachment'))throw Error('Dossier lacks story attachment');
    if(!six.renderEvidence(3,'pt',missions.load('AY-006')).includes('disabled'))throw Error('Captured story did not lock action');
    if(six.copy('pt').sources.length!==4||six.copy('en').sources.length!==4||six.copy('es').sources.length!==4)throw Error('Incomplete localization');
