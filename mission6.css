@@ -1,4 +1,4 @@
-/* AYLA / MISSION 6: fictitious Madrid OSINT scenario. */
+/* AYLA / MISSION 6: Madrid OSINT case. */
 .mission-choice-art-six{background:#0b2730 url("assets/mission6-art.svg") center/cover no-repeat;min-height:165px;border:1px solid rgba(117,212,160,.25)}
 .m6-evidence-art{margin:10px 0;border:1px solid #32675c;background:#071a1f;overflow:hidden;max-width:700px}
 .m6-evidence-art img{display:block;max-width:100%;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
@@ -47,3 +47,9 @@
 /* Physical arcade backdrop: the puzzle plays inside a dedicated fliperama. */
 .pecman-screen{background:linear-gradient(90deg,rgba(2,11,15,.66),rgba(2,11,15,.28),rgba(2,11,15,.66)),url('assets/pecman-arcade.svg') center/cover no-repeat,#06161e}
 .pecman-shell{backdrop-filter:blur(4px);background:linear-gradient(145deg,rgba(11,29,28,.95),rgba(5,17,21,.97))}
+
+/* Case-specific map: suppress the AY-001 baseline diagram and labels. */
+#mapScreen:has(#m6-workspace) .map-svg-wrap,#mapScreen:has(#m6-workspace) .map-legend,#mapScreen:has(#m6-workspace) #mapLegend{display:none!important}
+#mapScreen:has(#m6-workspace) .map-space{display:block;overflow-y:auto}
+#mapScreen:has(#m6-workspace) #m6-workspace{width:100%;position:relative;z-index:2}
+#mapScreen:has(#m6-workspace) .m6-map-workspace{max-width:100%;box-sizing:border-box}
