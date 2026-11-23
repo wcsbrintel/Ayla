@@ -103,12 +103,10 @@
   }
   function syncAccess(){
     $('missionMenuButton')?.classList.toggle('hidden',approvedSession||!playerActive);
-    $('pecManLaunch')?.classList.toggle('hidden',!playerActive);
     renderRank();
     if(!$('missionHud'))return;
     const inRoom=playerActive&&!visible('startScreen')&&!visible('introScreen');
     $('missionHud').classList.toggle('hidden',!inRoom||approvedSession);
-    $('demoButton')?.classList.toggle('hidden',approvedSession);
     if(approvedSession){
       $('resumeButton')?.classList.add('hidden');
       if(activePanel&&activePanel!=='restrictedScreen')closePanels();
@@ -250,7 +248,7 @@
     aftermathDebrief=false;
     playerActive=false;
     held={};
-    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank','pecManLaunch'])$(id)?.classList.add('hidden');
+    for(const id of ['topbar','missionHud','hintBox','mobileControls','compass','aylaRank'])$(id)?.classList.add('hidden');
     $('toast').classList.add('hidden');
     $('langDrop').classList.add('hidden');
     intro(); // Read-only replay; saved mission state and promotion remain intact.
@@ -273,7 +271,7 @@
     notify(navigationText().resetDone);
   }
 
-  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');syncCharacterCompatibility();window.AYLAPecMan?.setLanguage(lang);if($('demoButton'))$('demoButton').textContent={pt:'▶ CENAS 3D',en:'▶ 3D SCENES',es:'▶ ESCENAS 3D'}[lang]||'▶ 3D SCENES';document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
+  function localize(){document.documentElement.lang=lang;localizeNavigation();updateAccountIndicator();renderRank();if(visible('aftermathScreen'))renderAftermath();if(visible('promotionScreen'))renderPromotion();if($('missionMenuButton'))$('missionMenuButton').textContent=mi('missions');window.AYLAPecMan?.setLanguage(lang);document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});$('loadingLabel').textContent=t('beginLabel');$('nextIntroLabel').textContent=t('enter');$('hintTitle').textContent=t('hint');$('hintSub').textContent=t('hintSub');$('langButton').innerHTML=lang.toUpperCase()+' <span>⌄</span>';document.querySelectorAll('[data-language],[data-lang]').forEach(el=>{el.classList.toggle('selected',(el.dataset.language||el.dataset.lang)===lang);});if(visible('introScreen'))renderIntro();if(visible('dialogScreen'))renderDialog();if(visible('terminalScreen'))renderSources();if(visible('mapScreen'))renderMap();if(visible('boardScreen'))renderBoard();if(visible('reportScreen'))renderReport();if(visible('finalScreen'))showMissionComplete();updateHud();updateHint();}
   function setLanguage(s){if(!ui[s])return;lang=s;window.AYLARestricted?.setLanguage(s);window.AYLAWall?.setLanguage(s);try{localStorage.setItem('ayla-language',s)}catch(e){}localize();hide('langDrop');if(visible('missionSelectScreen'))renderMissionArchive();}
   function renderIntro(){
     const story=introNarrative[lang]||introNarrative.en;
@@ -385,7 +383,6 @@
 
 
   $('missionMenuButton').onclick=openMissionArchive;
-  $('pecManLaunch').onclick=openPecMan;
   $('homeFromCentral').onclick=returnToIntroduction;
   $('replayIntroduction').onclick=returnToIntroduction;
   $('resetFromStart').onclick=resetAllProgress;
@@ -479,9 +476,8 @@
       cinematicMode='terminal';showSources();
     },7100));
   }
-  $('demoButton').onclick=runCinematicDemo;
   // Player-controlled inspection camera: optional close view, unchanged collision logic.
-  let closeCamera=false;
+  let closeCamera=true;
   function toggleCamera(){
     closeCamera=!closeCamera;
     const btn=$('cameraButton');
@@ -489,25 +485,6 @@
     if(camera)camera.radius=closeCamera?5.3:9.8;
   }
   $('cameraButton').onclick=toggleCamera;
-  const compatButton=$('avatarCompatibility');
-  function syncCharacterCompatibility(){
-    if(!compatButton)return;
-    const isLocal=!!window.AYLACharacterCompatibility?.isEnabled?.();
-    compatButton.textContent=isLocal?'3D: LOCAL':'3D: ORIGINAL';
-    compatButton.setAttribute('aria-pressed',String(isLocal));
-    const help={
-      pt:isLocal?'Modelos locais: clique para restaurar os personagens realistas originais.':'Personagens realistas originais (padrão). Clique somente se quiser usar o visual simplificado.',
-      en:isLocal?'Local simplified models: click to restore the original realistic characters.':'Original realistic characters (default). Click only if you want simplified models.',
-      es:isLocal?'Modelos simplificados: pulsa para restaurar los personajes realistas originales.':'Personajes realistas originales (predeterminados). Pulsa solo si deseas modelos simplificados.'
-    };
-    compatButton.title=help[lang]||help.en;
-    compatButton.setAttribute('aria-label',compatButton.title);
-  }
-  compatButton?.addEventListener('click',()=>{
-    const api=window.AYLACharacterCompatibility;
-    if(api?.setEnabled)api.setEnabled(!api.isEnabled());
-  });
-  syncCharacterCompatibility();
   let held={};
   addEventListener('keydown',(e)=>{const key=e.key.toLowerCase();if(playerActive&&(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','e','shift'].includes(key)))e.preventDefault();held[key]=true;if(key==='escape')closePanels();if(key==='c'&&!e.repeat&&playerActive&&!activePanel)toggleCamera();if(key==='e'&&!e.repeat&&nearby)interact(nearby.id);});
   addEventListener('keyup',(e)=>held[e.key.toLowerCase()]=false);
@@ -694,7 +671,7 @@
       proxy.position.set(p.x,1.36,p.z);proxy.visibility=.001;proxy.isPickable=true;
       proxy.metadata={interaction:p.id};p.proxy=proxy;
       interactables.push(p);});
-    camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,9.8,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
+    camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.15,5.3,new B.Vector3(0,1.5,1.2),scene);camera.attachControl($('renderCanvas'),true);camera.lowerRadiusLimit=4.8;camera.upperRadiusLimit=15;camera.lowerBetaLimit=.47;camera.upperBetaLimit=1.49;camera.wheelPrecision=32;camera.panningSensibility=0;camera.angularSensibilityX=2200;camera.angularSensibilityY=1900;camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput');
     // Capsule-based collision and pathfinding for desks, walls, props and actors.
     if(!window.AYLANavigationV8||!window.AYLARoomV8)throw new Error('AYLA 0.8 environment was not loaded');
     const room=window.AYLARoomV8.install(B,scene);
