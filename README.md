@@ -1,3 +1,17 @@
+## AYLA 6.0.1 — PEC MAN fliperama and Mission AY-006
+
+**PEC MAN** is accessed through the arcade cabinet inside the operations center. The cabinet has a correctly oriented screen, arcade joystick, control buttons and a separate fliperama backdrop while the minigame is open. Foes start **20% slower** than the former level-one behavior: the prior 166ms move interval is now 208ms. They accelerate by 9ms per level to a maximum speed limit of 115ms per tile. The arcade features an original synthesized melody and effects for clues, protected captures, bonus dossier pickups and collisions. It temporarily suspends the default Chopin background soundtrack and restores it on exit, without changing the player's music-off preference or volume.
+
+The **Level 2 progression panel** appears only after successful completion of **Mission 4**, while the level-up/debrief with Winston remains part of the existing story.
+
+**Mission AY-006 — The Madrid Ampoules / As Ampolas de Madrid / Las Ampollas de Madrid** is a **fictional investigative training scenario**. It includes four sources: a scenario seizure of ampoules at Adolfo Suárez Madrid-Barajas, a simulated laboratory identification of bile as *Ursus tibetanus*, a masked passenger record showing four Moscow–Madrid journeys over three years, and an invented social-media story connecting R-17 with fictional operator X-09. No real passenger, address, passport, shop or social-media account is identified. The scenario uses the real Spanish role **vigilantes de seguridad privada** for airport screening, working alongside competent state security forces. The names of the airport, species and security roles are factual background; the case itself is not a verified real police investigation.
+
+Players must review four documentary sources, speak to Winston, inspect the route and fictional social network, and **capture the temporary story** through the in-game OSINT terminal before submitting the case referral. The captured story is represented as a fictional evidence attachment in the dossier. Saving and import/export of the capture flag are supported in the existing version-2 mission state; older five-mission saves remain readable. Mission 6 is unlocked after completion of Mission 5 and promotion to Level 2.
+
+Files: `mission6.js`, `mission6.css`, `assets/mission6-art.svg`, `assets/pecman-arcade.svg`, updated `pec-man.js`, `audio-v9.js`, `missions-v2.js`, `game.js`, and `index.html`.
+
+Quality checks: an end-to-end headless Chromium smoke test opened AY-006, confirmed Level 2 progression, verified the story-capture flag, started/exited PEC MAN, and confirmed both artwork assets loaded correctly. This does not guarantee pixel-perfect rendering on every Windows computer.
+
 ## AYLA 5.6.2 — Original character walking animations
 
 - Fixed a motion issue affecting original realistic Rocketbox avatars (Ayla, Winston, Clara and Theo): the old transition code started the new Walk animation group at zero weight and gradually faded it in, which could leave the character visually sliding on some browsers.
