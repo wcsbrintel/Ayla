@@ -42,7 +42,11 @@ const puppeteer=require('puppeteer-core');
    // handler as clicking a terminal in the 3D room.
    const scene=window.BABYLON.EngineStore.LastCreatedScene;
    if(!scene)throw Error('Babylon scene missing for AY-006');
-   scene.onPointerObservable.notifyObservers({type:window.BABYLON.PointerEventTypes.POINTERPICK,pickInfo:{pickedMesh:{metadata:{interaction:'terminal'}}}});
+   // Call the game's registered picker directly; Babylon's other internal
+   // pointer observers require a full real DOM pointer event object.
+   const picker=scene.onPointerObservable.observers.find(o=>String(o.callback).includes('metadata?.interaction'));
+   if(!picker)throw Error('In-game pointer interaction handler is missing');
+   picker.callback({type:window.BABYLON.PointerEventTypes.POINTERPICK,pickInfo:{pickedMesh:{metadata:{interaction:'terminal'}}}});
    await new Promise(resolve=>setTimeout(resolve,3300));
    const socialSource=document.querySelector('#sourceList [data-source="3"]');
    if(!socialSource)throw Error('Fourth OSINT source did not open');
