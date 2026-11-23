@@ -6,6 +6,8 @@
   const root=document.getElementById('app');
   if(!root || window.AYLAPecMan)return;
   const W=25,H=19,CELL=30,STORE='ayla-pec-man-record-v1';
+  // Base was 166ms per tile at level 1. 208ms is 20% less movement speed.
+  const ghostStepMs=level=>Math.max(115,208-(Math.max(1,level)-1)*9);
   const dirs={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
   const labels={
     pt:{subtitle:'ARCADE DE INTELIGÊNCIA',play:'JOGAR PEC MAN',start:'PEC MAN — INICIAR',resume:'CONTINUAR',restart:'REINICIAR',pause:'PAUSAR',exit:'VOLTAR À CENTRAL',score:'PONTUAÇÃO',record:'RECORDE PEC MAN',lives:'VIDAS',level:'FASE',remaining:'PISTAS',ready:'COLETE AS PISTAS',readyBody:'Percorra o labirinto, recolha todas as pistas e evite os perseguidores. As pistas especiais permitem neutralizá-los por alguns segundos.',paused:'JOGO PAUSADO',pausedBody:'Continue quando estiver pronto.',over:'FIM DE JOGO',overBody:'Sua pontuação foi registrada neste dispositivo.',clear:'FASE CONCLUÍDA',clearBody:'Todas as pistas coletadas. Próxima fase!',controls:'SETAS OU WASD PARA MOVER · P PARA PAUSAR · ESC PARA SAIR',tip:'Pistas especiais concedem proteção temporária. Cada fase vale um bônus de 500 pontos.',bonus:'DOSSIÊ COLETADO +250',power:'PROTEÇÃO ATIVA',newRecord:'NOVO RECORDE'},
@@ -21,9 +23,9 @@
   section.innerHTML='<div class="pecman-shell">'+
     '<header class="pecman-header"><div class="pecman-brand"><span class="pecman-symbol" aria-hidden="true">◈</span><div><small id="pecManSubtitle"></small><h2 id="pecManTitle">PEC <span>MAN</span></h2></div></div><button type="button" class="pecman-exit" id="pecManExit"></button></header>'+
     '<div class="pecman-stats"><div><small id="pecManScoreLabel"></small><strong id="pecManScore">0</strong></div><div><small id="pecManRecordLabel"></small><strong id="pecManRecord">0</strong></div><div><small id="pecManLevelLabel"></small><strong id="pecManLevel">1</strong></div><div><small id="pecManLivesLabel"></small><strong id="pecManLives">♥ ♥ ♥</strong></div><div><small id="pecManRemainingLabel"></small><strong id="pecManRemaining">0</strong></div></div>'+
-    '<div class="pecman-body"><div class="pecman-stage"><canvas id="pecManCanvas" width="750" height="570" aria-label="PEC MAN maze" role="img"></canvas><div class="pecman-curtain" id="pecManCurtain"><div class="pecman-curtain-card"><span class="pecman-mini">AYLA / PEC MAN</span><h3 id="pecManCurtainTitle"></h3><p id="pecManCurtainBody"></p><button type="button" class="primary-button" id="pecManStart"></button></div></div></div>'+
+    '<div class="pecman-body"><div class="pecman-stage"><canvas id="pecManCanvas" width="750" height="570" aria-label="PEC MAN maze" role="img"></canvas><div class="pecman-curtain" id="pecManCurtain"><div class="pecman-curtain-card"><span class="pecman-mini">AYLA / FLIPERAMA / PEC MAN</span><h3 id="pecManCurtainTitle"></h3><p id="pecManCurtainBody"></p><button type="button" class="primary-button" id="pecManStart"></button></div></div></div>'+
     '<aside class="pecman-sidebar"><div class="pecman-power" id="pecManPower" hidden><span id="pecManPowerLabel"></span><div class="pecman-power-track"><i id="pecManPowerFill"></i></div></div><p id="pecManTip"></p><div class="pecman-touch"><button data-pm-dir="up" aria-label="Up">▲</button><div><button data-pm-dir="left" aria-label="Left">◀</button><button data-pm-dir="down" aria-label="Down">▼</button><button data-pm-dir="right" aria-label="Right">▶</button></div></div><div class="pecman-actions"><button id="pecManPause" type="button"></button><button id="pecManRestart" type="button"></button></div><small id="pecManControls"></small></aside></div>'+
-    '<div id="pecManLive" class="pecman-live" role="status" aria-live="polite"></div></div>';
+    '<div id="pecManLive" class="pecman-live" role="status" aria-live="polite"></div><div class="pecman-arcade-base" aria-hidden="true"><span>◆</span> AYLA • ARCADE <span>◆</span></div></div>';
   root.appendChild(section);
   const $=id=>document.getElementById(id);
   const canvas=$('pecManCanvas'),ctx=canvas.getContext('2d');
@@ -31,6 +33,43 @@
   let maze=[],dots=[],player={x:1,y:1,dir:'right',wish:'right'},ghosts=[],score=0,best=0,lives=3,level=1,remaining=0;
   let activePower=0,invulnerable=0,bonus=null,bonusShown=false,playerAcc=0,ghostAcc=0,noticeUntil=0,noticeText='';
   const millis=()=>performance.now();
+  // Original synthesized arcade melody; no copyrighted audio is embedded.
+  let soundCtx=null,songClock=null,songStep=0,ambientSuspended=false;
+  const melody=[392,0,494,587,0,494,440,0,392,330,0,392,440,0,523,494,0,440,392,330,0,294,330,0,392,0,440,494,0,392,330,0];
+  function audioCtx(){
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext)return null;
+    try{if(!soundCtx)soundCtx=new AudioContext();if(soundCtx.state==='suspended')soundCtx.resume().catch(()=>{});return soundCtx;}catch(e){return null;}
+  }
+  function beep(frequency,length=.09,kind='triangle',strength=.04,delay=0){
+    const ctx=audioCtx();if(!ctx||!frequency)return;
+    try{
+      const oscillator=ctx.createOscillator(),gain=ctx.createGain(),t=ctx.currentTime+delay;
+      oscillator.type=kind;oscillator.frequency.setValueAtTime(frequency,t);
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.exponentialRampToValueAtTime(Math.max(.00011,strength),t+.012);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+length);
+      oscillator.connect(gain);gain.connect(ctx.destination);
+      oscillator.start(t);oscillator.stop(t+length+.02);
+    }catch(e){}
+  }
+  function gameMelodyStep(){
+    if(mode!=='playing'||!open)return;
+    const n=melody[songStep%melody.length];
+    if(n)beep(n,.155,'triangle',.014);
+    if(songStep%4===0)beep(songStep%8===0?147:196,.13,'sine',.010);
+    songStep++;
+  }
+  function stopGameMusic(){if(songClock!==null){clearInterval(songClock);songClock=null;}}
+  function startGameMusic(){stopGameMusic();audioCtx();gameMelodyStep();songClock=setInterval(gameMelodyStep,220);}
+  function soundEffect(kind){
+    if(kind==='dossier'){beep(523,.11,'sine',.055);beep(659,.14,'sine',.045,.095);beep(784,.2,'triangle',.04,.2);}
+    else if(kind==='power'){beep(440,.16,'sine',.045);beep(880,.20,'triangle',.035,.13);}
+    else if(kind==='hit'){beep(165,.19,'sawtooth',.045);beep(110,.23,'sine',.045,.14);}
+    else if(kind==='victory'){[392,494,587,784].forEach((n,i)=>beep(n,.19,'triangle',.04,i*.13));}
+    else if(kind==='clue')beep(880,.045,'sine',.012);
+  }
+  function resumeAmbient(){stopGameMusic();if(ambientSuspended){ambientSuspended=false;window.AYLAAudioV9?.resumeAfterGame?.();}}
   const msg=()=>labels[locale]||labels.pt;
   try{best=Math.max(0,Math.floor(Number(localStorage.getItem(STORE)||0))||0);}catch(e){}
   function seeded(seed){let n=seed>>>0;return ()=>{n=(1664525*n+1013904223)>>>0;return n/4294967296;};}
@@ -82,6 +121,7 @@
     refreshHud();
   }
   function newGame(){
+    stopGameMusic();
     score=0;lives=3;level=1;mode='ready';newLevel();render();
     setCurtain('ready');
   }
@@ -116,10 +156,12 @@
     if(mode==='gameover')newGame();
     if(mode==='clear'){level++;newLevel();}
     mode='playing';lastFrame=millis();playerAcc=0;ghostAcc=0;
+    if(!ambientSuspended)ambientSuspended=!!window.AYLAAudioV9?.suspendForGame?.();
+    startGameMusic();
     setCurtain('playing');refreshHud();
     $('pecManStart').blur();
   }
-  function pause(){if(mode==='playing'){mode='paused';setCurtain('paused');}else if(mode==='paused')start();refreshHud();}
+  function pause(){if(mode==='playing'){mode='paused';stopGameMusic();setCurtain('paused');}else if(mode==='paused')start();refreshHud();}
   function setDirection(direction){if(dirs[direction])player.wish=direction;}
   function nextStep(x,y,dir){return {x:x+dirs[dir].x,y:y+dirs[dir].y};}
   function movePlayer(){
@@ -131,12 +173,13 @@
     if(item){
       dots[player.y][player.x]=0;remaining--;
       addScore(item===2?50:10);
+      soundEffect(item===2?'power':'clue');
       if(item===2){activePower=millis()+7500;notice(msg().power);}
       if(!bonusShown && score>=500)bonusShown=true;
-      if(remaining===0){addScore(500);mode='clear';setCurtain('clear');notice(msg().clear);}
+      if(remaining===0){addScore(500);mode='clear';stopGameMusic();soundEffect('victory');setCurtain('clear');notice(msg().clear);}
     }
     if(bonusShown&&bonus&&player.x===bonus.x&&player.y===bonus.y){
-      addScore(250);bonus=null;notice(msg().bonus);
+      addScore(250);bonus=null;soundEffect('dossier');notice(msg().bonus);
     }
   }
   function bfsDirection(entity,target){
@@ -181,10 +224,10 @@
       if(now<activePower){
         addScore(200);g.x=g.home.x;g.y=g.home.y;g.inactiveUntil=now+1800;notice('+200');
       }else{
-        lives--;invulnerable=now+2700;player.x=1;player.y=1;player.dir='right';player.wish='right';
+        lives--;soundEffect('hit');invulnerable=now+2700;player.x=1;player.y=1;player.dir='right';player.wish='right';
         ghosts.forEach((enemy,index)=>{enemy.x=enemy.home.x;enemy.y=enemy.home.y;enemy.inactiveUntil=now+750+index*250;});
         activePower=0;
-        if(lives===0){mode='gameover';setCurtain('gameover');}
+        if(lives===0){mode='gameover';stopGameMusic();setCurtain('gameover');}
       }
       refreshHud();return;
     }
@@ -192,7 +235,7 @@
   function tick(dt,now){
     if(mode!=='playing')return;
     playerAcc+=dt;ghostAcc+=dt;
-    const pStep=Math.max(82,118-level*3),gStep=Math.max(108,173-level*7);
+    const pStep=Math.max(82,118-level*3),gStep=ghostStepMs(level);
     if(playerAcc>=pStep){playerAcc%=pStep;movePlayer();checkCollision(now);}
     if(mode!=='playing')return;
     if(ghostAcc>=gStep){
@@ -269,6 +312,7 @@
     open=false;
     section.classList.add('hidden');
     if(mode==='playing'){mode='paused';setCurtain('paused');}
+    resumeAmbient();
     if(frameId){cancelAnimationFrame(frameId);frameId=0;}
     lastFrame=0;
   }
@@ -298,5 +342,5 @@
   },true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&open&&mode==='playing')pause();});
   window.addEventListener('blur',()=>{if(open&&mode==='playing')pause();});
-  window.AYLAPecMan={open:openGame,close:closeGame,setLanguage,isOpen:()=>open};
+  window.AYLAPecMan={open:openGame,close:closeGame,setLanguage,isOpen:()=>open,ghostStepMs,level:()=>level};
 })();
