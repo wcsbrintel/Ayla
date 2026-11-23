@@ -113,12 +113,12 @@ function storyImage(lang){
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="520" height="600" viewBox="0 0 520 600"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#143a3c"/><stop offset="1" stop-color="#0b131c"/></linearGradient></defs><rect width="520" height="600" rx="14" fill="url(#bg)"/><rect x="15" y="13" width="490" height="6" rx="3" fill="#9febb2"/><text x="33" y="61" font-size="23" fill="white" font-family="sans-serif">● R-17  ·  14 h</text><text x="34" y="108" font-size="15" fill="#b1d7c9" font-family="monospace">SIMULATED / FICTIONAL STORY</text><path d="M88 384 Q80 260 180 245 Q245 258 263 390 L263 521 L62 521Z" fill="#46636e"/><circle cx="165" cy="240" r="67" fill="#a8b1a8"/><path d="M97 226 Q92 155 156 153 Q225 142 233 228 Q180 187 97 226" fill="#2c3436"/><path d="M282 377 Q280 258 388 247 Q458 267 467 374 L473 518 L275 518Z" fill="#405a50"/><circle cx="367" cy="238" r="70" fill="#9b958d"/><path d="M290 231 Q309 147 384 160 Q444 162 439 238 Q395 199 290 231" fill="#1e3031"/><rect x="98" y="223" width="132" height="24" rx="11" fill="#141b1c"/><rect x="298" y="219" width="137" height="27" rx="12" fill="#121a1b"/><text x="25" y="562" font-size="20" fill="#def5df" font-family="monospace">'+caption+'</text><text x="26" y="586" font-size="13" fill="#a3c0b5" font-family="sans-serif">AYLA / AY-006 · TRAINING EVIDENCE</text></svg>';
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
-function renderEvidence(index,lang){
+function renderEvidence(index,lang,state){
  const t=copy(lang);
  if(index===0)return '<figure class="m6-evidence-art"><img src="assets/mission6-art.svg" alt="'+safe(t.missionTitle)+'"><figcaption>'+safe(t.training)+'</figcaption></figure>';
  if(index===1)return '<div class="m6-sample"><strong>Ursus tibetanus</strong><span>LAB / AY-006 · '+safe(t.training)+'</span><div class="m6-vials"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
  if(index===2)return '<div class="m6-passport"><span>R-17 · PASSPORT EXTRACT</span><strong>RU •••• 7042</strong><span>MOSCOW → MADRID · 4 / 3 YEARS</span><small>'+safe(t.training)+'</small></div>';
- if(index===3)return '<div class="m6-story-workspace"><img class="m6-story-shot" src="'+storyImage(lang)+'" alt="'+safe(t.storyTag)+'"><p>'+safe(t.storyInfo)+'</p><button type="button" id="m6CaptureStory" class="primary-button">'+safe(t.capture)+'</button></div>';
+ if(index===3)return '<div class="m6-story-workspace '+(state?.m6StoryCaptured?'is-captured':'')+'"><img class="m6-story-shot" src="'+storyImage(lang)+'" alt="'+safe(t.storyTag)+'"><p>'+safe(t.storyInfo)+'</p><button type="button" id="m6CaptureStory" class="primary-button" '+(state?.m6StoryCaptured?'disabled':'')+'>'+(state?.m6StoryCaptured?safe(t.captured):safe(t.capture))+'</button></div>';
  return '';
 }
 function renderMap(lang){
