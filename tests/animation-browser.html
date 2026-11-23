@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AYLA · Rig Animation Diagnostics</title>
+<style>body{font:14px monospace;background:#111;color:#eee;margin:15px}canvas{width:600px;height:480px;display:block}pre{white-space:pre-wrap}</style>
+<canvas id="stage"></canvas><pre id="status">Loading...</pre>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+<script src="../characters-v4.js"></script>
+<script src="../character-fidelity-v5.js"></script>
+<script src="../character-cinematics-v6.js"></script>
+<script src="../realistic-actors-v7.js?v=1.0.5"></script>
+<script src="../actors-v8.js"></script>
+<script>
+(async()=>{
+ const log=(...args)=>{document.getElementById('status').textContent+=args.join(' ')+'\n';console.log('AYLA-DIAG',...args)};
+ const B=window.BABYLON, engine=new B.Engine(document.getElementById('stage'),true,{preserveDrawingBuffer:true});
+ const scene=new B.Scene(engine);
+ const cam=new B.ArcRotateCamera('cam',-Math.PI/2,1.1,5,new B.Vector3(0,1.2,0),scene);
+ cam.attachControl(document.getElementById('stage'),true);
+ const h=new B.HemisphericLight('lamp',new B.Vector3(0,1,0),scene);h.intensity=1.5;
+ const actor=window.AYLACharacterFactory.create(B,scene,{name:'Ayla'});
+ window.__aylaDiag={actor,scene,engine,log,result:null};
+ engine.runRenderLoop(()=>{actor.animate(engine.getDeltaTime()/1000,true,false,performance.now());scene.render();});
+ try{await Promise.race([actor.ready,new Promise((_,rej)=>setTimeout(()=>rej(Error('LOADING TIMEOUT')),50000))]);}
+ catch(e){log('ERROR',String(e));return}
+ log('ready',actor.isRiggedReady?.(),JSON.stringify(actor.animationClips?.()));
+ const bones=scene.transformNodes.filter(n=>/mixamorig.*(LeftArm|RightArm|LeftUpLeg|RightUpLeg)/i.test(n.name));
+ log('boneCount',bones.length,'examples',bones.slice(0,10).map(b=>b.name).join(','));
+ const sample=()=>bones.map(n=>({name:n.name,q:n.rotationQuaternion?.asArray()||null,p:n.position?.asArray()}));
+ const before=sample();
+ await new Promise(ok=>setTimeout(ok,1100));
+ const after=sample();
+ const variations=before.map((n,i)=>({name:n.name,change:Math.max(0,...(n.q||[]).map((v,j)=>Math.abs(v-(after[i].q||[])[j])))})).sort((a,b)=>b.change-a.change);
+ log('variations',JSON.stringify(variations.slice(0,15)));
+ window.__aylaDiag.result={rigged:actor.isRiggedReady?.(),clip:actor.currentAnimation?.(),boneCount:bones.length,variations,limbsChanged:variations.filter(v=>v.change>.0001).length};
+ log('RESULT',JSON.stringify(window.__aylaDiag.result));
+})();
+</script>
