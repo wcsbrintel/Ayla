@@ -1,4 +1,4 @@
-/* AYLA 0.7.2 — original realistic characters restored as the default.
+/* AYLA 0.7.3 — reliable native walk/talk animations for realistic avatars.
  * Models: Microsoft Rocketbox Avatar Library (MIT), via memoriesrohit/avatar-studio.
  * Local simplified meshes are NEVER displayed automatically; they are optional
  * for users who explicitly select compatibility mode. Multiple model sources
@@ -58,8 +58,26 @@
     // The previous realistic characters are the product design. Never replace
     // them with simplified geometry unless the user has explicitly requested it.
     if(!forceLocal)legacyMeshes.forEach(m=>m.setEnabled(false));
-    let ready=false,failed=false,active=null, previousAction=null,fadeTime=0,current='Idle',seated=false,interaction='idle',talking=false;
-    const stages = new Map();
+    let ready=false,failed=false,active=null,current='Idle',seated=false,interaction='idle',talking=false;
+    const stages=new Map();
+    const normalizeClip=raw=>String(raw||'').split(/[|/]/).pop().trim()
+      .replace(/(?:\.\d{3}|[_-]\d+)$/,'').toLowerCase()
+      .replace(/[^a-z]/g,'');
+    const aliases={
+      idle:['idle','standing','stand','breathing'],
+      walk:['walk','walking','locomotion','walkneutral','walkcycle'],
+      talk:['talk','talking','speak','gestictalk'],
+      confident:['confident','confidenttalk','talk'],
+      think:['think','thinking','idle']
+    };
+    function clipFor(action){
+      const names=aliases[normalizeClip(action)]||[normalizeClip(action)];
+      for(const key of names){const exact=stages.get(key);if(exact)return exact;}
+      for(const [key,group] of stages)if(names.some(n=>key.startsWith(n)||key.endsWith(n)))return group;
+      return stages.get('idle')||stages.values().next().value||null;
+    }
+    actor.animationClips=()=>[...stages].map(([key,group])=>({key,name:group.name,tracks:group.targetedAnimations?.length||0}));
+    actor.currentAnimation=()=>active?.name||null;
     const name = cfg.name || (cfg.isWinston ? 'Winston' : 'Ayla');
     actor.visualVersion = '0.7';
     actor.characterType = 'rigged-textured';
@@ -70,43 +88,34 @@
     actor.setSeated = function (value) { seated=!!value; origSeat?.(value); };
     actor.setDialogue = function (value) { talking=!!value; origDialogue?.(value); };
     actor.setTalking = function (value) { talking=!!value; origTalking?.(value); };
-    actor.animate = function (dt,moving,sprint,now) {
-      if(!ready) {if(forceLocal)origAnimate(dt,moving,sprint,now);return;}
-      let next='Idle';
-      if(moving) next=sprint?'Walk':'Walk';
-      else if(talking) next=cfg.isWinston?'Talk':'Confident';
-      else if(seated&&actor.supportsSeatedAnimation()) next=[...stages.keys()].find(k=>/^sit(?:ting|ted)?(?:[ _-]|$)/i.test(k));
-      else if(seated) next='Idle';
-      else if(interaction==='terminal'||interaction==='report') next='Think';
-      else if(interaction==='map'||interaction==='board') next='Think';
-      else if(interaction==='winston')next='Talk';
-      if(next!==current) play(next);
-      if(active)active.speedRatio=moving?(sprint?1.18:0.93):1;
-      // Blend across actions instead of stopping/resets that cause jumps.
-      if(previousAction){
-        fadeTime=Math.min(.38,fadeTime+Math.min(dt,.06));
-        const t=fadeTime/.38;
-        if(active?.setWeightForAllAnimatables)active.setWeightForAllAnimatables(t);
-        if(previousAction?.setWeightForAllAnimatables)previousAction.setWeightForAllAnimatables(1-t);
-        if(t>=1){previousAction.stop();previousAction=null;}
+    // These GLBs already contain original Rocketbox Walk, Idle, Talk and Think
+    // motion-capture clips. Drive those groups directly, with full weight.
+    // The previous crossfade initialized Walk at weight zero; on some drivers
+    // the target action remained effectively invisible, creating sliding actors.
+    function play(action,speed=1){
+      const group=clipFor(action);
+      if(!group)return;
+      if(active!==group || group.isPlaying===false){
+        if(active && active!==group)active.stop();
+        group.stop();
+        group.reset();
+        group.start(true,speed,group.from,group.to,false);
+        if(group.setWeightForAllAnimatables)group.setWeightForAllAnimatables(1);
+        active=group;
       }
-      // Animation groups own the rig; no extra procedural transforms on the
-      // skinned model (which previously produced detached limbs).
-    };
-    function play(next){
-      const group=stages.get(next)||stages.get('Idle')||stages.values().next().value;
-      if(!group) return;
-      if(active===group){current=next;return;}
-      if(previousAction){previousAction.stop();previousAction=null;}
-      previousAction=active;
-      fadeTime=0;
-      group.reset();group.start(true,1,group.from,group.to,false);
-      if(previousAction&&group.setWeightForAllAnimatables){
-        group.setWeightForAllAnimatables(0);
-        previousAction.setWeightForAllAnimatables(1);
-      }
-      active=group;current=next;
+      active.speedRatio=speed;
+      current=action;
     }
+    actor.animate=function(dt,moving,sprint,now){
+      if(!ready){if(forceLocal)origAnimate(dt,moving,sprint,now);return;}
+      let next='Idle';
+      if(moving)next='Walk';
+      else if(talking)next=cfg.isWinston?'Talk':'Confident';
+      else if(seated&&actor.supportsSeatedAnimation())next=[...stages.keys()].find(k=>/^sit(?:ting|ted)?(?:[ _-]|$)/i.test(k))||'Idle';
+      else if(interaction==='terminal'||interaction==='report'||interaction==='map'||interaction==='board')next='Think';
+      else if(interaction==='winston')next='Talk';
+      play(next,moving?(sprint?1.22:1.0):1.0);
+    };
     function markFallback(err){
       if(failed)return;
       failed=true;
@@ -191,9 +200,17 @@
         for(const group of importResult.animationGroups||[]){
           group.stop();
           const label=String(group.name||'').replace(/^.*\|/,'').trim();
-          stages.set(label,group);
+          const key=normalizeClip(label);
+          if(key && !stages.has(key))stages.set(key,group);
         }
-        if(!stages.has('Idle'))throw new Error('Idle animation missing');
+        if(!stages.has('idle'))throw new Error('Idle animation missing');
+        if(!stages.has('walk')){
+          console.warn('[AYLA] Walk clip not found for',name,'available clips:',actor.animationClips());
+          throw new Error('Original walking animation is missing');
+        }
+        if(!(stages.get('walk').targetedAnimations||[]).length){
+          throw new Error('Original walking animation has no tracks');
+        }
         play('Idle');
         // A successful HTTP request does not guarantee a drawable WebGL avatar.
         // Check that at least one textured mesh survived wardrobe filtering
@@ -239,5 +256,5 @@
     actor.ready = load();
     return actor;
   }
-  window.AYLACharacterFactory={...previous,create,version:'0.7.2',kind:'MIT-rigged-original-default'};
+  window.AYLACharacterFactory={...previous,create,version:'0.7.3',kind:'MIT-rigged-native-animation'};
 })();
