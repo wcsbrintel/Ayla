@@ -1,0 +1,31 @@
+name: AYLA Mission 6 and PEC MAN smoke tests
+on:
+  push:
+    paths:
+      - '.github/workflows/ayla-mission6-smoke.yml'
+      - 'tests/ayla-mission6-browser.cjs'
+      - 'mission6.js'
+      - 'pec-man.js'
+      - 'audio-v9.js'
+      - 'game.js'
+      - 'missions-v2.js'
+      - 'index.html'
+  workflow_dispatch:
+
+jobs:
+  chrome-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+      - name: Install Puppeteer controller
+        run: npm install --no-save --no-package-lock puppeteer-core@24
+      - name: Verify AY-006 investigation and PEC MAN in real Chromium
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ayla-smoke-http.log 2>&1 &
+          sleep 2
+          timeout --signal=TERM 100s node tests/ayla-mission6-browser.cjs
