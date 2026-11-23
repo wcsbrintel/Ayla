@@ -67,7 +67,7 @@
 .m6-passport-heading strong{font-size:clamp(18px,2.3vw,25px)}
 .m6-passport-heading small{font-size:11px;color:#b8d5bc}
 .m6-passport-photo{margin-top:10px}
-.m6-passport-photo img{aspect-ratio:780/530;object-fit:contain;background:#0a1518}
+.m6-passport-photo img{aspect-ratio:790/350;object-fit:contain;background:#0a1518}
 .m6-story-workspace{box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:18px;align-items:center;width:100%;max-width:100%;margin:14px 0 18px;padding:16px;border:1px solid #53977d;border-radius:8px;background:#061e20;overflow:hidden}
 .m6-story-figure{min-width:0;margin:0}
 .m6-story-shot{display:block;box-sizing:border-box;width:100%;height:auto;aspect-ratio:540/510;object-fit:cover;border:1px solid #b2e9ae;border-radius:6px}
@@ -82,7 +82,7 @@
 .m6-network-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .m6-network-node{position:relative;display:flex;min-width:0;min-height:72px;align-items:end;justify-content:start;text-align:left;padding:10px;background:linear-gradient(0deg,rgba(5,20,19,.94),rgba(5,20,19,.08)),#14352f;border:1px solid #4b8374;border-radius:5px;overflow:hidden}
 .m6-network-node span{z-index:1;position:relative;overflow-wrap:anywhere;color:#e0f4e2;font:700 11px/1.4 'DM Sans',sans-serif;text-shadow:0 1px 4px #071b17}
-.m6-network-node-0,.m6-network-node-1{background-image:linear-gradient(0deg,rgba(5,20,19,.94),rgba(5,20,19,.16)),url('assets/mission6-passport-evidence.svg?v=6.3.0');background-position:center 35%;background-size:cover}
+.m6-network-node-0,.m6-network-node-1{background-image:linear-gradient(0deg,rgba(5,20,19,.94),rgba(5,20,19,.16)),url('assets/mission6-passport-evidence-v2.svg?v=6.3.1');background-position:center 35%;background-size:cover}
 .m6-network-node-2,.m6-network-node-3,.m6-network-node-4{background-image:linear-gradient(0deg,rgba(5,20,19,.96),rgba(5,20,19,.10)),url('assets/mission6-story-evidence.svg?v=6.3.0');background-position:center 42%;background-size:cover}
 .m6-network-node-4{grid-column:1/-1}
 .m6-network small{display:block;margin-top:12px;font-size:11px;line-height:1.6;color:#b1cbbf}
