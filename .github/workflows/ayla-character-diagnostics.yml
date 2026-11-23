@@ -54,19 +54,4 @@ jobs:
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/ayla-http.log 2>&1 &
           sleep 2
-          node <<'NODE'
-          const puppeteer=require('puppeteer-core');
-          (async()=>{
-            const path=process.env.CHROME_PATH||'/usr/bin/google-chrome';
-            const browser=await puppeteer.launch({headless:true,executablePath:path,args:['--no-sandbox','--enable-webgl','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-web-security']});
-            const page=await browser.newPage();
-            page.on('console',m=>console.log('BROWSER',m.type(),m.text()));
-            page.on('pageerror',e=>console.log('PAGEERROR',e.message));
-            await page.goto('http://127.0.0.1:8765/tests/animation-browser.html',{waitUntil:'domcontentloaded',timeout:30000});
-            await page.waitForFunction('window.__aylaDiag?.result!=null',{timeout:85000});
-            const out=await page.evaluate(()=>window.__aylaDiag.result);
-            console.log('BROWSER_RIG_REPORT',JSON.stringify(out));
-            await browser.close();
-            if(!out.rigged || out.limbsChanged===0)process.exitCode=1;
-          })().catch(e=>{console.error('BROWSER_TEST_FAILED',e.stack);process.exitCode=1});
-          NODE
+          timeout --signal=TERM 95s node tests/animation-browser-runner.cjs
