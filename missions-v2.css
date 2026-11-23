@@ -9,7 +9,7 @@
 .mission-choice{position:relative;min-width:0;overflow:hidden;border:1px solid rgba(170,228,154,.3);background:#10201b;box-shadow:0 15px 45px #0005;display:flex;flex-direction:column}
 .mission-choice-number{position:absolute;top:15px;left:18px;font:700 11px 'Space Grotesk';color:#e5f8da;background:#061612c9;border:1px solid #b7e89e55;padding:8px 10px;z-index:1;letter-spacing:.13em}
 .mission-choice-art{height:clamp(160px,22vh,240px);background-size:cover;background-position:center;filter:saturate(.9);border-bottom:1px solid #abcfae33}
-.mission-choice-art-one{background-image:linear-gradient(0deg,#10211be0,transparent 80%),url('assets/posters/ara-macao.webp')}
+.mission-choice-art-one{background-image:linear-gradient(0deg,#10211be0,transparent 80%),url('assets/mission1-investigation.svg')}
 .mission-choice-art-two{background-image:linear-gradient(0deg,#10211bf0,transparent 85%),url('assets/posters/ara-macao.webp');background-position:center 50%}
 .mission-choice-content{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column}
 .mission-choice-state{font:700 11px 'Space Grotesk';letter-spacing:.14em;color:#b5ed8e}
