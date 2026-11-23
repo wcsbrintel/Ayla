@@ -1,28 +1,49 @@
-/* AYLA 0.7 — realistic rigged character loader.
- * Characters: Microsoft Rocketbox Avatar Library (MIT), as distributed by
- * https://github.com/memoriesrohit/avatar-studio (Rohit Biradar, MIT).
- * The models use separate outfit, skin and head meshes with baked mocap clips.
- * Local procedural geometry remains visible while GLB assets load and is hidden
- * only after the external rig is proven drawable. This prevents blank actors
- * when Windows browsers, firewalls, or slow networks stall model delivery.
+/* AYLA 0.7.2 — original realistic characters restored as the default.
+ * Models: Microsoft Rocketbox Avatar Library (MIT), via memoriesrohit/avatar-studio.
+ * Local simplified meshes are NEVER displayed automatically; they are optional
+ * for users who explicitly select compatibility mode. Multiple model sources
+ * are attempted before reporting an original-model loading error.
  */
 (function () {
   'use strict';
   const previous = window.AYLACharacterFactory;
   if (!previous || typeof previous.create !== 'function') return;
-  const library = 'https://cdn.jsdelivr.net/gh/memoriesrohit/avatar-studio@2fd9ec82fbe1613d40ae38aadcca3f410725f740/models/';
-  const compatibilityKey='ayla-character-compatibility';
+  const rev='2fd9ec82fbe1613d40ae38aadcca3f410725f740';
+  const libraries=[
+    'https://cdn.jsdelivr.net/gh/memoriesrohit/avatar-studio@'+rev+'/models/',
+    'https://raw.githubusercontent.com/memoriesrohit/avatar-studio/'+rev+'/models/'
+  ];
+  // Ignore the old automatic-fallback preference from the Windows fix.
+  // Original realistic avatars now win unless the player explicitly opts out.
+  const compatibilityKey='ayla-character-display-v2';
   let forceLocal=false;
-  try{forceLocal=window.localStorage.getItem(compatibilityKey)==='1';}catch(e){}
+  try{forceLocal=window.localStorage.getItem(compatibilityKey)==='local';}catch(e){}
   window.AYLACharacterCompatibility={
     isEnabled:()=>forceLocal,
     setEnabled:(enabled)=>{
       forceLocal=!!enabled;
-      try{window.localStorage.setItem(compatibilityKey,forceLocal?'1':'0');}catch(e){}
-      // The 3D scene is reconstructed on refresh. Mission progress remains saved.
+      try{window.localStorage.setItem(compatibilityKey,forceLocal?'local':'original');}catch(e){}
       window.location.reload();
     }
   };
+  function disposeImport(result){
+    try{for(const group of result?.animationGroups||[])group.stop();}
+    catch(e){}
+    for(const node of [...(result?.meshes||[]),...(result?.transformNodes||[])].reverse()){
+      try{if(node&&!node.isDisposed?.())node.dispose(false,true);}catch(e){}
+    }
+  }
+  async function tryImport(B,scene,rootUrl,asset){
+    let expired=false,timer;
+    const importTask=B.SceneLoader.ImportMeshAsync('',rootUrl,asset,scene);
+    importTask.then(result=>{if(expired)disposeImport(result);},()=>{});
+    try{
+      return await Promise.race([
+        importTask,
+        new Promise((_,reject)=>{timer=setTimeout(()=>{expired=true;reject(new Error('Timed out loading '+asset));},18000);})
+      ]);
+    } finally {clearTimeout(timer);}
+  }
   const outfits = new Set(['Outfit_original','Skin_original','Outfit_formal','Skin_formal',
     'Top_shirt','Skin_shirt','Top_tee','Skin_tee','Trousers','Shoes']);
   const showOriginal = new Set(['Outfit_original','Skin_original']);
@@ -34,9 +55,9 @@
     const origDialogue = actor.setDialogue;
     const origTalking = actor.setTalking;
     const legacyMeshes = actor.root.getChildMeshes(false);
-    // Preserve local procedural actors during download and shader compilation.
-    // Previously, hiding them here left the entire room without people on
-    // machines where the external GLB was slow, blocked or never resolved.
+    // The previous realistic characters are the product design. Never replace
+    // them with simplified geometry unless the user has explicitly requested it.
+    if(!forceLocal)legacyMeshes.forEach(m=>m.setEnabled(false));
     let ready=false,failed=false,active=null, previousAction=null,fadeTime=0,current='Idle',seated=false,interaction='idle',talking=false;
     const stages = new Map();
     const name = cfg.name || (cfg.isWinston ? 'Winston' : 'Ayla');
@@ -50,7 +71,7 @@
     actor.setDialogue = function (value) { talking=!!value; origDialogue?.(value); };
     actor.setTalking = function (value) { talking=!!value; origTalking?.(value); };
     actor.animate = function (dt,moving,sprint,now) {
-      if(!ready) {origAnimate(dt,moving,sprint,now);return;}
+      if(!ready) {if(forceLocal)origAnimate(dt,moving,sprint,now);return;}
       let next='Idle';
       if(moving) next=sprint?'Walk':'Walk';
       else if(talking) next=cfg.isWinston?'Talk':'Confident';
@@ -90,18 +111,21 @@
       if(failed)return;
       failed=true;
       ready=false;
-      actor.characterType='procedural-backup';
-      legacyMeshes.forEach(m=>m.setEnabled(true));
-      console.warn('[AYLA] External avatar unavailable; retaining procedural backup:',err);
+      actor.characterType=forceLocal?'user-selected-local':'original-unavailable';
+      if(forceLocal)legacyMeshes.forEach(m=>m.setEnabled(true));
+      else legacyMeshes.forEach(m=>m.setEnabled(false));
+      console.warn('[AYLA] Original realistic avatar could not load:',name,err);
       document.dispatchEvent(new CustomEvent('ayla-character-failed',{detail:{name,error:String(err)}}));
     }
     async function load(){
       if(forceLocal){markFallback('Local compatibility mode selected');return;}
       if(!B.SceneLoader || !B.SceneLoader.ImportMeshAsync){markFallback('glTF loader unavailable');return;}
       const asset = cfg.asset || (cfg.isWinston?'leo_smart.glb':'priya_casual.glb');
+      let lastError=null;
+      for(const library of libraries){
       let imported=null, wrap=null;
       try {
-        const importResult=await B.SceneLoader.ImportMeshAsync('',library,asset,scene);
+        const importResult=await tryImport(B,scene,library,asset);
         imported=importResult;
         // Babylon loads the glTF hierarchy below a top-level __root__ mesh.
         // Attach the imported hierarchy, not individual mesh children, so skin
@@ -199,19 +223,21 @@
         actor.riggedAsset=asset;
         actor.characterType='rigged-textured';
         legacyMeshes.forEach(m=>m.setEnabled(false));
-        document.dispatchEvent(new CustomEvent('ayla-character-ready',{detail:{name,asset}}));
+        document.dispatchEvent(new CustomEvent('ayla-character-ready',{detail:{name,asset,source:library}}));
+        return;
       } catch(e) {
-        // An imported but unusable avatar must not obscure or duplicate the
-        // procedural model. Dispose all imported children before recovering.
+        lastError=e;
         try{
-          if(wrap){wrap.dispose(false,true);}
-          else if(imported?.meshes){imported.meshes.forEach(m=>{if(m&&!m.isDisposed?.())m.dispose(false,true);});}
+          if(wrap)wrap.dispose(false,true);
+          disposeImport(imported);
         }catch(cleanupError){console.warn('[AYLA] Character cleanup:',cleanupError);}
-        markFallback(e);
+        console.warn('[AYLA] Model source failed:',library,name,e);
       }
+      }
+      markFallback(lastError||new Error('Original avatar unavailable'));
     }
     actor.ready = load();
     return actor;
   }
-  window.AYLACharacterFactory={...previous,create,version:'0.7.1',kind:'MIT-rigged-avatar-with-local-fallback'};
+  window.AYLACharacterFactory={...previous,create,version:'0.7.2',kind:'MIT-rigged-original-default'};
 })();
