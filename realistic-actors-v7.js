@@ -1,4 +1,4 @@
-/* AYLA 0.7.3 — reliable native walk/talk animations for realistic avatars.
+/* AYLA 0.7.4 — fix Babylon 9 scene-disposed compatibility during rig load.
  * Models: Microsoft Rocketbox Avatar Library (MIT), via memoriesrohit/avatar-studio.
  * Local simplified meshes are NEVER displayed automatically; they are optional
  * for users who explicitly select compatibility mode. Multiple model sources
@@ -224,7 +224,7 @@
         await new Promise((resolve,reject)=>{
           const started=Date.now();
           function inspect(){
-            if(scene.isDisposed?.()){reject(new Error('Scene disposed during character load'));return;}
+            if((typeof scene.isDisposed==='function' && scene.isDisposed()) || scene.isDisposed===true){reject(new Error('Scene disposed during character load'));return;}
             const prepared=drawable.some(m=>{
               try{return typeof m.isReady!=='function'||m.isReady(true);}
               catch(e){return false;}
@@ -256,5 +256,5 @@
     actor.ready = load();
     return actor;
   }
-  window.AYLACharacterFactory={...previous,create,version:'0.7.3',kind:'MIT-rigged-native-animation'};
+  window.AYLACharacterFactory={...previous,create,version:'0.7.4',kind:'MIT-rigged-native-animation'};
 })();
