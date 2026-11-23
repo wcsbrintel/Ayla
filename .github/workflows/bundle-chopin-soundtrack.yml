@@ -46,5 +46,7 @@ jobs:
             echo "All Chopin tracks already bundled"
           else
             git commit -m "Bundle independently verified CC0 Chopin piano recordings and credits"
+            git fetch origin main
+            git rebase origin/main
             git push origin HEAD:main
           fi
