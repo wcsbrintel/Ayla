@@ -11,7 +11,7 @@
   const rev='2fd9ec82fbe1613d40ae38aadcca3f410725f740';
   // Prefer models stored with AYLA: same origin, no cross-site CDN dependency.
   const libraries=[
-    new URL('assets/characters/', document.baseURI).href,
+    new URL('assets/characters/', document.currentScript?.src || document.baseURI).href,
     'https://cdn.jsdelivr.net/gh/memoriesrohit/avatar-studio@'+rev+'/models/',
     'https://raw.githubusercontent.com/memoriesrohit/avatar-studio/'+rev+'/models/'
   ];
