@@ -164,7 +164,8 @@
     panel.classList.toggle('is-locked',!st.unlocked);
     panel.classList.toggle('is-ready',st.unlocked&&!st.level2);
     panel.classList.toggle('is-promoted',st.level2);
-    panel.classList.remove('hidden');
+    // The Level 2 progress box appears only after Mission 4 is completed.
+    panel.classList.toggle('hidden',!st.unlocked);
   }
   function renderAftermath(){
     const c=postMission.forLang(lang);
@@ -757,10 +758,13 @@
     bx('pec-man-cabinet-display-frame',.09,.70,.82,-.39,1.15,0,M.metal,pecRoot).isPickable=false;
     bx('pec-man-cabinet-console',.18,.12,.76,-.43,.73,0,pecTrim,pecRoot).isPickable=false;
     const pmTex=new B.DynamicTexture('pec-man-arcade-picture',{width:512,height:512},scene,true);
+    // The east-facing cabinet UVs were mirrored in the room: compensate on
+    // the display texture so PEC MAN reads left-to-right from Ayla's viewpoint.
+    pmTex.uScale=-1;pmTex.uOffset=1;
     const pmCtx=pmTex.getContext();
     pmCtx.fillStyle='#071a18';pmCtx.fillRect(0,0,512,512);
     pmCtx.strokeStyle='#73d39e';pmCtx.lineWidth=12;pmCtx.strokeRect(22,22,468,468);
-    pmCtx.textAlign='center';pmCtx.font='bold 64px Arial';pmCtx.fillStyle='#c0f18c';pmCtx.fillText('PEC MAN',256,108);
+    pmCtx.textAlign='center';pmCtx.font='bold 64px Arial';pmCtx.fillStyle='#c0f18c';pmCtx.fillText('PEC MAN',256,108);pmCtx.font='bold 22px Arial';pmCtx.fillStyle='#e7b76c';pmCtx.fillText('ARCADE / FLIPERAMA',256,142);
     pmCtx.fillStyle='#87b9a8';
     for(let line=0;line<5;line++)pmCtx.fillRect(75,154+line*53,363,7);
     for(let dot=0;dot<9;dot++){pmCtx.fillStyle=dot%3===0?'#f5d783':'#b6ee9e';pmCtx.beginPath();pmCtx.arc(90+dot*41,355,7,0,Math.PI*2);pmCtx.fill();}
@@ -770,6 +774,21 @@
     pmMaterial.diffuseTexture=pmTex;pmMaterial.emissiveColor=new B.Color3(.5,.67,.42);pmMaterial.disableLighting=true;pmMaterial.backFaceCulling=false;
     const pmPlane=B.MeshBuilder.CreatePlane('pec-man-arcade-display',{width:.77,height:.77},scene);
     pmPlane.parent=pecRoot;pmPlane.position.set(-.47,1.15,0);pmPlane.rotation.y=-Math.PI/2;pmPlane.material=pmMaterial;pmPlane.metadata={interaction:'pecman'};
+    // Dedicated arcade controls: joystick, two play buttons, coin/credit slot.
+    const pecJoyMaterial=material('pec-man-joystick','#f0b95e','#382514');
+    const pecButtonRed=material('pec-man-play-red','#dc5b51','#3b1114');
+    const pecButtonBlue=material('pec-man-play-blue','#55cad9','#0d353f');
+    const joyStem=B.MeshBuilder.CreateCylinder('pec-man-joystick',{height:.21,diameter:.045,tessellation:10},scene);
+    joyStem.parent=pecRoot;joyStem.position.set(-.52,.84,-.22);joyStem.material=M.metal;
+    const joyBall=B.MeshBuilder.CreateSphere('pec-man-joystick-ball',{diameter:.13,segments:12},scene);
+    joyBall.parent=pecRoot;joyBall.position.set(-.52,.96,-.22);joyBall.material=pecJoyMaterial;
+    for(const [z,mat] of [[.12,pecButtonRed],[.32,pecButtonBlue]]){
+      const button=B.MeshBuilder.CreateSphere('pec-man-control-button',{diameter:.12,segments:12},scene);
+      button.parent=pecRoot;button.position.set(-.53,.83,z);button.scaling.y=.28;button.material=mat;
+    }
+    bx('pec-man-coin-slot',.035,.14,.22,-.372,.39,.05,M.metal,pecRoot).isPickable=false;
+    const pecLight=new B.PointLight('pec-man-marquee-light',new B.Vector3(9.01,1.73,.6),scene);
+    pecLight.diffuse=B.Color3.FromHexString('#a0ed7d');pecLight.intensity=.28;pecLight.range=2.1;
         navigation=window.AYLANavigationV8.create([...room.obstacles,...historic.obstacles,{x:9.45,z:.6,w:.82,d:1.19,tag:'pec-man-arcade'}]);
     crowd=window.AYLACrowdV9.create(B,scene,navigation,ayla,winston,()=>playerActive&&!activePanel&&!cinematicPending,()=>lang);
     function othersFor(actor){
