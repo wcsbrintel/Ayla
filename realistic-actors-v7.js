@@ -19,7 +19,8 @@
   // Original realistic avatars now win unless the player explicitly opts out.
   const compatibilityKey='ayla-character-display-v2';
   let forceLocal=false;
-  try{forceLocal=window.localStorage.getItem(compatibilityKey)==='local';}catch(e){}
+  // Original realistic characters are fixed as the default; ignore older local-mode choices.
+  forceLocal=false;
   window.AYLACharacterCompatibility={
     isEnabled:()=>forceLocal,
     setEnabled:(enabled)=>{
