@@ -253,3 +253,8 @@
  .mission-navigation-actions{gap:6px}
  .mission-navigation-actions button{padding:9px!important;font-size:10px}
 }
+
+/* Investigation progression follows AY-004 in document order. */
+.mission-select-grid:has(#missionCard5){grid-template-columns:repeat(2,minmax(0,1fr))}
+.mission-select-grid #aftermathArchive{grid-column:1/-1;margin-top:0;min-width:0}
+@media(max-width:720px){.mission-select-grid:has(#missionCard5){grid-template-columns:1fr}}
