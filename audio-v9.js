@@ -40,11 +40,7 @@
   slider.min='0';slider.max='100';slider.step='1';slider.value=String(volume);
   const host=document.querySelector('#topbar .header-actions');
   if(host){host.prepend(slider);host.prepend(button);}
-  // One quiet, accessible skip control adjacent to the existing music UI.
-  const nextButton=document.createElement('button');
-  nextButton.id='chopinNext';nextButton.className='icon-button chopin-next hidden';nextButton.type='button';
-  nextButton.textContent='⏭';nextButton.style.minWidth='34px';nextButton.style.padding='9px 8px';
-  if(host)host.insertBefore(nextButton,slider.nextSibling);
+  // Keep the minimal, existing music and volume controls: no new topbar button.
   function persist(){
     try{
       localStorage.setItem(ENABLED_KEY,String(wanted));
@@ -63,9 +59,6 @@
     button.setAttribute('aria-pressed',String(playing));
     slider.title=t.volume;
     slider.setAttribute('aria-label',t.volume);
-    nextButton.classList.toggle('hidden',!(manifest?.tracks?.length>1));
-    nextButton.title=t.track;
-    nextButton.setAttribute('aria-label',t.track);
   }
   function isValidManifest(data){
     if(!data||!Array.isArray(data.tracks)||data.tracks.length<1)return false;
@@ -173,7 +166,6 @@
   });
   button.addEventListener('click',toggle);
   slider.addEventListener('input',()=>setVolume(slider.value));
-  nextButton.addEventListener('click',next);
   new MutationObserver(paint).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   document.addEventListener('click',event=>{
     const target=event.target;
@@ -181,6 +173,9 @@
     if(target.closest('#startButton,#resumeButton,#nextIntro,#skipIntro,[id^="missionPlay"],#aftermathContinue,#promotionRoom,#promotionArchive,#replayIntroduction'))start();
   },true);
   window.addEventListener('pagehide',()=>{requestSerial++;music.pause();playing=false;mode='none';});
+  // Prefetch the small manifest so the first click can start audio without
+  // awaiting a network request inside the user's playback gesture.
+  getManifest();
   paint();
   window.AYLAAudioV9={
     start(){wanted=true;persist();start();},
