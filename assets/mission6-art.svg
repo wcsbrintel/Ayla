@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="810" viewBox="0 0 1440 810" role="img" aria-label="AYLA Mission Six: fictional bear bile seizure, Moscow–Madrid route and a preserved social-media story">
+<defs>
+ <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09181b"/><stop offset=".56" stop-color="#123c43"/><stop offset="1" stop-color="#050e16"/></linearGradient>
+ <linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8ee1b1"/><stop offset="1" stop-color="#1b7066"/></linearGradient>
+ <linearGradient id="vial" x1="0" x2="1"><stop stop-color="#e7d58b"/><stop offset=".45" stop-color="#ad6a22"/><stop offset=".9" stop-color="#efc175"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+ <pattern id="grid" width="45" height="45" patternUnits="userSpaceOnUse"><path d="M45 0H0V45" fill="none" stroke="#5ccaa0" stroke-opacity=".10"/></pattern>
+</defs>
+<rect width="1440" height="810" fill="url(#background)"/><rect width="1440" height="810" fill="url(#grid)"/>
+<path d="M0 0H1440V58H0z" fill="#041618"/><path d="M0 58H1440" stroke="#74dba5" stroke-width="2"/>
+<text x="43" y="40" fill="#b9f7d1" font-family="Arial,sans-serif" font-weight="700" font-size="31" letter-spacing="8">AYLA</text><text x="207" y="41" fill="#d1ecdf" font-family="Arial,sans-serif" font-size="28" font-weight="700">/  MISSÃO 06 — AS AMPOLAS DE MADRID</text>
+<text x="1337" y="38" fill="#6acd97" font-family="monospace" font-size="17" text-anchor="end">AY-006 / OSINT</text>
+<!-- Airport architectural background -->
+<g opacity=".38" stroke="#8cc9b9" fill="none"><path stroke-width="5" d="M250 100H1330L1390 430H285Z"/><path d="M300 100L348 425M550 100L572 425M800 100L798 425M1080 100L1055 425M1320 100L1275 425"/><path d="M265 205H1375M280 318H1384"/></g>
+<rect x="518" y="111" width="470" height="63" rx="8" fill="#09262b" stroke="#58b690"/>
+<text x="753" y="153" fill="#d8f4db" font-size="30" font-weight="700" font-family="Arial" text-anchor="middle">MADRID-BARAJAS · ADUANA</text>
+<!-- route panel -->
+<rect x="26" y="92" width="403" height="288" rx="14" fill="#071b21" fill-opacity=".93" stroke="#4fb993" stroke-width="2"/>
+<text x="48" y="129" font-size="18" font-weight="700" font-family="Arial" fill="#89e2ac" letter-spacing="3">CORREDOR AÉREO</text>
+<path d="M63 280Q175 177 370 261" stroke="#8bf4ab" stroke-width="4" stroke-dasharray="8 8" fill="none"/>
+<circle cx="80" cy="278" r="12" fill="#a1f2b4"/><circle cx="351" cy="258" r="12" fill="#a1f2b4"/>
+<text x="57" y="324" font-family="Arial" font-size="28" font-weight="700" fill="#eefcf3">MOSCOU</text><text x="275" y="305" font-family="Arial" font-size="28" font-weight="700" fill="#eefcf3">MADRID</text>
+<g transform="translate(206 209) rotate(15)"><path d="M-27 0H27L6 7L1 24H-4L-8 7L-27 4Z" fill="#dbf7c5"/></g>
+<text x="54" y="361" font-size="17" fill="#a5c6b8" font-family="Arial">4 viagens registradas em 3 anos · caso fictício</text>
+<!-- seized box -->
+<path d="M430 392L976 392L1020 549L480 552Z" fill="#604933" stroke="#b79c74" stroke-width="5"/>
+<path d="M430 392L507 352H967L976 392Z" fill="#b99a72" stroke="#dfc39a" stroke-width="5"/>
+<path d="M480 552H1020V611H480Z" fill="#806042"/>
+<text x="759" y="580" text-anchor="middle" font-size="20" font-weight="700" font-family="monospace" fill="#f2ebd6">EVIDÊNCIA AY-006 / CADEIA DE CUSTÓDIA</text>
+<g>
+<g transform="translate(540 292)"><rect x="0" y="38" width="42" height="118" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 68H37" stroke="#fff1a1" stroke-width="3"/></g>
+<g transform="translate(607 285)"><rect x="0" y="38" width="42" height="126" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 77H37" stroke="#fff1a1" stroke-width="3"/></g>
+<g transform="translate(674 298)"><rect x="0" y="38" width="42" height="114" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 68H37" stroke="#fff1a1" stroke-width="3"/></g>
+<g transform="translate(741 285)"><rect x="0" y="38" width="42" height="128" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 76H37" stroke="#fff1a1" stroke-width="3"/></g>
+<g transform="translate(808 296)"><rect x="0" y="38" width="42" height="116" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 68H37" stroke="#fff1a1" stroke-width="3"/></g>
+<g transform="translate(875 292)"><rect x="0" y="38" width="42" height="120" rx="7" fill="url(#vial)" stroke="#f5deb0" stroke-width="4"/><rect x="8" y="0" width="26" height="38" rx="4" fill="#dde7df" stroke="#acd2b9" stroke-width="3"/><path d="M5 69H37" stroke="#fff1a1" stroke-width="3"/></g>
+</g>
+<!-- social intelligence screenshot panel -->
+<rect x="1080" y="94" width="332" height="470" rx="26" fill="#061017" stroke="#98e9ad" stroke-width="5"/>
+<rect x="1097" y="112" width="298" height="437" rx="14" fill="#153738"/>
+<rect x="1118" y="126" width="258" height="5" rx="2" fill="#96ecc2"/>
+<text x="1118" y="163" font-family="Arial" font-size="21" font-weight="700" fill="#ebf9e6">● R-17 · STORY</text>
+<g>
+<circle cx="1190" cy="294" r="56" fill="#beafa7"/><path d="M1138 290Q1132 213 1194 216Q1247 225 1240 284" fill="#2c2527"/>
+<path d="M1121 405Q1118 350 1190 348Q1256 351 1260 409V460H1121Z" fill="#415b69"/>
+<circle cx="1321" cy="293" r="51" fill="#ada99e"/><path d="M1274 286Q1261 226 1320 232Q1371 240 1365 295" fill="#1c2b2e"/>
+<path d="M1269 402Q1270 349 1323 347Q1370 350 1380 411V457H1269Z" fill="#234a40"/>
+<rect x="1139" y="278" width="96" height="22" rx="9" fill="#151d1d"/><rect x="1281" y="278" width="84" height="23" rx="8" fill="#111d1c"/>
+</g>
+<text x="1121" y="493" font-family="Arial" font-size="20" fill="#f5f9e3">R-17 + X-09</text>
+<text x="1122" y="517" font-family="Arial" font-size="13" fill="#b3d5c5">FONTE FICTÍCIA · CAPTURA OSINT</text>
+<!-- Species inset -->
+<rect x="30" y="419" width="390" height="207" rx="12" fill="#071b20" stroke="#42987b" stroke-width="2"/>
+<path d="M100 560Q74 510 108 470Q140 439 193 464Q252 430 297 470Q327 511 301 572Q264 587 227 572Q192 588 150 572Q114 584 100 560" fill="#333e38" stroke="#7ba890" stroke-width="5"/>
+<circle cx="128" cy="478" r="24" fill="#333e38"/><circle cx="272" cy="478" r="24" fill="#333e38"/>
+<path d="M155 506Q197 539 238 504L224 565L172 565Z" fill="#d0be94"/>
+<circle cx="164" cy="503" r="7" fill="#cddcaa"/><circle cx="236" cy="503" r="7" fill="#cddcaa"/>
+<text x="49" y="601" fill="#d9f2ce" font-size="22" font-weight="700" font-family="Arial" font-style="italic">Ursus tibetanus</text>
+<!-- Bottom dossier band -->
+<rect x="0" y="654" width="1440" height="156" fill="#06151a" fill-opacity=".96"/>
+<path d="M26 682H1414" stroke="#57b989" stroke-width="2"/>
+<text x="39" y="722" fill="#a3ecae" font-size="23" font-family="Arial" font-weight="700" letter-spacing="2">PERÍCIA · AVIAÇÃO · HISTÓRICO DE VIAGEM · SOCMINT</text>
+<text x="39" y="760" fill="#d1e7d9" font-size="20" font-family="Arial">Capturar o story e anexar a evidência antes de encaminhar o dossiê à polícia espanhola.</text>
+<text x="1403" y="788" text-anchor="end" font-size="15" font-family="Arial" fill="#8fb5a7">CENÁRIO FICTÍCIO / DADOS SIMULADOS / AYLA</text>
+</svg>
